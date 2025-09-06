@@ -1,0 +1,123 @@
+package org.dromara.customer.domain;
+
+import org.dromara.common.tenant.core.TenantEntity;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import java.util.Date;
+
+import java.io.Serial;
+
+/**
+ * 客户总表对象 dc_customer_information
+ *
+ * @author Lion Li
+ * @date 2025-09-06
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@TableName("dc_customer_information")
+public class DcCustomerInformation extends TenantEntity {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键ID
+     */
+    @TableId(value = "id")
+    private Long id;
+
+    /**
+     * 签约日期
+     */
+    private Date signDate;
+
+    /**
+     * 编号
+     */
+    private String contractNo;
+
+    /**
+     * 客户名称
+     */
+    private String customerName;
+
+    /**
+     * 负责人
+     */
+    private String principal;
+
+    /**
+     * 负责人电话
+     */
+    private String principalPhone;
+
+    /**
+     * 法务法务支持（律师id）
+     */
+    private Long lawyerId;
+
+    /**
+     * 甩单人
+     */
+    private String transferPerson;
+
+    /**
+     * 杀单手
+     */
+    private String closer;
+
+    /**
+     * 签约类型
+     */
+    private Integer contractType;
+
+    /**
+     * 套餐类型
+     */
+    private Integer packageType;
+
+    /**
+     * 实收金额
+     */
+    private Long actualReceipt;
+
+    /**
+     * 尾款金额
+     */
+    private Long balance;
+
+    /**
+     * 到期时间
+     */
+    private Date expireDate;
+
+    /**
+     * 合同编号
+     */
+    private String contractCode;
+
+    /**
+     * 备注
+     */
+    private String remarks;
+
+    /**
+     * 续费/尾款动作(1-续费 2-付尾款 3-其他)
+     */
+    private Integer actionType;
+
+    /**
+     * 客户id（流转单id）
+     */
+    private Long transferId;
+
+    /**
+     * 删除标志 0存在 1删除
+     */
+    @TableLogic
+    private String delFlag;
+
+
+}
