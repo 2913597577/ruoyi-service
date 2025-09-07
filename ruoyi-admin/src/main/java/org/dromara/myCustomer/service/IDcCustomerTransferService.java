@@ -65,4 +65,12 @@ public interface IDcCustomerTransferService {
      * @return 是否删除成功
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    /**
+     * 审核客户信息录入
+     *
+     * @param id 主键
+     * @return 是否审核成功
+     */
+    Boolean audit(Long id,Integer auditStatus,String url);
 }

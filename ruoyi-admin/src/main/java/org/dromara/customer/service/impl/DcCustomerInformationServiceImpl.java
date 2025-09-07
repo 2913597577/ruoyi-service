@@ -1,24 +1,26 @@
 package org.dromara.customer.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.aizuda.snailjob.common.core.model.Result;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.customer.domain.DcCustomerInformation;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
-import org.dromara.customer.domain.DcCustomerInformation;
 import org.dromara.customer.mapper.DcCustomerInformationMapper;
 import org.dromara.customer.service.IDcCustomerInformationService;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 客户总表Service业务层处理
@@ -40,7 +42,7 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
      * @return 客户总表
      */
     @Override
-    public DcCustomerInformationVo queryById(Long id){
+    public DcCustomerInformationVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -127,7 +129,7 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcCustomerInformation entity){
+    private void validEntityBeforeSave(DcCustomerInformation entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -140,9 +142,23 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;
+    }
+
+    @Override
+    public Result queryListByTransferId(Long transferId) {
+        QueryWrapper<DcCustomerInformation> wrapper = new QueryWrapper<>();
+        wrapper.eq("transfer_id", transferId);
+        DcCustomerInformationVo customerInformation = baseMapper.selectVoOne(wrapper);
+        Result result = new Result<>();
+        result.setStatus(200);
+        if (customerInformation != null) {
+            result.setStatus(500);
+            result.setMessage("客户总表已存在");
+        }
+        return result;
     }
 }

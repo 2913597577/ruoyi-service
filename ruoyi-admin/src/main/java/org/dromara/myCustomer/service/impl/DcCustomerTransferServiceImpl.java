@@ -1,24 +1,27 @@
 package org.dromara.myCustomer.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.customer.domain.bo.DcCustomerInformationBo;
+import org.dromara.customer.service.impl.DcCustomerInformationServiceImpl;
+import org.dromara.myCustomer.domain.DcCustomerTransfer;
 import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
-import org.dromara.myCustomer.domain.DcCustomerTransfer;
 import org.dromara.myCustomer.mapper.DcCustomerTransferMapper;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 客户信息录入Service业务层处理
@@ -32,6 +35,7 @@ import java.util.Collection;
 public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService {
 
     private final DcCustomerTransferMapper baseMapper;
+    private final DcCustomerInformationServiceImpl dcCustomerInformationService;
 
     /**
      * 查询客户信息录入
@@ -40,7 +44,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
      * @return 客户信息录入
      */
     @Override
-    public DcCustomerTransferVo queryById(Long id){
+    public DcCustomerTransferVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -133,7 +137,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcCustomerTransfer entity){
+    private void validEntityBeforeSave(DcCustomerTransfer entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -146,9 +150,34 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;
+    }
+
+    @Override
+    public Boolean audit(Long id, Integer auditStatus, String url) {
+        Long userId = LoginHelper.getUserId();
+        DcCustomerTransfer dcCustomerTransfer = baseMapper.selectById(id);
+        dcCustomerTransfer.setFinanceConfirmed(auditStatus);
+        dcCustomerTransfer.setFinanceSignature(url);
+        boolean flag = baseMapper.updateById(dcCustomerTransfer) > 0;
+        if (flag) {
+            DcCustomerInformationBo dcCustomerInformation = new DcCustomerInformationBo();
+            dcCustomerInformation.setSignDate(dcCustomerTransfer.getCreateTime());
+            dcCustomerInformation.setContractNo("000000");
+            dcCustomerInformation.setCustomerName(dcCustomerTransfer.getContactPerson());
+            dcCustomerInformation.setPrincipal(userId.toString());
+            dcCustomerInformation.setPrincipalPhone(null);
+            dcCustomerInformation.setContractType(1);
+            dcCustomerInformation.setPackageType(1);
+            dcCustomerInformation.setActualReceipt(dcCustomerTransfer.getActualPayment());
+            dcCustomerInformation.setBalance(dcCustomerTransfer.getBalanceStatus());
+            dcCustomerInformation.setExpireDate(dcCustomerTransfer.getServiceEnd());
+            dcCustomerInformation.setTransferId(dcCustomerTransfer.getId());
+            flag = dcCustomerInformationService.insertByBo(dcCustomerInformation);
+        }
+        return flag;
     }
 }

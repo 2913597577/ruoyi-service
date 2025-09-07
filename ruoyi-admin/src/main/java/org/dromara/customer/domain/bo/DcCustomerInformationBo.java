@@ -8,6 +8,8 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import jakarta.validation.constraints.*;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -85,12 +87,12 @@ public class DcCustomerInformationBo extends BaseEntity {
     /**
      * 实收金额
      */
-    private Long actualReceipt;
+    private BigDecimal actualReceipt;
 
     /**
      * 尾款金额
      */
-    private Long balance;
+    private BigDecimal balance;
 
     /**
      * 到期时间

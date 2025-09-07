@@ -4,6 +4,8 @@ import org.dromara.common.tenant.core.TenantEntity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 import java.io.Serial;
@@ -81,12 +83,12 @@ public class DcCustomerInformation extends TenantEntity {
     /**
      * 实收金额
      */
-    private Long actualReceipt;
+    private BigDecimal actualReceipt;
 
     /**
      * 尾款金额
      */
-    private Long balance;
+    private BigDecimal balance;
 
     /**
      * 到期时间

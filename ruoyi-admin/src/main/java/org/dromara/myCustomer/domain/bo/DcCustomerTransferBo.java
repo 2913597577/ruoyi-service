@@ -8,6 +8,8 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import jakarta.validation.constraints.*;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -103,12 +105,12 @@ public class DcCustomerTransferBo extends BaseEntity {
     /**
      * 实付金额
      */
-    private Long actualPayment;
+    private BigDecimal actualPayment;
 
     /**
      * 尾款情况
      */
-    private Long balanceStatus;
+    private BigDecimal balanceStatus;
 
     /**
      * 签约类型(1-常法 2-单项 3-律师费 4-其他)

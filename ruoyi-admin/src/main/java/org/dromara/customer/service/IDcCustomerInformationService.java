@@ -1,9 +1,10 @@
 package org.dromara.customer.service;
 
-import org.dromara.customer.domain.vo.DcCustomerInformationVo;
-import org.dromara.customer.domain.bo.DcCustomerInformationBo;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
+import com.aizuda.snailjob.common.core.model.Result;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.customer.domain.bo.DcCustomerInformationBo;
+import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 
 import java.util.Collection;
 import java.util.List;
@@ -65,4 +66,12 @@ public interface IDcCustomerInformationService {
      * @return 是否删除成功
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    /**
+     * 根据transferId查询客户总表列表
+     *
+     * @param transferId transferId
+     * @return 客户总表列表
+     */
+    Result queryListByTransferId(Long transferId);
 }
