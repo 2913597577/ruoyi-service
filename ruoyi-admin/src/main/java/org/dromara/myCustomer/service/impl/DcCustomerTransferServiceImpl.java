@@ -1,6 +1,7 @@
 package org.dromara.myCustomer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -157,11 +158,10 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     }
 
     @Override
-    public Boolean audit(Long id, Integer auditStatus, String url) {
+    public Boolean audit(Long id, Integer auditStatus) {
         Long userId = LoginHelper.getUserId();
         DcCustomerTransfer dcCustomerTransfer = baseMapper.selectById(id);
         dcCustomerTransfer.setFinanceConfirmed(auditStatus);
-        dcCustomerTransfer.setFinanceSignature(url);
         boolean flag = baseMapper.updateById(dcCustomerTransfer) > 0;
         if (flag) {
             DcCustomerInformationBo dcCustomerInformation = new DcCustomerInformationBo();
@@ -179,5 +179,14 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             flag = dcCustomerInformationService.insertByBo(dcCustomerInformation);
         }
         return flag;
+    }
+
+
+    @Override
+    public boolean updatePicture(Long Id, Long pictureId) {
+        return baseMapper.update(null,
+            new LambdaUpdateWrapper<DcCustomerTransfer>()
+                .set(DcCustomerTransfer::getFinanceSignature, pictureId)
+                .eq(DcCustomerTransfer::getId, Id)) > 0;
     }
 }

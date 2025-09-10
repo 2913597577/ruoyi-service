@@ -1,19 +1,14 @@
 package org.dromara.myCustomer.domain.vo;
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.dromara.myCustomer.domain.DcCustomerTransfer;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
-import org.dromara.common.excel.convert.ExcelDictConvert;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.dromara.myCustomer.domain.DcCustomerTransfer;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-
 
 
 /**
@@ -171,7 +166,7 @@ public class DcCustomerTransferVo implements Serializable {
     /**
      * 财务是否确认(1:是,0:否)
      */
-    @ExcelProperty(value = "财务是否确认(1:是,0:否)")
+    @ExcelProperty(value = "财务审核状态(0:待审核 1:审核通过 2:审核不通过")
     private Integer financeConfirmed;
 
     /**

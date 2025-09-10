@@ -1,9 +1,9 @@
 package org.dromara.myCustomer.service;
 
-import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
-import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
+import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 
 import java.util.Collection;
 import java.util.List;
@@ -72,5 +72,9 @@ public interface IDcCustomerTransferService {
      * @param id 主键
      * @return 是否审核成功
      */
-    Boolean audit(Long id,Integer auditStatus,String url);
+    Boolean audit(Long id, Integer auditStatus);
+
+
+    boolean updatePicture(Long id, Long pictureId);
+
 }
