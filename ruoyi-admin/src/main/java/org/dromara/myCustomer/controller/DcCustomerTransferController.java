@@ -138,33 +138,71 @@ public class DcCustomerTransferController extends BaseController {
     @Log(title = "客户信息审核", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PostMapping(value = "/audit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public R<AvatarVo> audit(@RequestParam Long id, @RequestParam Integer auditStatus, @RequestPart("pictureUrl") MultipartFile pictureUrl) {
+    public R<AvatarVo> audit(@RequestParam Long id,
+                             @RequestParam Integer auditStatus,
+                             @RequestPart(value = "pictureUrl", required = false) MultipartFile pictureUrl) {
         DcCustomerTransferVo dcCustomerTransferVo = dcCustomerTransferService.queryById(id);
         if (dcCustomerTransferVo == null) {
             return R.warn("客户信息不存在");
         }
+
+        if (auditStatus == 2) { //
+            if (dcCustomerTransferService.audit(id, auditStatus)) {
+                return R.ok(new DcCustomerTransferController.AvatarVo(null));
+            } else {
+                return R.fail("审核失败，请联系管理员");
+            }
+        }
+
+        // 通过审核时需要图片
+        if (pictureUrl == null || pictureUrl.isEmpty()) {
+            return R.fail("通过审核时必须上传图片");
+        }
+
         boolean updateSuccess = false;
         String url = null;
+
+        String extension = FileUtil.extName(pictureUrl.getOriginalFilename());
+        if (!StringUtils.equalsAnyIgnoreCase(extension, MimeTypeUtils.IMAGE_EXTENSION)) {
+            return R.fail("文件格式不正确，请上传" + Arrays.toString(MimeTypeUtils.IMAGE_EXTENSION) + "格式");
+        }
+
+        SysOssVo oss = ossService.upload(pictureUrl);
+        url = oss.getUrl();
+        Result result = dcCustomerInformationService.queryListByTransferId(id);
+        if (result.getStatus() != 200) {
+            return R.warn(result.getMessage());
+        }
+
+        if (dcCustomerTransferService.audit(id, auditStatus)) {
+            updateSuccess = DataPermissionHelper.ignore(() -> dcCustomerTransferService.updatePicture(id, oss.getOssId()));
+        }
+
+        if (updateSuccess) {
+            return R.ok(new DcCustomerTransferController.AvatarVo(url));
+        }
+        return R.fail("审核失败，请联系管理员");
+    }
+
+
+    @Log(title = "提交个人签名", businessType = BusinessType.UPDATE)
+    @RepeatSubmit()
+    @PostMapping(value = "/auditPicUrl", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public R<AvatarVo> auditPicUrl(@RequestParam Long id, @RequestPart("pictureUrl") MultipartFile pictureUrl) {
+
         if (!pictureUrl.isEmpty()) {
             String extension = FileUtil.extName(pictureUrl.getOriginalFilename());
             if (!StringUtils.equalsAnyIgnoreCase(extension, MimeTypeUtils.IMAGE_EXTENSION)) {
                 return R.fail("文件格式不正确，请上传" + Arrays.toString(MimeTypeUtils.IMAGE_EXTENSION) + "格式");
             }
             SysOssVo oss = ossService.upload(pictureUrl);
-            url = oss.getUrl();
-            Result result = dcCustomerInformationService.queryListByTransferId(id);
-            if (result.getStatus() != 200) {
-                return R.warn(result.getMessage());
+            String url = oss.getUrl();
+            boolean updateSuccess = DataPermissionHelper.ignore(() -> dcCustomerTransferService.updatePicture(id, oss.getOssId()));
+            if (updateSuccess) {
+                return R.ok(new DcCustomerTransferController.AvatarVo(url));
             }
-
-            if (dcCustomerTransferService.audit(id, auditStatus)) {
-                updateSuccess = DataPermissionHelper.ignore(() -> dcCustomerTransferService.updatePicture(id, oss.getOssId()));
-            }
-
         }
-        if (updateSuccess) {
-            return R.ok(new DcCustomerTransferController.AvatarVo(url));
-        }
+
         return R.fail("审核失败，请联系管理员");
     }
 
