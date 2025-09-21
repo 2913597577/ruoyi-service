@@ -1,30 +1,30 @@
 package org.dromara.myCustomer.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.myCustomer.domain.DcCustomerTracking;
 import org.dromara.myCustomer.domain.bo.DcCustomerTrackingBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTrackingVo;
-import org.dromara.myCustomer.domain.DcCustomerTracking;
 import org.dromara.myCustomer.mapper.DcCustomerTrackingMapper;
 import org.dromara.myCustomer.service.IDcCustomerTrackingService;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 客户跟踪Service业务层处理
  *
  * @author Lion Li
- * @date 2025-09-06
+ * @date 2025-09-21
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService
      * @return 客户跟踪
      */
     @Override
-    public DcCustomerTrackingVo queryById(Long id){
+    public DcCustomerTrackingVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -76,9 +76,14 @@ public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService
         lqw.orderByAsc(DcCustomerTracking::getId);
         lqw.eq(bo.getCustomerId() != null, DcCustomerTracking::getCustomerId, bo.getCustomerId());
         lqw.eq(StringUtils.isNotBlank(bo.getCustomerRemark()), DcCustomerTracking::getCustomerRemark, bo.getCustomerRemark());
+        lqw.eq(bo.getTrackingType() != null, DcCustomerTracking::getTrackingType, bo.getTrackingType());
         lqw.eq(bo.getCumtomerStatus() != null, DcCustomerTracking::getCumtomerStatus, bo.getCumtomerStatus());
         lqw.eq(bo.getTrackingTime() != null, DcCustomerTracking::getTrackingTime, bo.getTrackingTime());
+        lqw.eq(bo.getSubmitStatus() != null, DcCustomerTracking::getSubmitStatus, bo.getSubmitStatus());
         lqw.eq(bo.getNextTime() != null, DcCustomerTracking::getNextTime, bo.getNextTime());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCustomerTracking::getRemark1, bo.getRemark1());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcCustomerTracking::getRemark2, bo.getRemark2());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcCustomerTracking::getRemark3, bo.getRemark3());
         return lqw;
     }
 
@@ -115,7 +120,7 @@ public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcCustomerTracking entity){
+    private void validEntityBeforeSave(DcCustomerTracking entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -128,7 +133,7 @@ public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;
