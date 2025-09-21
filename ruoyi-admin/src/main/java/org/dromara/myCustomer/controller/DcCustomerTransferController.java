@@ -2,7 +2,6 @@ package org.dromara.myCustomer.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.io.FileUtil;
-import com.aizuda.snailjob.common.core.model.Result;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +19,7 @@ import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.helper.DataPermissionHelper;
 import org.dromara.common.web.core.BaseController;
+import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 import org.dromara.customer.service.impl.DcCustomerInformationServiceImpl;
 import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
@@ -169,9 +169,9 @@ public class DcCustomerTransferController extends BaseController {
 
         SysOssVo oss = ossService.upload(pictureUrl);
         url = oss.getUrl();
-        Result result = dcCustomerInformationService.queryListByTransferId(id);
-        if (result.getStatus() != 200) {
-            return R.warn(result.getMessage());
+        DcCustomerInformationVo result = dcCustomerInformationService.queryListByTransferId(id);
+        if (result != null) {
+            return R.warn("客户总表已存在");
         }
 
         if (dcCustomerTransferService.audit(id, auditStatus)) {

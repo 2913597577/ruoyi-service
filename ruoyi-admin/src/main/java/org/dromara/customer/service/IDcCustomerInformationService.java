@@ -1,6 +1,5 @@
 package org.dromara.customer.service;
 
-import com.aizuda.snailjob.common.core.model.Result;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
@@ -73,5 +72,5 @@ public interface IDcCustomerInformationService {
      * @param transferId transferId
      * @return 客户总表列表
      */
-    Result queryListByTransferId(Long transferId);
+    DcCustomerInformationVo queryListByTransferId(Long transferId);
 }

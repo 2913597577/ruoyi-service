@@ -9,6 +9,8 @@ import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.customer.service.impl.DcCustomerInformationServiceImpl;
+import org.dromara.legalSupport.service.impl.DcCustomerJobOrderServiceImpl;
 import org.dromara.myCustomer.domain.DcCustomerTracking;
 import org.dromara.myCustomer.domain.bo.DcCustomerTrackingBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTrackingVo;
@@ -32,6 +34,11 @@ import java.util.Map;
 public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService {
 
     private final DcCustomerTrackingMapper baseMapper;
+
+
+    private final DcCustomerJobOrderServiceImpl jobOrderService;
+
+    private final DcCustomerInformationServiceImpl customerInformationService;
 
     /**
      * 查询客户跟踪

@@ -1,6 +1,5 @@
 package org.dromara.customer.service.impl;
 
-import com.aizuda.snailjob.common.core.model.Result;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -149,16 +148,9 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
     }
 
     @Override
-    public Result queryListByTransferId(Long transferId) {
+    public DcCustomerInformationVo queryListByTransferId(Long transferId) {
         QueryWrapper<DcCustomerInformation> wrapper = new QueryWrapper<>();
         wrapper.eq("transfer_id", transferId);
-        DcCustomerInformationVo customerInformation = baseMapper.selectVoOne(wrapper);
-        Result result = new Result<>();
-        result.setStatus(200);
-        if (customerInformation != null) {
-            result.setStatus(500);
-            result.setMessage("客户总表已存在");
-        }
-        return result;
+        return baseMapper.selectVoOne(wrapper);
     }
 }

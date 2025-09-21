@@ -1,9 +1,9 @@
 package org.dromara.myCustomer.service;
 
-import org.dromara.myCustomer.domain.vo.DcCustomerTrackingVo;
-import org.dromara.myCustomer.domain.bo.DcCustomerTrackingBo;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.myCustomer.domain.bo.DcCustomerTrackingBo;
+import org.dromara.myCustomer.domain.vo.DcCustomerTrackingVo;
 
 import java.util.Collection;
 import java.util.List;
