@@ -1,13 +1,16 @@
 package org.dromara.customer.domain.bo;
 
-import org.dromara.customer.domain.DcCustomerInformation;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.common.core.validate.AddGroup;
-import org.dromara.common.core.validate.EditGroup;
 import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import jakarta.validation.constraints.*;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.customer.domain.DcCustomerInformation;
+import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,37 +23,40 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = DcCustomerInformation.class, reverseConvertGenerate = false)
+@AutoMappers({
+    @AutoMapper(target = DcCustomerInformation.class, reverseConvertGenerate = false),
+    @AutoMapper(target = DcCustomerInformationVo.class)
+})
 public class DcCustomerInformationBo extends BaseEntity {
 
     /**
      * 主键ID
      */
-    @NotNull(message = "主键ID不能为空", groups = { EditGroup.class })
+    @NotNull(message = "主键ID不能为空", groups = {EditGroup.class})
     private Long id;
 
     /**
      * 签约日期
      */
-    @NotNull(message = "签约日期不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "签约日期不能为空", groups = {AddGroup.class, EditGroup.class})
     private Date signDate;
 
     /**
      * 编号
      */
-    @NotBlank(message = "编号不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "编号不能为空", groups = {AddGroup.class, EditGroup.class})
     private String contractNo;
 
     /**
      * 客户名称
      */
-    @NotBlank(message = "客户名称不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "客户名称不能为空", groups = {AddGroup.class, EditGroup.class})
     private String customerName;
 
     /**
      * 负责人
      */
-    @NotBlank(message = "负责人不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "负责人不能为空", groups = {AddGroup.class, EditGroup.class})
     private String principal;
 
     /**
@@ -76,7 +82,7 @@ public class DcCustomerInformationBo extends BaseEntity {
     /**
      * 签约类型
      */
-    @NotNull(message = "签约类型不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "签约类型不能为空", groups = {AddGroup.class, EditGroup.class})
     private Integer contractType;
 
     /**
@@ -103,6 +109,21 @@ public class DcCustomerInformationBo extends BaseEntity {
      * 合同编号
      */
     private String contractCode;
+
+    /**
+     * 是否转为意向客户
+     */
+    private Integer isIntention;
+
+    /**
+     * 是否转为风险客户
+     */
+    private Integer isRisk;
+
+    /**
+     * 是否转为退费客户
+     */
+    private Integer isRefund;
 
     /**
      * 备注

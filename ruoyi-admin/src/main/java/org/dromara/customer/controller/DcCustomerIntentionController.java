@@ -1,26 +1,31 @@
 package org.dromara.customer.controller;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
-import org.dromara.common.idempotent.annotation.RepeatSubmit;
-import org.dromara.common.log.annotation.Log;
-import org.dromara.common.web.core.BaseController;
-import org.dromara.common.mybatis.core.page.PageQuery;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
-import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.excel.utils.ExcelUtil;
-import org.dromara.customer.domain.vo.DcCustomerIntentionVo;
-import org.dromara.customer.domain.bo.DcCustomerIntentionBo;
-import org.dromara.customer.service.IDcCustomerIntentionService;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
+import org.dromara.common.log.annotation.Log;
+import org.dromara.common.log.enums.BusinessType;
+import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.web.core.BaseController;
+import org.dromara.customer.domain.bo.DcCustomerInformationBo;
+import org.dromara.customer.domain.bo.DcCustomerIntentionBo;
+import org.dromara.customer.domain.vo.DcCustomerInformationVo;
+import org.dromara.customer.domain.vo.DcCustomerIntentionVo;
+import org.dromara.customer.service.IDcCustomerInformationService;
+import org.dromara.customer.service.IDcCustomerIntentionService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 客户意向登记
@@ -35,6 +40,8 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 public class DcCustomerIntentionController extends BaseController {
 
     private final IDcCustomerIntentionService dcCustomerIntentionService;
+
+    private final IDcCustomerInformationService dcCustomerInformationService;
 
     /**
      * 查询客户意向登记列表
@@ -64,7 +71,7 @@ public class DcCustomerIntentionController extends BaseController {
     @SaCheckPermission("customerIntention:customerIntention:query")
     @GetMapping("/{id}")
     public R<DcCustomerIntentionVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Long id) {
+                                            @PathVariable Long id) {
         return R.ok(dcCustomerIntentionService.queryById(id));
     }
 
@@ -77,6 +84,35 @@ public class DcCustomerIntentionController extends BaseController {
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody DcCustomerIntentionBo bo) {
         return toAjax(dcCustomerIntentionService.insertByBo(bo));
+    }
+
+    /**
+     * 新增客户意向登记
+     */
+    @SaCheckPermission("customerIntention:customerIntention:add")
+    @Log(title = "转为意向客户", businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @PostMapping("/addIntention")
+    public R<Void> addIntention(@Validated(AddGroup.class) @RequestBody DcCustomerIntentionBo bo) {
+        Long customerId = bo.getIntendedCustomerId();
+        if (customerId == null) {
+            return R.warn("客户ID不能为空");
+        }
+        DcCustomerInformationVo customerInformation = dcCustomerInformationService.queryListByTransferId(customerId);
+        if (customerInformation == null) {
+            return R.warn("客户信息不存在");
+        }
+        if (customerInformation.getIsIntention() == 1) {
+            return R.warn("该客户信息已录入意向客户表");
+        }
+        if (!dcCustomerIntentionService.insertByBo(bo)) {
+            return R.warn("客户转为意向客户失败");
+        }
+        customerInformation.setIsIntention(1);
+        DcCustomerInformationBo update = new DcCustomerInformationBo();
+        MapstructUtils.convert(customerInformation, update);
+        dcCustomerInformationService.updateByBo(update);
+        return R.ok();
     }
 
     /**

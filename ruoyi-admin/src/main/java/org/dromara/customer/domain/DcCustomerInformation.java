@@ -1,14 +1,15 @@
 package org.dromara.customer.domain;
 
-import org.dromara.common.tenant.core.TenantEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.math.BigDecimal;
-import java.util.Date;
+import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 客户总表对象 dc_customer_information
@@ -99,6 +100,22 @@ public class DcCustomerInformation extends TenantEntity {
      * 合同编号
      */
     private String contractCode;
+
+
+    /**
+     * 是否转为意向客户
+     */
+    private Integer isIntention;
+
+    /**
+     * 是否转为风险客户
+     */
+    private Integer isRisk;
+
+    /**
+     * 是否转为退费客户
+     */
+    private Integer isRefund;
 
     /**
      * 备注

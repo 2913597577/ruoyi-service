@@ -1,17 +1,18 @@
 package org.dromara.customer.domain.vo;
 
-import java.util.Date;
-
-import org.dromara.customer.domain.DcCustomerInformation;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
+import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
+import lombok.Data;
 import org.dromara.common.excel.annotation.ExcelDictFormat;
 import org.dromara.common.excel.convert.ExcelDictConvert;
-import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
+import org.dromara.customer.domain.DcCustomerInformation;
+import org.dromara.customer.domain.bo.DcCustomerInformationBo;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -22,7 +23,10 @@ import java.io.Serializable;
  */
 @Data
 @ExcelIgnoreUnannotated
-@AutoMapper(target = DcCustomerInformation.class)
+@AutoMappers({
+    @AutoMapper(target = DcCustomerInformation.class),
+    @AutoMapper(target = DcCustomerInformationBo.class)
+})
 public class DcCustomerInformationVo implements Serializable {
 
     @Serial
@@ -120,6 +124,24 @@ public class DcCustomerInformationVo implements Serializable {
     private String contractCode;
 
     /**
+     * 是否转为意向客户
+     */
+    @ExcelProperty(value = "是否转为意向客户")
+    private Integer isIntention;
+
+    /**
+     * 是否转为风险客户
+     */
+    @ExcelProperty(value = "是否转为风险客户")
+    private Integer isRisk;
+
+    /**
+     * 是否转为退费客户
+     */
+    @ExcelProperty(value = "是否转为退费客户")
+    private Integer isRefund;
+
+    /**
      * 备注
      */
     @ExcelProperty(value = "备注")
@@ -135,7 +157,7 @@ public class DcCustomerInformationVo implements Serializable {
      * 客户id（流转单id）
      */
     @ExcelProperty(value = "客户id", converter = ExcelDictConvert.class)
-    @ExcelDictFormat(readConverterExp = "流=转单id")
+    @ExcelDictFormat(readConverterExp = "流转单id")
     private Long transferId;
 
 
