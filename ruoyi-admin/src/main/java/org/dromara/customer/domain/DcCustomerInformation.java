@@ -138,5 +138,26 @@ public class DcCustomerInformation extends TenantEntity {
     @TableLogic
     private String delFlag;
 
+    /**
+     * 邀约人id
+     */
+    private Long inviterId;
+    /**
+     * 客户经理id
+     */
+    private Long accountManagerId;
+    /**
+     * 合同金额
+     */
+    private BigDecimal contractAmount;
+    /**
+     * 服务时长
+     */
+    private String serviceDuration;
+    /**
+     * 备注
+     */
+    private String remark;
+
 
 }

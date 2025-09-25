@@ -176,6 +176,10 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setBalance(dcCustomerTransfer.getBalanceStatus());
             dcCustomerInformation.setExpireDate(dcCustomerTransfer.getServiceEnd());
             dcCustomerInformation.setTransferId(dcCustomerTransfer.getId());
+            dcCustomerInformation.setAccountManagerId(dcCustomerTransfer.getAccountManagerId());
+            dcCustomerInformation.setInviterId(dcCustomerTransfer.getInviterId());
+            dcCustomerInformation.setServiceDuration(dcCustomerTransfer.getServiceDuration());
+            dcCustomerInformation.setContractAmount(dcCustomerTransfer.getContractAmount());
             flag = dcCustomerInformationService.insertByBo(dcCustomerInformation);
         }
         return flag;

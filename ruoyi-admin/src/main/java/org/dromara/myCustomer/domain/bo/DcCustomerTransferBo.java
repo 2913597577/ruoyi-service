@@ -1,17 +1,17 @@
 package org.dromara.myCustomer.domain.bo;
 
-import org.dromara.myCustomer.domain.DcCustomerTransfer;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.common.core.validate.AddGroup;
-import org.dromara.common.core.validate.EditGroup;
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import jakarta.validation.constraints.*;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.myCustomer.domain.DcCustomerTransfer;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 客户信息录入业务对象 dc_customer_transfer
@@ -27,19 +27,19 @@ public class DcCustomerTransferBo extends BaseEntity {
     /**
      * 主键ID
      */
-    @NotNull(message = "主键ID不能为空", groups = { EditGroup.class })
+    @NotNull(message = "主键ID不能为空", groups = {EditGroup.class})
     private Long id;
 
     /**
      * 公司名称
      */
-    @NotBlank(message = "公司名称不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "公司名称不能为空", groups = {AddGroup.class, EditGroup.class})
     private String companyName;
 
     /**
      * 公司对接人
      */
-    @NotBlank(message = "公司对接人不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "公司对接人不能为空", groups = {AddGroup.class, EditGroup.class})
     private String contactPerson;
 
     /**
@@ -192,5 +192,25 @@ public class DcCustomerTransferBo extends BaseEntity {
      */
     private String debtRemark;
 
+    /**
+     * 邀约人id
+     */
+    private Long inviterId;
+    /**
+     * 客户经理id
+     */
+    private Long accountManagerId;
+    /**
+     * 合同金额
+     */
+    private BigDecimal contractAmount;
+    /**
+     * 服务时长
+     */
+    private String serviceDuration;
+    /**
+     * 备注
+     */
+    private String remark;
 
 }

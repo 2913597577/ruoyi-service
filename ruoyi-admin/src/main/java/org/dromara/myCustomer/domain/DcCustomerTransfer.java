@@ -1,15 +1,15 @@
 package org.dromara.myCustomer.domain;
 
-import org.dromara.common.tenant.core.TenantEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 客户信息录入对象 dc_customer_transfer
@@ -180,7 +180,26 @@ public class DcCustomerTransfer extends TenantEntity {
      * 待处理事项备注
      */
     private String pendingRemark;
-
+    /**
+     * 邀约人id
+     */
+    private Long inviterId;
+    /**
+     * 客户经理id
+     */
+    private Long accountManagerId;
+    /**
+     * 合同金额
+     */
+    private BigDecimal contractAmount;
+    /**
+     * 服务时长
+     */
+    private String serviceDuration;
+    /**
+     * 备注
+     */
+    private String remark;
     /**
      * 欠款问题详细登记(1- 相关主体2-已知债务人信息3-标的额4-证据情况5-案件处理要求6-其他)
      */

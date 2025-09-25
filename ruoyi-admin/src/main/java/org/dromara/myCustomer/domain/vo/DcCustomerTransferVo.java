@@ -8,6 +8,7 @@ import org.dromara.myCustomer.domain.DcCustomerTransfer;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -217,5 +218,30 @@ public class DcCustomerTransferVo implements Serializable {
     @ExcelProperty(value = "欠款问题备注")
     private String debtRemark;
 
+    /**
+     * 邀约人id
+     */
+    @ExcelProperty(value = "邀约人")
+    private Long inviterId;
+    /**
+     * 客户经理id
+     */
+    @ExcelProperty(value = "客户经理")
+    private Long accountManagerId;
+    /**
+     * 合同金额
+     */
+    @ExcelProperty(value = "合同金额")
+    private BigDecimal contractAmount;
+    /**
+     * 服务时长
+     */
+    @ExcelProperty(value = "服务时长")
+    private String serviceDuration;
+    /**
+     * 备注
+     */
+    @ExcelProperty(value = "备注")
+    private String remark;
 
 }
