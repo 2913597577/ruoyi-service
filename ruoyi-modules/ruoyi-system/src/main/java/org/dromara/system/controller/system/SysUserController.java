@@ -64,6 +64,13 @@ public class SysUserController extends BaseController {
         return userService.selectPageUserList(user, pageQuery);
     }
 
+    @GetMapping("/listByDept")
+    public TableDataInfo<SysUserVo> list(@RequestParam String deptId, PageQuery pageQuery) {
+        SysUserBo user = new SysUserBo();
+        user.setDeptId(Long.valueOf(deptId));
+        return userService.selectPageUserList(user, pageQuery);
+    }
+
     /**
      * 导出用户列表
      */

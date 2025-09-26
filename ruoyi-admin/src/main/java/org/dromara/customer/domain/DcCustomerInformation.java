@@ -154,10 +154,6 @@ public class DcCustomerInformation extends TenantEntity {
      * 服务时长
      */
     private String serviceDuration;
-    /**
-     * 备注
-     */
-    private String remark;
 
 
 }
