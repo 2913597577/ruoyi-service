@@ -244,4 +244,9 @@ public class DcCustomerTransferVo implements Serializable {
     @ExcelProperty(value = "备注")
     private String remark;
 
+    /**
+     * 是否是回访记录
+     */
+    @ExcelProperty(value = "是否是回访记录")
+    private Integer isReturn;
 }

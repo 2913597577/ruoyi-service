@@ -182,4 +182,10 @@ public class DcCustomerInformationVo implements Serializable {
     @ExcelProperty(value = "服务时长")
     private String serviceDuration;
 
+    /**
+     * 客户类型
+     */
+    @ExcelProperty(value = "客户类型")
+    private Integer customerType;
+
 }

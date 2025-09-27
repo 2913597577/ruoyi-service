@@ -86,5 +86,10 @@ public class DcCustomerTracking extends TenantEntity {
     @TableLogic
     private String delFlag;
 
+    /**
+     * 是否是回访记录
+     */
+    private Integer isReturn;
+
 
 }

@@ -157,4 +157,9 @@ public class DcCustomerInformationBo extends BaseEntity {
      * 服务时长
      */
     private String serviceDuration;
+
+    /**
+     * 客户类型
+     */
+    private Integer customerType;
 }
