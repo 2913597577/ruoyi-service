@@ -2,6 +2,7 @@ package org.dromara.common.controller;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
@@ -36,4 +37,29 @@ public class commonController {
         }
         return R.ok(commonService.getCustomerByUserId(loginUser.getUserId()));
     }
+
+    /**
+     * 获取客户分类信息
+     */
+    @GetMapping("/getCustomerType")
+    public R<JSONArray> getCustomerType() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getCustomerType());
+    }
+
+    /**
+     * 统计客户类型
+     */
+    @GetMapping("/getCustomerCategory")
+    public R<JSONObject> getCustomerCategory() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getCustomerCategory());
+    }
+
 }

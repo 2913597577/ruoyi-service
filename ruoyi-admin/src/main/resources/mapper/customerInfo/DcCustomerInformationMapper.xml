@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dromara.customer.mapper.DcCustomerInformationMapper">
+
+    <select id="selectCustomerCountByType" resultType="map">
+        SELECT customer_type, COUNT(1) as count
+        FROM dc_customer_information
+        WHERE del_flag = 0
+        GROUP BY customer_type
+    </select>
 
 </mapper>

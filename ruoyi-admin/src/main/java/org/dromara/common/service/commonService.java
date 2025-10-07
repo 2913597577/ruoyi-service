@@ -3,11 +3,16 @@ package org.dromara.common.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.customer.domain.DcCustomerIntention;
+import org.dromara.customer.domain.DcCustomerRiskRefund;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 import org.dromara.customer.mapper.DcCustomerInformationMapper;
+import org.dromara.customer.mapper.DcCustomerIntentionMapper;
+import org.dromara.customer.mapper.DcCustomerRiskRefundMapper;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
 import org.dromara.myCustomer.mapper.DcCustomerTransferMapper;
 import org.dromara.system.service.ISysRoleService;
@@ -24,6 +29,8 @@ import java.util.Map;
 public class commonService {
 
     private final DcCustomerInformationMapper informationMapper;
+    private final DcCustomerIntentionMapper intentionMapper;
+    private final DcCustomerRiskRefundMapper riskRefundMapper;
     private final DcCustomerTransferMapper transferMapper;
     private final ISysRoleService roleService;
 
@@ -50,4 +57,37 @@ public class commonService {
         }
         return json;
     }
+
+    public JSONArray getCustomerType() {
+        List<Map<String, Object>> list = informationMapper.selectCustomerCountByType();
+        return JSONArray.parseArray(JSONObject.toJSONString(list));
+    }
+
+    // 在 getCustomerCategory 方法中补充完整代码
+    public JSONObject getCustomerCategory() {
+        // 创建查询条件
+        LambdaQueryWrapper<DcCustomerIntention> intentionCountQW = new LambdaQueryWrapper<>();
+        intentionCountQW.eq(DcCustomerIntention::getDelFlag, 0);
+
+        LambdaQueryWrapper<DcCustomerRiskRefund> riskCountQW = new LambdaQueryWrapper<>();
+        riskCountQW.eq(DcCustomerRiskRefund::getDelFlag, 0)
+            .eq(DcCustomerRiskRefund::getCustomerType, 1);
+
+        LambdaQueryWrapper<DcCustomerRiskRefund> refundCountQW = new LambdaQueryWrapper<>();
+        refundCountQW.eq(DcCustomerRiskRefund::getDelFlag, 0)
+            .eq(DcCustomerRiskRefund::getCustomerType, 2);
+        // 执行查询
+        Long intentionCount = intentionMapper.selectCount(intentionCountQW);
+        Long riskCount = riskRefundMapper.selectCount(riskCountQW);
+        Long refundCount = riskRefundMapper.selectCount(refundCountQW);
+
+        // 封装返回结果
+
+        JSONObject json = new JSONObject();
+        json.put("intention_count", intentionCount);
+        json.put("risk_count", riskCount);
+        json.put("refund_count", refundCount);
+        return json;
+    }
+
 }

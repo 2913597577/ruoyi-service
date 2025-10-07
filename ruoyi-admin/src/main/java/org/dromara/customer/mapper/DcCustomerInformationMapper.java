@@ -1,8 +1,11 @@
 package org.dromara.customer.mapper;
 
+import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.customer.domain.DcCustomerInformation;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 客户总表Mapper接口
@@ -12,4 +15,5 @@ import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
  */
 public interface DcCustomerInformationMapper extends BaseMapperPlus<DcCustomerInformation, DcCustomerInformationVo> {
 
+    List<Map<String, Object>> selectCustomerCountByType();
 }
