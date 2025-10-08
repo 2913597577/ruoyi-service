@@ -39,6 +39,18 @@ public class commonController {
     }
 
     /**
+     * 根据登录用户获取意向客户信息
+     */
+    @GetMapping("/getIntentionCustomerByUserId")
+    public R<JSONArray> getIntentionCustomerByUserId() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getIntentionCustomerByUserId(loginUser.getUserId()));
+    }
+
+    /**
      * 获取客户分类信息
      */
     @GetMapping("/getCustomerType")

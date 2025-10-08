@@ -10,6 +10,7 @@ import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.customer.domain.DcCustomerIntention;
 import org.dromara.customer.domain.DcCustomerRiskRefund;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
+import org.dromara.customer.domain.vo.DcCustomerIntentionVo;
 import org.dromara.customer.mapper.DcCustomerInformationMapper;
 import org.dromara.customer.mapper.DcCustomerIntentionMapper;
 import org.dromara.customer.mapper.DcCustomerRiskRefundMapper;
@@ -53,6 +54,31 @@ public class commonService {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("transfer_id", customerInformationVo.getTransferId());
             jsonObject.put("customer_name", customerInformationVo.getCustomerName() + "(" + companyName + ")");
+            json.add(jsonObject);
+        }
+        return json;
+    }
+
+    public JSONArray getIntentionCustomerByUserId(long userId) {
+        boolean superAdmin = LoginHelper.isSuperAdmin(userId);
+        List<DcCustomerIntentionVo> list = new ArrayList<>();
+        if (superAdmin) {
+            list = intentionMapper.selectVoList();
+        }
+        if (!superAdmin) {
+            Map<String, Object> queryMap = new HashMap<>();
+            queryMap.put("legal_support_id", userId);
+            list = intentionMapper.selectVoByMap(queryMap);
+        }
+
+        JSONArray json = new JSONArray();
+        JSONObject data = new JSONObject();
+        data.put("customer_name", "请选择意向客户");
+        json.add(data);
+        for (DcCustomerIntentionVo customerIntentionVo : list) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("customer_id", customerIntentionVo.getIntendedCustomerId());
+            jsonObject.put("customer_name", customerIntentionVo.getIntendedCustomer());
             json.add(jsonObject);
         }
         return json;

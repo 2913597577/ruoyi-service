@@ -46,10 +46,20 @@ public class DcCustomerIntentionVo implements Serializable {
     private String legalSupport;
 
     /**
+     * 法务支持id
+     */
+    private String legalSupportId;
+
+    /**
      * 意向客户
      */
     @ExcelProperty(value = "意向客户")
     private String intendedCustomer;
+
+    /**
+     * 意向客户id
+     */
+    private String intendedCustomerId;
 
     /**
      * 类型
