@@ -1,19 +1,16 @@
 package org.dromara.staff.domain.vo;
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.dromara.staff.domain.DcStaffInfo;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
-import org.dromara.common.excel.convert.ExcelDictConvert;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.dromara.common.excel.annotation.ExcelDictFormat;
+import org.dromara.common.excel.convert.ExcelDictConvert;
+import org.dromara.staff.domain.DcStaffInfo;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-
 
 
 /**
@@ -288,7 +285,7 @@ public class DcStaffInfoVo implements Serializable {
      * 员工个人简介
      */
     @ExcelProperty(value = "员工个人简介")
-    private String desc;
+    private String description;
 
     /**
      * 员工入职日期

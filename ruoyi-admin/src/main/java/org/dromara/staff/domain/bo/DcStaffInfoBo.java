@@ -1,15 +1,15 @@
 package org.dromara.staff.domain.bo;
 
-import org.dromara.staff.domain.DcStaffInfo;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.common.core.validate.AddGroup;
-import org.dromara.common.core.validate.EditGroup;
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import jakarta.validation.constraints.*;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.staff.domain.DcStaffInfo;
+
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 员工档案业务对象 dc_staff_info
@@ -25,13 +25,13 @@ public class DcStaffInfoBo extends BaseEntity {
     /**
      * 自增主键
      */
-    @NotNull(message = "自增主键不能为空", groups = { EditGroup.class })
+    @NotNull(message = "自增主键不能为空", groups = {EditGroup.class})
     private Long id;
 
     /**
      * 用户id
      */
-    @NotNull(message = "用户id不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "用户id不能为空", groups = {AddGroup.class, EditGroup.class})
     private Long userId;
 
     /**
@@ -237,7 +237,7 @@ public class DcStaffInfoBo extends BaseEntity {
     /**
      * 员工个人简介
      */
-    private String desc;
+    private String description;
 
     /**
      * 员工入职日期

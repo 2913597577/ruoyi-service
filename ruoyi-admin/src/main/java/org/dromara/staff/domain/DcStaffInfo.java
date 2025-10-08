@@ -1,13 +1,14 @@
 package org.dromara.staff.domain;
 
-import org.dromara.common.tenant.core.TenantEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.util.Date;
 
 /**
  * 员工档案对象 dc_staff_info
@@ -237,7 +238,7 @@ public class DcStaffInfo extends TenantEntity {
     /**
      * 员工个人简介
      */
-    private String desc;
+    private String description;
 
     /**
      * 员工入职日期
