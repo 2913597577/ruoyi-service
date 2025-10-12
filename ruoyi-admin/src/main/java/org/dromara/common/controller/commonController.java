@@ -80,15 +80,15 @@ public class commonController {
      */
 
     @GetMapping("/getServiceData")
-    public R<JSONObject> getTrackingCount(@RequestParam(required = false) Integer year,
-                                          @RequestParam(required = false) Integer month,
-                                          @RequestParam(required = false) Integer day,
-                                          @RequestParam(required = false) String lawyerId) {
+    public R<JSONArray> getTrackingCount(@RequestParam(required = false) Integer year,
+                                         @RequestParam(required = false) Integer month,
+                                         @RequestParam(required = false) Integer day,
+                                         @RequestParam(required = false) String lawyerId) {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return R.warn("用户未登录");
         }
-        return R.ok(commonService.getServiceData(year, month, day, loginUser.getUserId()));
+        return R.ok(commonService.getServiceData(year, month, day, loginUser.getUserId(), lawyerId == null ? null : Long.valueOf(lawyerId)));
     }
 
     /**
@@ -104,7 +104,7 @@ public class commonController {
         if (loginUser == null) {
             return R.warn("用户未登录");
         }
-        return R.ok(commonService.getRiskRefundData(year, month, day, loginUser.getUserId()));
+        return R.ok(commonService.getRiskRefundData(year, month, day, loginUser.getUserId(), lawyerId == null ? null : Long.valueOf(lawyerId)));
     }
 
 

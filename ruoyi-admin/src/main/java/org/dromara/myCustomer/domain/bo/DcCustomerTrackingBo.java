@@ -79,5 +79,10 @@ public class DcCustomerTrackingBo extends BaseEntity {
      */
     private String remark3;
 
+    /**
+     * 是否是回访记录
+     */
+    private Integer isReturn;
+
 
 }

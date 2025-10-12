@@ -123,29 +123,50 @@ public class commonService {
         return json;
     }
 
-    public JSONObject getServiceData(Integer year, Integer month, Integer day, Long userId) {
+    public JSONArray getServiceData(Integer year, Integer month, Integer day, Long userId, Long lawyerId) {
         if (year == null) {
             year = DateUtil.thisYear();
         }
         boolean superAdmin = LoginHelper.isSuperAdmin(userId);
-        List<Map<String, Object>> trackingList = trackingMapper.selectByYearMonth(year, month, day, null, superAdmin ? null : userId);
-        List<Map<String, Object>> customerList = informationMapper.selectByYearMonth(year, month, day, superAdmin ? null : userId);
-        List<Map<String, Object>> insuranceList = insuranceCaseMapper.selectByYearMonth(year, month, day, superAdmin ? null : userId);
+        List<Map<String, Object>> trackingList = trackingMapper.selectByYearMonth(year, month, day, null, null, superAdmin ? lawyerId : userId, null, false);
+        List<Map<String, Object>> customerList = informationMapper.selectByYearMonth(year, month, day, superAdmin ? lawyerId : userId);
+        List<Map<String, Object>> insuranceList = insuranceCaseMapper.selectByYearMonth(year, month, day, superAdmin ? lawyerId : userId);
+        List<Map<String, Object>> returnTrackingList = trackingMapper.selectByYearMonth(year, month, day, null, null, superAdmin ? lawyerId : userId, 1, false);
+        List<Map<String, Object>> vistTrackingList = trackingMapper.selectByYearMonth(year, month, day, 1, null, superAdmin ? lawyerId : userId, null, false);
+        List<Map<String, Object>> caseTrackingList = trackingMapper.selectByYearMonth(year, month, day, null, null, superAdmin ? lawyerId : userId, null, true);
+        List<Map<String, Object>> didTrackingList = trackingMapper.selectByYearMonth(year, month, day, null, 2, superAdmin ? lawyerId : userId, null, true);
+        List<Map<String, Object>> doingTrackingList = trackingMapper.selectByYearMonth(year, month, day, null, 1, superAdmin ? lawyerId : userId, null, true);
+        List<Map<String, Object>> undoTrackingList = trackingMapper.selectByYearMonth(year, month, day, null, 0, superAdmin ? lawyerId : userId, null, true);
+        List<Map<String, Object>> referralList = intentionMapper.selectByYearMonth(year, month, day, 3, superAdmin ? lawyerId : userId);
+        Map<String, Object> riskDataList = riskRefundMapper.selectRefundCount(year, month, day, 1, superAdmin ? lawyerId : userId);
+        Map<String, Object> refundDataList = riskRefundMapper.selectRefundCount(year, month, day, 2, superAdmin ? lawyerId : userId);
 
         JSONObject json = new JSONObject();
         json.put("trackingCount", trackingList == null ? 0 : trackingList.size());
         json.put("customerCount", customerList == null ? 0 : customerList.size());
         json.put("insuranceCount", insuranceList == null ? 0 : insuranceList.size());
-        return json;
+        json.put("riskDataCount", riskDataList == null ? 0 : riskDataList.get("count"));
+        json.put("refundDataCount", refundDataList == null ? 0 : refundDataList.get("count"));
+        json.put("refundAmountSum", refundDataList == null ? 0 : refundDataList.get("sum"));
+        json.put("returnTrackingCount", returnTrackingList == null ? 0 : returnTrackingList.size());
+        json.put("visitTrackingCount", vistTrackingList == null ? 0 : vistTrackingList.size());
+        json.put("caseTrackingCount", caseTrackingList == null ? 0 : caseTrackingList.size());
+        json.put("didTrackingCount", didTrackingList == null ? 0 : didTrackingList.size());
+        json.put("doingTrackingCount", doingTrackingList == null ? 0 : doingTrackingList.size());
+        json.put("undoTrackingCount", undoTrackingList == null ? 0 : undoTrackingList.size());
+        json.put("referralCount", referralList == null ? 0 : referralList.size());
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(json);
+        return jsonArray;
     }
 
-    public JSONObject getRiskRefundData(Integer year, Integer month, Integer day, Long userId) {
+    public JSONObject getRiskRefundData(Integer year, Integer month, Integer day, Long userId, Long lawyerId) {
         if (year == null) {
             year = DateUtil.thisYear();
         }
         boolean superAdmin = LoginHelper.isSuperAdmin(userId);
-        Map<String, Object> riskDataList = riskRefundMapper.selectRefundCount(year, month, day, 1, superAdmin ? null : userId);
-        Map<String, Object> refundDataList = riskRefundMapper.selectRefundCount(year, month, day, 2, superAdmin ? null : userId);
+        Map<String, Object> riskDataList = riskRefundMapper.selectRefundCount(year, month, day, 1, superAdmin ? lawyerId : userId);
+        Map<String, Object> refundDataList = riskRefundMapper.selectRefundCount(year, month, day, 2, superAdmin ? lawyerId : userId);
         JSONObject json = new JSONObject();
         json.put("riskDataCount", riskDataList == null ? 0 : riskDataList.get("count"));
         json.put("refundDataCount", refundDataList == null ? 0 : refundDataList.get("count"));

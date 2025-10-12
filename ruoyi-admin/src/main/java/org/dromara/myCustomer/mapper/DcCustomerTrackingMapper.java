@@ -15,5 +15,6 @@ import java.util.Map;
  */
 public interface DcCustomerTrackingMapper extends BaseMapperPlus<DcCustomerTracking, DcCustomerTrackingVo> {
 
-    List<Map<String, Object>> selectByYearMonth(Integer year, Integer month, Integer day, Integer trackingType, Long userId);
+    List<Map<String, Object>> selectByYearMonth(Integer year, Integer month, Integer day, Integer trackingType,
+                                                Integer customerStatus, Long userId, Integer isReturn, boolean isGroup);
 }

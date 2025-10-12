@@ -23,10 +23,13 @@
         <if test="trackingType != null">
             AND tracking_type = #{trackingType}
         </if>
+        <if test="customerStatus != null">
+            AND cumtomer_status = #{customerStatus}
+        </if>
         <if test="isReturn != null">
             AND is_return = #{isReturn}
         </if>
-        <if test="isReturn != null">
+        <if test="isGroup">
             GROUP BY customer_id
         </if>
     </select>

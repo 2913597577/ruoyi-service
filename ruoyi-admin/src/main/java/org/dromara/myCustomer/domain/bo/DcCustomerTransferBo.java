@@ -212,9 +212,5 @@ public class DcCustomerTransferBo extends BaseEntity {
      * 备注
      */
     private String remark;
-    /**
-     * 是否是回访记录
-     */
-    private Integer isReturn;
 
 }

@@ -96,5 +96,11 @@ public class DcCustomerTrackingVo implements Serializable {
     @ExcelProperty(value = "备注3")
     private String remark3;
 
+    /**
+     * 是否是回访记录
+     */
+    @ExcelProperty(value = "是否是回访记录")
+    private Integer isReturn;
+
 
 }
