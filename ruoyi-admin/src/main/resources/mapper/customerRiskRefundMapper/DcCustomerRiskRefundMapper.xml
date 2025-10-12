@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.customer.mapper.DcCustomerRiskRefundMapper">
+
+    <select id="selectByYearMonth" resultType="map">
+        SELECT *
+        FROM dc_customer_risk_refund
+        WHERE del_flag = 0
+        <if test="userId != null">
+            AND lawyer_id = #{userId}
+        </if>
+        <if test="year != null">
+            AND YEAR(create_time) = #{year}
+        </if>
+        <if test="month != null">
+            AND MONTH(create_time) = #{month}
+        </if>
+        <if test="day != null">
+            AND DAY(create_time) = #{day}
+        </if>
+        <if test="customerType != null">
+            AND customer_type = #{customerType}
+        </if>
+    </select>
+
+    <select id="selectRefundCount" resultType="map">
+        SELECT count(1) as count ,sum(refund_amount) as sum
+        FROM dc_customer_risk_refund
+        WHERE del_flag = 0
+        <if test="userId != null">
+            AND lawyer_id = #{userId}
+        </if>
+        <if test="year != null">
+            AND YEAR(create_time) = #{year}
+        </if>
+        <if test="month != null">
+            AND MONTH(create_time) = #{month}
+        </if>
+        <if test="day != null">
+            AND DAY(create_time) = #{day}
+        </if>
+        <if test="customerType != null">
+            AND customer_type = #{customerType}
+        </if>
+    </select>
+
+</mapper>

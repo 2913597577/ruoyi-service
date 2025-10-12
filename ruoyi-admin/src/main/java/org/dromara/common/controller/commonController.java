@@ -12,6 +12,7 @@ import org.dromara.common.service.commonService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Validated
@@ -71,7 +72,40 @@ public class commonController {
         if (loginUser == null) {
             return R.warn("用户未登录");
         }
-        return R.ok(commonService.getCustomerCategory());
+        return R.ok(commonService.getCustomerCategory(loginUser.getUserId()));
     }
+
+    /**
+     * 获取服务数据
+     */
+
+    @GetMapping("/getServiceData")
+    public R<JSONObject> getTrackingCount(@RequestParam(required = false) Integer year,
+                                          @RequestParam(required = false) Integer month,
+                                          @RequestParam(required = false) Integer day,
+                                          @RequestParam(required = false) String lawyerId) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getServiceData(year, month, day, loginUser.getUserId()));
+    }
+
+    /**
+     * 获取服务数据
+     */
+
+    @GetMapping("/getRiskRefundData")
+    public R<JSONObject> getRiskRefundData(@RequestParam(required = false) Integer year,
+                                           @RequestParam(required = false) Integer month,
+                                           @RequestParam(required = false) Integer day,
+                                           @RequestParam(required = false) String lawyerId) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getRiskRefundData(year, month, day, loginUser.getUserId()));
+    }
+
 
 }

@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dromara.customer.mapper.DcCustomerIntentionMapper">
 
+    <select id="selectByYearMonth" resultType="map">
+        SELECT *
+        FROM dc_customer_intention
+        WHERE del_flag = 0
+        <if test="userId != null">
+            AND legal_support_id = #{userId}
+        </if>
+        <if test="year != null">
+            AND YEAR(create_time) = #{year}
+        </if>
+        <if test="month != null">
+            AND MONTH(create_time) = #{month}
+        </if>
+        <if test="day != null">
+            AND DAY(create_time) = #{day}
+        </if>
+        <if test="type != null">
+            AND `type` = #{type}
+        </if>
+    </select>
 </mapper>

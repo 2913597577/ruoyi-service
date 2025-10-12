@@ -16,4 +16,6 @@ import java.util.Map;
 public interface DcCustomerInformationMapper extends BaseMapperPlus<DcCustomerInformation, DcCustomerInformationVo> {
 
     List<Map<String, Object>> selectCustomerCountByType();
+
+    List<Map<String, Object>> selectByYearMonth(Integer year, Integer month, Integer day, Long userId);
 }
