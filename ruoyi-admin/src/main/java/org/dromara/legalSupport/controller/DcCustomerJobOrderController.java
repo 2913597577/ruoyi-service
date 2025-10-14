@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -124,5 +125,32 @@ public class DcCustomerJobOrderController extends BaseController {
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {
         return toAjax(dcCustomerJobOrderService.deleteWithValidByIds(List.of(ids), true));
+    }
+
+    /**
+     * 接工单
+     */
+    @GetMapping("/accept")
+    public R<Void> accept(@RequestParam String id) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("请登录");
+        }
+        if (loginUser.getDeptId() != 1945465788862627841L) {
+            return R.warn("非法务中心员工不可接工单");
+        }
+        DcCustomerJobOrderVo vo = dcCustomerJobOrderService.queryById(Long.valueOf(id));
+        if (vo == null) {
+            return R.warn("工单不存在");
+        }
+        if (vo.getLegalSupportId() != null) {
+            return R.warn("工单已处理");
+        }
+        vo.setLegalSupportId(loginUser.getUserId());
+        vo.setLegalSupport(loginUser.getUsername());
+        vo.setProcessingStatus(1);
+        DcCustomerJobOrderBo update = new DcCustomerJobOrderBo();
+        MapstructUtils.convert(vo, update);
+        return toAjax(dcCustomerJobOrderService.updateByBo(update));
     }
 }

@@ -1,19 +1,18 @@
 package org.dromara.legalSupport.domain.vo;
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.dromara.legalSupport.domain.DcCustomerJobOrder;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
+import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
+import lombok.Data;
 import org.dromara.common.excel.annotation.ExcelDictFormat;
 import org.dromara.common.excel.convert.ExcelDictConvert;
-import io.github.linpeilie.annotations.AutoMapper;
-import lombok.Data;
+import org.dromara.legalSupport.domain.DcCustomerJobOrder;
+import org.dromara.legalSupport.domain.bo.DcCustomerJobOrderBo;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-
 
 
 /**
@@ -24,7 +23,10 @@ import java.util.Date;
  */
 @Data
 @ExcelIgnoreUnannotated
-@AutoMapper(target = DcCustomerJobOrder.class)
+@AutoMappers({
+    @AutoMapper(target = DcCustomerJobOrder.class),
+    @AutoMapper(target = DcCustomerJobOrderBo.class)
+})
 public class DcCustomerJobOrderVo implements Serializable {
 
     @Serial

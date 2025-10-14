@@ -1,15 +1,16 @@
 package org.dromara.legalSupport.domain.bo;
 
-import org.dromara.legalSupport.domain.DcCustomerJobOrder;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.common.core.validate.AddGroup;
-import org.dromara.common.core.validate.EditGroup;
 import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import jakarta.validation.constraints.*;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.legalSupport.domain.DcCustomerJobOrder;
+
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 工单管理业务对象 dc_customer_job_order
@@ -19,13 +20,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = DcCustomerJobOrder.class, reverseConvertGenerate = false)
+@AutoMappers({
+    @AutoMapper(target = DcCustomerJobOrder.class, reverseConvertGenerate = false),
+    @AutoMapper(target = DcCustomerJobOrder.class)
+})
 public class DcCustomerJobOrderBo extends BaseEntity {
 
     /**
      * 主键ID
      */
-    @NotNull(message = "主键ID不能为空", groups = { EditGroup.class })
+    @NotNull(message = "主键ID不能为空", groups = {EditGroup.class})
     private Long id;
 
     /**
@@ -66,7 +70,7 @@ public class DcCustomerJobOrderBo extends BaseEntity {
     /**
      * 交付时间
      */
-    @NotNull(message = "交付时间不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "交付时间不能为空", groups = {AddGroup.class, EditGroup.class})
     private Date deliveryTime;
 
     /**
