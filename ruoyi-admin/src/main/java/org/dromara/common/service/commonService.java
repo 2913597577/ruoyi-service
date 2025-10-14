@@ -59,6 +59,7 @@ public class commonService {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("transfer_id", customerInformationVo.getTransferId());
             jsonObject.put("customer_name", customerInformationVo.getCustomerName() + "(" + companyName + ")");
+            jsonObject.put("customer_realName", customerInformationVo.getCustomerName());
             json.add(jsonObject);
         }
         return json;

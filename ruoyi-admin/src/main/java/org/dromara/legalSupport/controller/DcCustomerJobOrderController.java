@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -14,6 +15,7 @@ import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.customer.service.IDcCustomerInformationService;
 import org.dromara.legalSupport.domain.bo.DcCustomerJobOrderBo;
@@ -87,11 +89,16 @@ public class DcCustomerJobOrderController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody DcCustomerJobOrderBo bo) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("请登录");
+        }
         DcCustomerTrackingVo vo = dcCustomerTrackingService.queryById(bo.getTrackingId());
         if (vo == null) {
             return R.warn("跟踪记录不存在");
         }
-        // bo.setLegalSupportId();
+        bo.setLegalSupportId(loginUser.getUserId());
+        bo.setLegalSupport(loginUser.getUsername());
         return toAjax(dcCustomerJobOrderService.insertByBo(bo));
     }
 
