@@ -166,12 +166,12 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         if (flag) {
             DcCustomerInformationBo dcCustomerInformation = new DcCustomerInformationBo();
             dcCustomerInformation.setSignDate(dcCustomerTransfer.getCreateTime());
-            dcCustomerInformation.setContractNo("000000");
-            dcCustomerInformation.setCustomerName(dcCustomerTransfer.getContactPerson());
-            dcCustomerInformation.setPrincipal(userId.toString());
-            dcCustomerInformation.setPrincipalPhone(null);
-            dcCustomerInformation.setContractType(1);
-            dcCustomerInformation.setPackageType(1);
+            dcCustomerInformation.setContractNo(dcCustomerTransfer.getId().toString());
+            dcCustomerInformation.setCustomerName(dcCustomerTransfer.getCompanyName());
+            dcCustomerInformation.setPrincipal(dcCustomerTransfer.getContactPerson());
+            dcCustomerInformation.setPrincipalPhone(dcCustomerTransfer.getContactInfo());
+            dcCustomerInformation.setContractType(dcCustomerTransfer.getContractType());
+            dcCustomerInformation.setPackageType(dcCustomerTransfer.getServiceType());
             dcCustomerInformation.setActualReceipt(dcCustomerTransfer.getActualPayment());
             dcCustomerInformation.setBalance(dcCustomerTransfer.getBalanceStatus());
             dcCustomerInformation.setExpireDate(dcCustomerTransfer.getServiceEnd());
