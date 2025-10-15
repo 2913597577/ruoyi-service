@@ -18,13 +18,11 @@ import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
-import org.dromara.customer.service.IDcCustomerInformationService;
 import org.dromara.legalSupport.domain.bo.DcCustomerJobOrderBo;
 import org.dromara.legalSupport.domain.vo.DcCustomerJobOrderVo;
 import org.dromara.legalSupport.service.IDcCustomerJobOrderService;
 import org.dromara.myCustomer.domain.vo.DcCustomerTrackingVo;
 import org.dromara.myCustomer.service.IDcCustomerTrackingService;
-import org.dromara.myCustomer.service.IDcCustomerTransferService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,9 +44,6 @@ public class DcCustomerJobOrderController extends BaseController {
 
     private final IDcCustomerTrackingService dcCustomerTrackingService;
 
-    private final IDcCustomerInformationService customerInformationService;
-
-    private final IDcCustomerTransferService dcCustomerTransferService;
 
     /**
      * 查询工单管理列表
@@ -143,11 +138,11 @@ public class DcCustomerJobOrderController extends BaseController {
         if (vo == null) {
             return R.warn("工单不存在");
         }
-        if (vo.getLegalSupportId() != null) {
+        if (vo.getContractHandler() != null) {
             return R.warn("工单已处理");
         }
-        vo.setLegalSupportId(loginUser.getUserId());
-        vo.setLegalSupport(loginUser.getUsername());
+        vo.setContractHandler(loginUser.getUserId());
+        vo.setContractHandlerName(loginUser.getUsername());
         vo.setProcessingStatus(1);
         DcCustomerJobOrderBo update = new DcCustomerJobOrderBo();
         MapstructUtils.convert(vo, update);
