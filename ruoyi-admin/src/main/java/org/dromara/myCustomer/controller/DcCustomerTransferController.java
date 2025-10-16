@@ -98,6 +98,7 @@ public class DcCustomerTransferController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody DcCustomerTransferBo bo) {
+        bo.setFinanceConfirmed(0);
         return toAjax(dcCustomerTransferService.insertByBo(bo));
     }
 
@@ -110,7 +111,7 @@ public class DcCustomerTransferController extends BaseController {
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody DcCustomerTransferBo bo) {
         DcCustomerTransferVo dcCustomerTransferVo = dcCustomerTransferService.queryById(bo.getId());
-        if (dcCustomerTransferVo.getFinanceConfirmed() == 1) {
+        if (dcCustomerTransferVo.getFinanceConfirmed() != null && dcCustomerTransferVo.getFinanceConfirmed() == 1) {
             return R.warn("财务审核通过，不允许修改");
         }
         return toAjax(dcCustomerTransferService.updateByBo(bo));
