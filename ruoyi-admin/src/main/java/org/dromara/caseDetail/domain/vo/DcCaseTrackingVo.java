@@ -1,17 +1,16 @@
 package org.dromara.caseDetail.domain.vo;
 
-import org.dromara.caseDetail.domain.DcCaseTracking;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
-import org.dromara.common.excel.convert.ExcelDictConvert;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.dromara.caseDetail.domain.DcCaseTracking;
+import org.dromara.common.excel.annotation.ExcelDictFormat;
+import org.dromara.common.excel.convert.ExcelDictConvert;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-
 
 
 /**
@@ -65,5 +64,15 @@ public class DcCaseTrackingVo implements Serializable {
     @ExcelProperty(value = "案件进展")
     private String caseProgress;
 
+    /**
+     * 跟进时间
+     */
+    @ExcelProperty(value = "跟进时间")
+    private Date trackingTime;
+    /**
+     * 下次跟进时间
+     */
+    @ExcelProperty(value = "下次跟进时间")
+    private Date nextTrackingTime;
 
 }

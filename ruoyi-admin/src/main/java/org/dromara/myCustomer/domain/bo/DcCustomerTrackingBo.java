@@ -84,5 +84,10 @@ public class DcCustomerTrackingBo extends BaseEntity {
      */
     private Integer isReturn;
 
+    /**
+     * 内勤计数
+     */
+    @NotNull(message = "内勤项数计数不能为空", groups = {AddGroup.class, EditGroup.class})
+    private Integer interCount;
 
 }

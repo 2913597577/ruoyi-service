@@ -1,11 +1,14 @@
 package org.dromara.caseDetail.domain;
 
-import org.dromara.common.tenant.core.TenantEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.util.Date;
 
 /**
  * 案件进展表对象 dc_case_tracking
@@ -72,6 +75,15 @@ public class DcCaseTracking extends TenantEntity {
      */
     @TableLogic
     private String delFlag;
+
+    /**
+     * 跟进时间
+     */
+    private Date trackingTime;
+    /**
+     * 下次跟进时间
+     */
+    private Date nextTrackingTime;
 
 
 }

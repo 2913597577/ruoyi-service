@@ -92,4 +92,7 @@ public class DcCustomerTracking extends TenantEntity {
     private Integer isReturn;
 
 
+    private Integer interCount;
+
+
 }
