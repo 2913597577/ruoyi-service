@@ -75,4 +75,16 @@ public class DcCaseTrackingVo implements Serializable {
     @ExcelProperty(value = "下次跟进时间")
     private Date nextTrackingTime;
 
+    /**
+     * 法务支持id
+     */
+    private Long legalSupportId;
+
+    /**
+     * 法务支持姓名
+     */
+    @ExcelProperty(value = "法务支持姓名")
+    private String legalSupportName;
+
+
 }

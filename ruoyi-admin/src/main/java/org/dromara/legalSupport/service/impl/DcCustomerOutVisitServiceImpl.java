@@ -73,7 +73,7 @@ public class DcCustomerOutVisitServiceImpl implements IDcCustomerOutVisitService
     private LambdaQueryWrapper<DcCustomerOutVisit> buildQueryWrapper(DcCustomerOutVisitBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerOutVisit> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCustomerOutVisit::getId);
+        lqw.orderByDesc(DcCustomerOutVisit::getCreateTime);
         lqw.like(StringUtils.isNotBlank(bo.getCustomerName()), DcCustomerOutVisit::getCustomerName, bo.getCustomerName());
         lqw.like(StringUtils.isNotBlank(bo.getLegalSupportName()), DcCustomerOutVisit::getLegalSupportName, bo.getLegalSupportName());
         lqw.eq(bo.getVisitTime() != null, DcCustomerOutVisit::getVisitTime, bo.getVisitTime());

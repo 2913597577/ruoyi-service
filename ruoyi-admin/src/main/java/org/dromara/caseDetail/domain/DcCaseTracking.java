@@ -85,5 +85,15 @@ public class DcCaseTracking extends TenantEntity {
      */
     private Date nextTrackingTime;
 
+    /**
+     * 法务支持id
+     */
+    private Long legalSupportId;
+
+    /**
+     * 法务支持姓名
+     */
+    private String legalSupportName;
+
 
 }

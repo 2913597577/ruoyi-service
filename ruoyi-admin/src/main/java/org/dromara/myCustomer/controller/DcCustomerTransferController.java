@@ -114,6 +114,7 @@ public class DcCustomerTransferController extends BaseController {
         if (dcCustomerTransferVo.getFinanceConfirmed() != null && dcCustomerTransferVo.getFinanceConfirmed() == 1) {
             return R.warn("财务审核通过，不允许修改");
         }
+        bo.setFinanceConfirmed(0);
         return toAjax(dcCustomerTransferService.updateByBo(bo));
     }
 

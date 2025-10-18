@@ -73,7 +73,7 @@ public class DcCustomerJobOrderServiceImpl implements IDcCustomerJobOrderService
     private LambdaQueryWrapper<DcCustomerJobOrder> buildQueryWrapper(DcCustomerJobOrderBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerJobOrder> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCustomerJobOrder::getId);
+        lqw.orderByDesc(DcCustomerJobOrder::getCreateTime);
         lqw.eq(StringUtils.isNotBlank(bo.getLegalSupport()), DcCustomerJobOrder::getLegalSupport, bo.getLegalSupport());
         lqw.eq(bo.getLegalSupportId() != null, DcCustomerJobOrder::getLegalSupportId, bo.getLegalSupportId());
         lqw.eq(bo.getPreContractAddress() != null, DcCustomerJobOrder::getPreContractAddress, bo.getPreContractAddress());
@@ -86,6 +86,8 @@ public class DcCustomerJobOrderServiceImpl implements IDcCustomerJobOrderService
         lqw.eq(bo.getContractHandler() != null, DcCustomerJobOrder::getContractHandler, bo.getContractHandler());
         lqw.like(StringUtils.isNotBlank(bo.getContractHandlerName()), DcCustomerJobOrder::getContractHandlerName, bo.getContractHandlerName());
         lqw.eq(bo.getProcessingStatus() != null, DcCustomerJobOrder::getProcessingStatus, bo.getProcessingStatus());
+        lqw.eq(bo.getCustomerId() != null, DcCustomerJobOrder::getCustomerId, bo.getCustomerId());
+        lqw.like(bo.getCustomerName() != null, DcCustomerJobOrder::getCustomerName, bo.getCustomerName());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCustomerJobOrder::getRemark1, bo.getRemark1());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcCustomerJobOrder::getRemark2, bo.getRemark2());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcCustomerJobOrder::getRemark3, bo.getRemark3());

@@ -1,13 +1,21 @@
 package org.dromara.common.service;
 
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.caseDetail.domain.bo.DcCaseTrackingBo;
+import org.dromara.caseDetail.domain.bo.DcInsuranceCaseBo;
+import org.dromara.caseDetail.domain.vo.DcCaseTrackingVo;
+import org.dromara.caseDetail.domain.vo.DcInsuranceCaseVo;
 import org.dromara.caseDetail.mapper.DcInsuranceCaseMapper;
+import org.dromara.caseDetail.service.IDcCaseTrackingService;
+import org.dromara.caseDetail.service.IDcInsuranceCaseService;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.customer.domain.DcCustomerIntention;
 import org.dromara.customer.domain.DcCustomerRiskRefund;
@@ -16,9 +24,19 @@ import org.dromara.customer.domain.vo.DcCustomerIntentionVo;
 import org.dromara.customer.mapper.DcCustomerInformationMapper;
 import org.dromara.customer.mapper.DcCustomerIntentionMapper;
 import org.dromara.customer.mapper.DcCustomerRiskRefundMapper;
+import org.dromara.legalSupport.domain.bo.DcCustomerJobOrderBo;
+import org.dromara.legalSupport.domain.bo.DcCustomerOutVisitBo;
+import org.dromara.legalSupport.domain.vo.DcCustomerJobOrderVo;
+import org.dromara.legalSupport.domain.vo.DcCustomerOutVisitVo;
+import org.dromara.legalSupport.service.IDcCustomerJobOrderService;
+import org.dromara.legalSupport.service.IDcCustomerOutVisitService;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
+import org.dromara.myCustomer.domain.bo.DcCustomerTrackingBo;
+import org.dromara.myCustomer.domain.vo.DcCustomerTrackingVo;
+import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.mapper.DcCustomerTrackingMapper;
 import org.dromara.myCustomer.mapper.DcCustomerTransferMapper;
+import org.dromara.myCustomer.service.IDcCustomerTrackingService;
 import org.dromara.system.service.ISysRoleService;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +57,12 @@ public class commonService {
     private final DcCustomerTrackingMapper trackingMapper;
     private final DcInsuranceCaseMapper insuranceCaseMapper;
     private final ISysRoleService roleService;
+
+    private final IDcCustomerTrackingService dcCustomerTrackingService;
+    private final IDcCustomerJobOrderService dcCustomerJobOrderService;
+    private final IDcCustomerOutVisitService dcCustomerOutVisitService;
+    private final IDcCaseTrackingService dcCaseTrackingService;
+    private final IDcInsuranceCaseService dcInsuranceCaseService;
 
     public JSONArray getCustomerByUserId(long userId) {
         boolean superAdmin = LoginHelper.isSuperAdmin(userId);
@@ -173,6 +197,137 @@ public class commonService {
         json.put("refundDataCount", refundDataList == null ? 0 : refundDataList.get("count"));
         json.put("refundAmountSum", refundDataList == null ? 0 : refundDataList.get("sum"));
         return json;
+    }
+
+    public JSONObject getAllTrackingRecords(String customerId, String legalSupportId, Integer trackingType, String trackingTime,
+                                            String nextTrackingTime, int pageNum, int pageSize) {
+        JSONArray json = new JSONArray();
+        DcCustomerTrackingBo trackingBo = new DcCustomerTrackingBo();
+        DcCustomerOutVisitBo outVisitBo = new DcCustomerOutVisitBo();
+        DcInsuranceCaseBo insuranceCaseBo = new DcInsuranceCaseBo();
+        DcCustomerJobOrderBo jobOrderBo = new DcCustomerJobOrderBo();
+        DcCaseTrackingBo caseTrackingBo = new DcCaseTrackingBo();
+        if (StringUtils.isNotBlank(customerId)) {
+            trackingBo.setCustomerId(Long.valueOf(customerId));
+            outVisitBo.setCustomerId(Long.valueOf(customerId));
+            insuranceCaseBo.setCustomerId(Long.valueOf(customerId));
+            jobOrderBo.setCustomerId(Long.valueOf(customerId));
+            caseTrackingBo.setCustomerId(Long.valueOf(customerId));
+        }
+        if (StringUtils.isNotBlank(legalSupportId)) {
+            trackingBo.setLegalSupportId(Long.valueOf(legalSupportId));
+            outVisitBo.setLegalSupportId(Long.valueOf(legalSupportId));
+            insuranceCaseBo.setLegalSupportId(Long.valueOf(legalSupportId));
+            jobOrderBo.setLegalSupportId(Long.valueOf(legalSupportId));
+            caseTrackingBo.setLegalSupportId(Long.valueOf(legalSupportId));
+        }
+        if (StringUtils.isNotBlank(trackingTime)) {
+            trackingBo.setTrackingTime(DateUtil.parse(trackingTime));
+            outVisitBo.setVisitTime(DateUtil.parse(trackingTime));
+            insuranceCaseBo.setCreateTime(DateUtil.parse(trackingTime));
+            jobOrderBo.setCreateTime(DateUtil.parse(trackingTime));
+            caseTrackingBo.setTrackingTime(DateUtil.parse(trackingTime));
+        }
+        if (StringUtils.isNotBlank(nextTrackingTime)) {
+            trackingBo.setNextTime(DateUtil.parse(nextTrackingTime));
+            outVisitBo.setNextVisitTime(DateUtil.parse(nextTrackingTime));
+            insuranceCaseBo.setOrderDate(DateUtil.parse(nextTrackingTime));//订单时间
+            jobOrderBo.setDeliveryTime(DateUtil.parse(nextTrackingTime)); //交付时间
+            caseTrackingBo.setNextTrackingTime(DateUtil.parse(nextTrackingTime));
+        }
+        if (trackingType == null || trackingType == 1) {
+            // 回访
+            List<DcCustomerTrackingVo> dcCustomerTrackingVos = dcCustomerTrackingService.queryList(trackingBo);
+            for (DcCustomerTrackingVo trackingVo : dcCustomerTrackingVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", trackingVo.getId());
+                jsonObject.put("customerId", trackingVo.getCustomerId());
+                DcCustomerTransferVo transferVo = transferMapper.selectVoById(trackingVo.getCustomerId());
+                jsonObject.put("customerName", transferVo == null ? "" : transferVo.getCompanyName());
+                jsonObject.put("legalSupportId", trackingVo.getLegalSupportId());
+                jsonObject.put("legalSupportName", trackingVo.getLegalSupportName());
+                jsonObject.put("trackingTime", trackingVo.getTrackingTime());
+                jsonObject.put("nextTrackingTime", trackingVo.getNextTime());
+                jsonObject.put("trackingType", 1);
+                jsonObject.put("remark", trackingVo.getCustomerRemark());
+                json.add(jsonObject);
+            }
+        }
+        if (trackingType == null || trackingType == 2) {
+            // 出访
+            List<DcCustomerOutVisitVo> dcCustomerOutVisitVos = dcCustomerOutVisitService.queryList(outVisitBo);
+            for (DcCustomerOutVisitVo outVisitVo : dcCustomerOutVisitVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", outVisitVo.getId());
+                jsonObject.put("customerId", outVisitVo.getCustomerId());
+                jsonObject.put("customerName", outVisitVo.getCustomerName());
+                jsonObject.put("legalSupportId", outVisitVo.getLegalSupportId());
+                jsonObject.put("legalSupportName", outVisitVo.getLegalSupportName());
+                jsonObject.put("trackingTime", outVisitVo.getVisitTime());
+                jsonObject.put("nextTrackingTime", outVisitVo.getNextVisitTime());
+                jsonObject.put("trackingType", 2);
+                jsonObject.put("remark", outVisitVo.getVisitPurpose());
+                json.add(jsonObject);
+            }
+        }
+        if (trackingType == null || trackingType == 3) {
+            // 保险
+            List<DcInsuranceCaseVo> dcInsuranceCaseVos = dcInsuranceCaseService.queryList(insuranceCaseBo);
+            for (DcInsuranceCaseVo insuranceCaseVo : dcInsuranceCaseVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", insuranceCaseVo.getId());
+                jsonObject.put("customerId", insuranceCaseVo.getCustomerId());
+                DcCustomerTransferVo transferVo = transferMapper.selectVoById(insuranceCaseVo.getCustomerId());
+                jsonObject.put("customerName", transferVo == null ? "" : transferVo.getCompanyName());
+                jsonObject.put("legalSupportId", insuranceCaseVo.getLegalSupportId());
+                jsonObject.put("legalSupportName", insuranceCaseVo.getLegalSupportName());
+                jsonObject.put("trackingTime", "");
+                jsonObject.put("nextTrackingTime", insuranceCaseVo.getOrderDate());
+                jsonObject.put("trackingType", 3);
+                jsonObject.put("remark", "买保险记录");
+                json.add(jsonObject);
+            }
+        }
+        if (trackingType == null || trackingType == 4) {
+            // 工单
+            List<DcCustomerJobOrderVo> dcCustomerJobOrderVos = dcCustomerJobOrderService.queryList(jobOrderBo);
+            for (DcCustomerJobOrderVo jobOrderVo : dcCustomerJobOrderVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", jobOrderVo.getId());
+                jsonObject.put("customerId", jobOrderVo.getCustomerId());
+                jsonObject.put("customerName", jobOrderVo.getCustomerName());
+                jsonObject.put("legalSupportId", jobOrderVo.getContractHandler());
+                jsonObject.put("legalSupportName", jobOrderVo.getLegalSupport());
+                jsonObject.put("trackingTime", "");
+                jsonObject.put("nextTrackingTime", jobOrderVo.getDeliveryTime());
+                jsonObject.put("trackingType", 4);
+                jsonObject.put("remark", "下工单记录");
+                json.add(jsonObject);
+            }
+        }
+        if (trackingType == null || trackingType == 5) {
+            //案件
+            List<DcCaseTrackingVo> dcCaseTrackingVos = dcCaseTrackingService.queryList(caseTrackingBo);
+            for (DcCaseTrackingVo caseTrackingVo : dcCaseTrackingVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", caseTrackingVo.getId());
+                jsonObject.put("customerId", caseTrackingVo.getCustomerId());
+                jsonObject.put("customerName", caseTrackingVo.getCustomerName());
+                jsonObject.put("legalSupportId", caseTrackingVo.getLegalSupportId());
+                jsonObject.put("legalSupportName", caseTrackingVo.getLegalSupportName());
+                jsonObject.put("trackingTime", caseTrackingVo.getTrackingTime());
+                jsonObject.put("nextTrackingTime", caseTrackingVo.getNextTrackingTime());
+                jsonObject.put("trackingType", 5);
+                jsonObject.put("remark", "案件跟踪记录");
+                json.add(jsonObject);
+            }
+        }
+        JSONObject result = new JSONObject();
+        JSONArray data = new JSONArray();
+        data.addAll(ListUtil.page(pageNum - 1, pageSize, json));
+        result.put("total", json.size());
+        result.put("data", data);
+        return result;
     }
 
 

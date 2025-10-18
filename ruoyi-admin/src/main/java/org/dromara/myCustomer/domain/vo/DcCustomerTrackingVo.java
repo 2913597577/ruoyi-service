@@ -107,4 +107,12 @@ public class DcCustomerTrackingVo implements Serializable {
     @ExcelProperty(value = "内勤项数计数")
     private Integer interCount;
 
+    private Long legalSupportId;
+
+    /**
+     * 法务支持姓名
+     */
+    @ExcelProperty(value = "法务支持姓名")
+    private String legalSupportName;
+
 }

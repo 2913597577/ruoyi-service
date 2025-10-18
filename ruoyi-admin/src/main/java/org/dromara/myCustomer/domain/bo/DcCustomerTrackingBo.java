@@ -90,4 +90,15 @@ public class DcCustomerTrackingBo extends BaseEntity {
     @NotNull(message = "内勤项数计数不能为空", groups = {AddGroup.class, EditGroup.class})
     private Integer interCount;
 
+    /**
+     * 法务支持id
+     */
+    @NotNull(message = "法务支持id不能为空", groups = {AddGroup.class, EditGroup.class})
+    private Long legalSupportId;
+
+    /**
+     * 法务支持姓名
+     */
+    private String legalSupportName;
+
 }

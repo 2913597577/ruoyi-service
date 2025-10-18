@@ -129,5 +129,12 @@ public class DcCustomerJobOrderVo implements Serializable {
     @ExcelProperty(value = "备注3")
     private String remark3;
 
+    private Long customerId;
+
+    /**
+     * 客户姓名
+     */
+    @ExcelProperty(value = "客户姓名")
+    private String customerName;
 
 }

@@ -68,5 +68,16 @@ public class DcCaseTrackingBo extends BaseEntity {
      */
     private Date nextTrackingTime;
 
+    /**
+     * 法务支持id
+     */
+    @NotNull(message = "法务支持不能为空", groups = {AddGroup.class, EditGroup.class})
+    private Long legalSupportId;
+
+    /**
+     * 法务支持姓名
+     */
+    private String legalSupportName;
+
 
 }

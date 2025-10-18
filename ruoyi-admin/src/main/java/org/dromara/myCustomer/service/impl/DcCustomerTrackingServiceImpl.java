@@ -80,7 +80,7 @@ public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService
     private LambdaQueryWrapper<DcCustomerTracking> buildQueryWrapper(DcCustomerTrackingBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerTracking> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCustomerTracking::getId);
+        lqw.orderByDesc(DcCustomerTracking::getCreateTime);
         lqw.eq(bo.getCustomerId() != null, DcCustomerTracking::getCustomerId, bo.getCustomerId());
         lqw.eq(StringUtils.isNotBlank(bo.getCustomerRemark()), DcCustomerTracking::getCustomerRemark, bo.getCustomerRemark());
         lqw.eq(bo.getTrackingType() != null, DcCustomerTracking::getTrackingType, bo.getTrackingType());
@@ -88,6 +88,8 @@ public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService
         lqw.eq(bo.getTrackingTime() != null, DcCustomerTracking::getTrackingTime, bo.getTrackingTime());
         lqw.eq(bo.getSubmitStatus() != null, DcCustomerTracking::getSubmitStatus, bo.getSubmitStatus());
         lqw.eq(bo.getNextTime() != null, DcCustomerTracking::getNextTime, bo.getNextTime());
+        lqw.eq(bo.getLegalSupportId() != null, DcCustomerTracking::getLegalSupportId, bo.getLegalSupportId());
+        lqw.eq(bo.getLegalSupportName() != null, DcCustomerTracking::getLegalSupportName, bo.getLegalSupportName());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCustomerTracking::getRemark1, bo.getRemark1());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcCustomerTracking::getRemark2, bo.getRemark2());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcCustomerTracking::getRemark3, bo.getRemark3());

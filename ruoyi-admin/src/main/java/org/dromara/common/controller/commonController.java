@@ -107,5 +107,20 @@ public class commonController {
         return R.ok(commonService.getRiskRefundData(year, month, day, loginUser.getUserId(), lawyerId == null ? null : Long.valueOf(lawyerId)));
     }
 
+    @GetMapping("getAllTrackingRecords")
+    public R<JSONObject> getAllTrackingRecords(@RequestParam(required = false) String customerId,
+                                               @RequestParam(required = false) String legalSupportId,
+                                               @RequestParam(required = false) Integer trackingType,
+                                               @RequestParam(required = false) String trackingTime,
+                                               @RequestParam(required = false) String nextTrackingTime,
+                                               @RequestParam(defaultValue = "0") int pageNum,
+                                               @RequestParam(defaultValue = "10") int pageSize) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getAllTrackingRecords(customerId, legalSupportId, trackingType, trackingTime, nextTrackingTime, pageNum, pageSize));
+    }
+
 
 }

@@ -95,4 +95,12 @@ public class DcCustomerTracking extends TenantEntity {
     private Integer interCount;
 
 
+    private Long legalSupportId;
+
+    /**
+     * 法务支持姓名
+     */
+    private String legalSupportName;
+
+
 }

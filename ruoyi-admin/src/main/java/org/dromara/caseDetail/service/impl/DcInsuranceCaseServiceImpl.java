@@ -1,24 +1,24 @@
 package org.dromara.caseDetail.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.caseDetail.domain.DcInsuranceCase;
 import org.dromara.caseDetail.domain.bo.DcInsuranceCaseBo;
 import org.dromara.caseDetail.domain.vo.DcInsuranceCaseVo;
-import org.dromara.caseDetail.domain.DcInsuranceCase;
 import org.dromara.caseDetail.mapper.DcInsuranceCaseMapper;
 import org.dromara.caseDetail.service.IDcInsuranceCaseService;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 保险记录表Service业务层处理
@@ -40,7 +40,7 @@ public class DcInsuranceCaseServiceImpl implements IDcInsuranceCaseService {
      * @return 保险记录表
      */
     @Override
-    public DcInsuranceCaseVo queryById(Long id){
+    public DcInsuranceCaseVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -73,7 +73,7 @@ public class DcInsuranceCaseServiceImpl implements IDcInsuranceCaseService {
     private LambdaQueryWrapper<DcInsuranceCase> buildQueryWrapper(DcInsuranceCaseBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcInsuranceCase> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcInsuranceCase::getId);
+        lqw.orderByDesc(DcInsuranceCase::getCreateTime);
         lqw.eq(bo.getCustomerId() != null, DcInsuranceCase::getCustomerId, bo.getCustomerId());
         lqw.eq(bo.getOrderDate() != null, DcInsuranceCase::getOrderDate, bo.getOrderDate());
         lqw.eq(StringUtils.isNotBlank(bo.getInsuranceNumber()), DcInsuranceCase::getInsuranceNumber, bo.getInsuranceNumber());
@@ -121,7 +121,7 @@ public class DcInsuranceCaseServiceImpl implements IDcInsuranceCaseService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcInsuranceCase entity){
+    private void validEntityBeforeSave(DcInsuranceCase entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -134,7 +134,7 @@ public class DcInsuranceCaseServiceImpl implements IDcInsuranceCaseService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;

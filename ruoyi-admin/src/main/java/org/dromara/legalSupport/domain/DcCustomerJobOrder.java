@@ -1,13 +1,14 @@
 package org.dromara.legalSupport.domain;
 
-import org.dromara.common.tenant.core.TenantEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.util.Date;
 
 /**
  * 工单管理对象 dc_customer_job_order
@@ -109,6 +110,10 @@ public class DcCustomerJobOrder extends TenantEntity {
      */
     @TableLogic
     private String delFlag;
+
+    private long customerId;
+
+    private String customerName;
 
 
 }

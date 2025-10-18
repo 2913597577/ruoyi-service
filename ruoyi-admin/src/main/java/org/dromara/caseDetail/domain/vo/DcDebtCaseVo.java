@@ -1,19 +1,16 @@
 package org.dromara.caseDetail.domain.vo;
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.dromara.caseDetail.domain.DcDebtCase;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
-import org.dromara.common.excel.convert.ExcelDictConvert;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.dromara.caseDetail.domain.DcDebtCase;
+import org.dromara.common.excel.annotation.ExcelDictFormat;
+import org.dromara.common.excel.convert.ExcelDictConvert;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-
 
 
 /**
@@ -132,6 +129,18 @@ public class DcDebtCaseVo implements Serializable {
      */
     @ExcelProperty(value = "法官电话")
     private String judgePhone;
+
+
+    /**
+     * 法务支持id
+     */
+    private Long legalSupportId;
+
+    /**
+     * 法务支持姓名
+     */
+    @ExcelProperty(value = "法务支持姓名")
+    private String legalSupportName;
 
 
 }

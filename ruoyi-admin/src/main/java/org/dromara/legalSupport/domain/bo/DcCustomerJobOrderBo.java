@@ -109,4 +109,11 @@ public class DcCustomerJobOrderBo extends BaseEntity {
     private String remark3;
 
 
+    private Long customerId;
+    /**
+     * 客户姓名
+     */
+    private String customerName;
+
+
 }

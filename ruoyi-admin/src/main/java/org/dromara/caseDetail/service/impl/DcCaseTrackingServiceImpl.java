@@ -1,24 +1,24 @@
 package org.dromara.caseDetail.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.caseDetail.domain.DcCaseTracking;
 import org.dromara.caseDetail.domain.bo.DcCaseTrackingBo;
 import org.dromara.caseDetail.domain.vo.DcCaseTrackingVo;
-import org.dromara.caseDetail.domain.DcCaseTracking;
 import org.dromara.caseDetail.mapper.DcCaseTrackingMapper;
 import org.dromara.caseDetail.service.IDcCaseTrackingService;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 案件进展表Service业务层处理
@@ -40,7 +40,7 @@ public class DcCaseTrackingServiceImpl implements IDcCaseTrackingService {
      * @return 案件进展表
      */
     @Override
-    public DcCaseTrackingVo queryById(Long id){
+    public DcCaseTrackingVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -73,11 +73,13 @@ public class DcCaseTrackingServiceImpl implements IDcCaseTrackingService {
     private LambdaQueryWrapper<DcCaseTracking> buildQueryWrapper(DcCaseTrackingBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCaseTracking> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCaseTracking::getId);
+        lqw.orderByDesc(DcCaseTracking::getCreateTime);
         lqw.eq(bo.getCaseId() != null, DcCaseTracking::getCaseId, bo.getCaseId());
         lqw.eq(StringUtils.isNotBlank(bo.getCaseType()), DcCaseTracking::getCaseType, bo.getCaseType());
         lqw.eq(bo.getCustomerId() != null, DcCaseTracking::getCustomerId, bo.getCustomerId());
         lqw.like(bo.getCustomerName() != null, DcCaseTracking::getCustomerName, bo.getCustomerName());
+        lqw.eq(bo.getLegalSupportId() != null, DcCaseTracking::getLegalSupportId, bo.getLegalSupportId());
+        lqw.like(bo.getLegalSupportName() != null, DcCaseTracking::getLegalSupportName, bo.getLegalSupportName());
         lqw.eq(StringUtils.isNotBlank(bo.getCaseProgress()), DcCaseTracking::getCaseProgress, bo.getCaseProgress());
         return lqw;
     }
@@ -115,7 +117,7 @@ public class DcCaseTrackingServiceImpl implements IDcCaseTrackingService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcCaseTracking entity){
+    private void validEntityBeforeSave(DcCaseTracking entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -128,7 +130,7 @@ public class DcCaseTrackingServiceImpl implements IDcCaseTrackingService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;

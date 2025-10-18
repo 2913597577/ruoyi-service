@@ -1,13 +1,14 @@
 package org.dromara.caseDetail.domain;
 
-import org.dromara.common.tenant.core.TenantEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.util.Date;
 
 /**
  * 欠款案件表对象 dc_debt_case
@@ -130,5 +131,14 @@ public class DcDebtCase extends TenantEntity {
     @TableLogic
     private String delFlag;
 
+    /**
+     * 法务支持id
+     */
+    private Long legalSupportId;
+
+    /**
+     * 法务支持姓名
+     */
+    private String legalSupportName;
 
 }
