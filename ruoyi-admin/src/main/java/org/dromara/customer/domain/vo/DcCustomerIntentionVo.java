@@ -57,9 +57,9 @@ public class DcCustomerIntentionVo implements Serializable {
     private String intendedCustomer;
 
     /**
-     * 意向客户id
+     * 介绍人id
      */
-    private String intendedCustomerId;
+    private Long introducerId;
 
     /**
      * 类型

@@ -1,13 +1,14 @@
 package org.dromara.customer.domain;
 
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.io.Serial;
+import java.util.Date;
 
 /**
  * 客户意向登记对象 dc_customer_intention
@@ -50,9 +51,9 @@ public class DcCustomerIntention extends BaseEntity {
     private String intendedCustomer;
 
     /**
-     * 意向客户id
+     * 介绍人id
      */
-    private Long intendedCustomerId;
+    private Long introducerId;
 
     /**
      * 类型

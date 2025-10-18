@@ -48,9 +48,9 @@ public class DcCustomerIntentionBo extends BaseEntity {
     private String intendedCustomer;
 
     /**
-     * 意向客户id
+     * 介绍人id
      */
-    private Long intendedCustomerId;
+    private Long introducerId;
 
     /**
      * 类型

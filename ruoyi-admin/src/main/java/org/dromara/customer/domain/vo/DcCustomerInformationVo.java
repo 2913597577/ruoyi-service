@@ -127,7 +127,7 @@ public class DcCustomerInformationVo implements Serializable {
     /**
      * 是否转为意向客户
      */
-    @ExcelProperty(value = "是否转为意向客户")
+    @ExcelProperty(value = "是否介绍意向客户")
     private Integer isIntention;
 
     /**

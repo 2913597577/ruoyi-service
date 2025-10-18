@@ -94,19 +94,16 @@ public class DcCustomerIntentionController extends BaseController {
     @RepeatSubmit()
     @PostMapping("/addIntention")
     public R<Void> addIntention(@Validated(AddGroup.class) @RequestBody DcCustomerIntentionBo bo) {
-        Long customerId = bo.getIntendedCustomerId();
+        Long customerId = bo.getIntroducerId();
         if (customerId == null) {
-            return R.warn("客户ID不能为空");
+            return R.warn("介绍人不能为空");
         }
         DcCustomerInformationVo customerInformation = dcCustomerInformationService.queryListByTransferId(customerId);
         if (customerInformation == null) {
-            return R.warn("客户信息不存在");
-        }
-        if (customerInformation.getIsIntention() == 1) {
-            return R.warn("该客户信息已录入意向客户表");
+            return R.warn("介绍人信息不存在");
         }
         if (!dcCustomerIntentionService.insertByBo(bo)) {
-            return R.warn("客户转为意向客户失败");
+            return R.warn("客户介绍意向客户失败");
         }
         customerInformation.setIsIntention(1);
         DcCustomerInformationBo update = new DcCustomerInformationBo();

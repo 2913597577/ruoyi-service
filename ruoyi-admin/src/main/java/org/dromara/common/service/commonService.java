@@ -79,12 +79,12 @@ public class commonService {
 
         JSONArray json = new JSONArray();
         JSONObject data = new JSONObject();
-        data.put("customer_name", "请选择意向客户");
+        data.put("intended_customer", "请选择意向客户");
         json.add(data);
         for (DcCustomerIntentionVo customerIntentionVo : list) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("customer_id", customerIntentionVo.getIntendedCustomerId());
-            jsonObject.put("customer_name", customerIntentionVo.getIntendedCustomer());
+            jsonObject.put("intention_id", customerIntentionVo.getId());
+            jsonObject.put("intended_customer", customerIntentionVo.getIntendedCustomer());
             json.add(jsonObject);
         }
         return json;
