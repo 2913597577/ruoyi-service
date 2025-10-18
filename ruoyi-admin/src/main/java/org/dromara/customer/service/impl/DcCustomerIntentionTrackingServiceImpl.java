@@ -73,7 +73,7 @@ public class DcCustomerIntentionTrackingServiceImpl implements IDcCustomerIntent
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerIntentionTracking> lqw = Wrappers.lambdaQuery();
         lqw.orderByAsc(DcCustomerIntentionTracking::getId);
-        lqw.eq(bo.getInentionId() != null, DcCustomerIntentionTracking::getInentionId, bo.getInentionId());
+        lqw.eq(bo.getIntentionId() != null, DcCustomerIntentionTracking::getIntentionId, bo.getIntentionId());
         lqw.eq(bo.getCustomerId() != null, DcCustomerIntentionTracking::getCustomerId, bo.getCustomerId());
         lqw.like(bo.getCustomerName() != null, DcCustomerIntentionTracking::getCustomerName, bo.getCustomerName());
         lqw.eq(bo.getCreateTime() != null, DcCustomerIntentionTracking::getCreateTime, bo.getCreateTime());

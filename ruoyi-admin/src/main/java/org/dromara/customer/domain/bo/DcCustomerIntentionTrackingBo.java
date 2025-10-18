@@ -10,6 +10,8 @@ import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.customer.domain.DcCustomerIntentionTracking;
 
+import java.util.Date;
+
 /**
  * 意向客户跟踪记录业务对象 dc_customer_intention_tracking
  *
@@ -24,32 +26,41 @@ public class DcCustomerIntentionTrackingBo extends BaseEntity {
     /**
      * 主键ID
      */
-    @NotNull(message = "主键ID不能为空", groups = {EditGroup.class})
     private Long id;
 
     /**
      * 意向客户表id
      */
     @NotNull(message = "意向客户表id不能为空", groups = {AddGroup.class, EditGroup.class})
-    private Long inentionId;
+    private Long intentionId;
 
     /**
      * 意向客户id
      */
-    @NotNull(message = "意向客户id不能为空", groups = {AddGroup.class, EditGroup.class})
     private Long customerId;
 
     /**
      * 意向客户
      */
     @NotNull(message = "意向客户不能为空", groups = {AddGroup.class, EditGroup.class})
-    private Long customerName;
+    private String customerName;
 
     /**
      * 备注
      */
     @NotBlank(message = "备注不能为空", groups = {AddGroup.class, EditGroup.class})
     private String customerRemark;
+
+    /**
+     * 跟踪时间
+     */
+    @NotNull(message = "跟踪时间不能为空", groups = {AddGroup.class, EditGroup.class})
+    private Date trackingDate;
+
+    /**
+     * 下次跟踪时间
+     */
+    private Date nextTrackingDate;
 
 
 }

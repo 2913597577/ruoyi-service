@@ -1,11 +1,14 @@
 package org.dromara.customer.domain;
 
-import org.dromara.common.tenant.core.TenantEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.util.Date;
 
 /**
  * 意向客户跟踪记录对象 dc_customer_intention_tracking
@@ -30,7 +33,7 @@ public class DcCustomerIntentionTracking extends TenantEntity {
     /**
      * 意向客户表id
      */
-    private Long inentionId;
+    private Long intentionId;
 
     /**
      * 意向客户id
@@ -40,7 +43,7 @@ public class DcCustomerIntentionTracking extends TenantEntity {
     /**
      * 意向客户
      */
-    private Long customerName;
+    private String customerName;
 
     /**
      * 备注
@@ -48,14 +51,14 @@ public class DcCustomerIntentionTracking extends TenantEntity {
     private String customerRemark;
 
     /**
-     * 备注1
+     * 跟踪时间
      */
-    private String remark1;
+    private Date trackingDate;
 
     /**
-     * 备注2
+     * 下次跟踪时间
      */
-    private String remark2;
+    private Date nextTrackingDate;
 
     /**
      * 备注3

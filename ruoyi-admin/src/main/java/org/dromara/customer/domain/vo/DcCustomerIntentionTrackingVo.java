@@ -8,6 +8,7 @@ import org.dromara.customer.domain.DcCustomerIntentionTracking;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -32,22 +33,39 @@ public class DcCustomerIntentionTrackingVo implements Serializable {
     private Long id;
 
     /**
-     * 意向客户id
+     * 意向客户表id
      */
     @ExcelProperty(value = "意向客户id")
+    private Long intentionId;
+
+    /**
+     * 意向客户id
+     */
     private Long customerId;
 
     /**
      * 意向客户
      */
     @ExcelProperty(value = "意向客户")
-    private Long customerName;
+    private String customerName;
 
     /**
      * 备注
      */
     @ExcelProperty(value = "备注")
     private String customerRemark;
+
+    /**
+     * 跟踪时间
+     */
+    @ExcelProperty(value = "跟踪时间")
+    private Date trackingDate;
+
+    /**
+     * 下次跟踪时间
+     */
+    @ExcelProperty(value = "下次跟踪时间")
+    private Date nextTrackingDate;
 
 
 }
