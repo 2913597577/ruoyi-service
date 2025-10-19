@@ -48,7 +48,7 @@ public class DcCaseTracking extends TenantEntity {
     /**
      * 客户姓名
      */
-    private Long customerName;
+    private String customerName;
 
     /**
      * 案件进展

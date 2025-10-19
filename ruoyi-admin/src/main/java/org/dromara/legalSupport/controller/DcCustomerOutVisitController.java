@@ -83,8 +83,6 @@ public class DcCustomerOutVisitController extends BaseController {
         if (loginUser == null) {
             return R.fail("请先登录");
         }
-        bo.setLegalSupportId(loginUser.getUserId());
-        bo.setLegalSupportName(loginUser.getUsername());
         return toAjax(dcCustomerOutVisitService.insertByBo(bo));
     }
 

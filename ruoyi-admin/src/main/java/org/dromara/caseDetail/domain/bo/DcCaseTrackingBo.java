@@ -51,7 +51,7 @@ public class DcCaseTrackingBo extends BaseEntity {
      * 客户姓名
      */
     @NotNull(message = "客户姓名不能为空", groups = {AddGroup.class, EditGroup.class})
-    private Long customerName;
+    private String customerName;
 
 
     /**

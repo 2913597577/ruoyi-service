@@ -56,7 +56,7 @@ public class DcCaseTrackingVo implements Serializable {
      * 客户姓名
      */
     @ExcelProperty(value = "客户姓名")
-    private Long customerName;
+    private String customerName;
 
     /**
      * 案件进展

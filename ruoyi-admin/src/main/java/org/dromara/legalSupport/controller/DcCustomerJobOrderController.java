@@ -93,8 +93,6 @@ public class DcCustomerJobOrderController extends BaseController {
         if (vo == null) {
             return R.warn("跟踪记录不存在");
         }
-        bo.setLegalSupportId(loginUser.getUserId());
-        bo.setLegalSupport(loginUser.getUsername());
         return toAjax(dcCustomerJobOrderService.insertByBo(bo));
     }
 

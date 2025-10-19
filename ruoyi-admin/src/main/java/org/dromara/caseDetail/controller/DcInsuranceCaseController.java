@@ -83,8 +83,7 @@ public class DcInsuranceCaseController extends BaseController {
         if (loginUser == null) {
             return R.fail("请先登录");
         }
-        bo.setLegalSupportId(loginUser.getUserId());
-        bo.setLegalSupportName(loginUser.getUsername());
+
         return toAjax(dcInsuranceCaseService.insertByBo(bo));
     }
 

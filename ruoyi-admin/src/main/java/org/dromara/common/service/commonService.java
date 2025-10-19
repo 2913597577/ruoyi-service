@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.dromara.caseDetail.domain.bo.DcCaseTrackingBo;
 import org.dromara.caseDetail.domain.bo.DcInsuranceCaseBo;
 import org.dromara.caseDetail.domain.vo.DcCaseTrackingVo;
+import org.dromara.caseDetail.domain.vo.DcDebtCaseVo;
 import org.dromara.caseDetail.domain.vo.DcInsuranceCaseVo;
+import org.dromara.caseDetail.mapper.DcDebtCaseMapper;
 import org.dromara.caseDetail.mapper.DcInsuranceCaseMapper;
 import org.dromara.caseDetail.service.IDcCaseTrackingService;
 import org.dromara.caseDetail.service.IDcInsuranceCaseService;
@@ -56,6 +58,7 @@ public class commonService {
     private final DcCustomerTransferMapper transferMapper;
     private final DcCustomerTrackingMapper trackingMapper;
     private final DcInsuranceCaseMapper insuranceCaseMapper;
+    private final DcDebtCaseMapper debtCaseMapper;
     private final ISysRoleService roleService;
 
     private final IDcCustomerTrackingService dcCustomerTrackingService;
@@ -330,5 +333,28 @@ public class commonService {
         return result;
     }
 
+    public JSONArray getCaseDetail(long userId) {
+        boolean superAdmin = LoginHelper.isSuperAdmin(userId);
+        List<DcDebtCaseVo> list = new ArrayList<>();
+        if (superAdmin) {
+            list = debtCaseMapper.selectVoList();
+        }
+        if (!superAdmin) {
+            Map<String, Object> queryMap = new HashMap<>();
+            queryMap.put("legal_support_id", userId);
+            list = debtCaseMapper.selectVoByMap(queryMap);
+        }
+
+        JSONArray json = new JSONArray();
+        for (DcDebtCaseVo dcDebtCaseVo : list) {
+            DcCustomerTransfer dcCustomerTransfer = transferMapper.selectById(dcDebtCaseVo.getCustomerId());
+            String companyName = dcCustomerTransfer == null ? "" : dcCustomerTransfer.getCompanyName();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("case_id", dcDebtCaseVo.getId());
+            jsonObject.put("case_detail", "客户【" + companyName + "】--债务人【" + dcDebtCaseVo.getDebtorName() + "】");
+            json.add(jsonObject);
+        }
+        return json;
+    }
 
 }

@@ -122,5 +122,18 @@ public class commonController {
         return R.ok(commonService.getAllTrackingRecords(customerId, legalSupportId, trackingType, trackingTime, nextTrackingTime, pageNum, pageSize));
     }
 
+    /**
+     * 根据登录用户获取案件信息
+     *
+     * @return
+     */
+    @GetMapping("/getCaseDetail")
+    public R<JSONArray> getCaseDetail() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getCaseDetail(loginUser.getUserId()));
+    }
 
 }
