@@ -21,7 +21,6 @@ import org.dromara.common.web.core.BaseController;
 import org.dromara.legalSupport.domain.bo.DcCustomerJobOrderBo;
 import org.dromara.legalSupport.domain.vo.DcCustomerJobOrderVo;
 import org.dromara.legalSupport.service.IDcCustomerJobOrderService;
-import org.dromara.myCustomer.domain.vo.DcCustomerTrackingVo;
 import org.dromara.myCustomer.service.IDcCustomerTrackingService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -88,10 +87,6 @@ public class DcCustomerJobOrderController extends BaseController {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return R.warn("请登录");
-        }
-        DcCustomerTrackingVo vo = dcCustomerTrackingService.queryById(bo.getTrackingId());
-        if (vo == null) {
-            return R.warn("跟踪记录不存在");
         }
         return toAjax(dcCustomerJobOrderService.insertByBo(bo));
     }

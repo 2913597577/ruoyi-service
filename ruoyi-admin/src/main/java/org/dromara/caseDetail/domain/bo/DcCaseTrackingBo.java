@@ -44,13 +44,11 @@ public class DcCaseTrackingBo extends BaseEntity {
     /**
      * 客户id
      */
-    @NotNull(message = "客户id不能为空", groups = {AddGroup.class, EditGroup.class})
     private Long customerId;
 
     /**
      * 客户姓名
      */
-    @NotNull(message = "客户姓名不能为空", groups = {AddGroup.class, EditGroup.class})
     private String customerName;
 
 
@@ -71,7 +69,6 @@ public class DcCaseTrackingBo extends BaseEntity {
     /**
      * 法务支持id
      */
-    @NotNull(message = "法务支持不能为空", groups = {AddGroup.class, EditGroup.class})
     private Long legalSupportId;
 
     /**

@@ -87,6 +87,8 @@ public class DcCaseTrackingController extends BaseController {
         if (dcDebtCaseVo == null) {
             return R.warn("案件不存在");
         }
+        bo.setLegalSupportId(dcDebtCaseVo.getLegalSupportId());
+        bo.setLegalSupportName(dcDebtCaseVo.getLegalSupportName());
         DcCustomerTransferVo dcCustomerTransferVo = dcCustomerTransferService.queryById(dcDebtCaseVo.getCustomerId());
         if (dcCustomerTransferVo == null) {
             return R.warn("案件客户信息不存在");
