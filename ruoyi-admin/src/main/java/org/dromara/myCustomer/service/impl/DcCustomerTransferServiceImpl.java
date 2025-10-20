@@ -18,6 +18,8 @@ import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.mapper.DcCustomerTransferMapper;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
+import org.dromara.system.domain.vo.SysUserVo;
+import org.dromara.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -37,6 +39,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
 
     private final DcCustomerTransferMapper baseMapper;
     private final DcCustomerInformationServiceImpl dcCustomerInformationService;
+    private final ISysUserService sysUserService;
 
     /**
      * 查询客户信息录入
@@ -181,6 +184,10 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setServiceDuration(dcCustomerTransfer.getServiceDuration());
             dcCustomerInformation.setContractAmount(dcCustomerTransfer.getContractAmount());
             dcCustomerInformation.setCustomerType(1);
+            SysUserVo inviter = sysUserService.selectUserById(dcCustomerTransfer.getInviterId());
+            SysUserVo closer = sysUserService.selectUserById(dcCustomerTransfer.getAccountManagerId());
+            dcCustomerInformation.setTransferPerson(inviter == null ? "" : inviter.getNickName());
+            dcCustomerInformation.setCloser(closer == null ? "" : closer.getNickName());
             flag = dcCustomerInformationService.insertByBo(dcCustomerInformation);
         }
         return flag;

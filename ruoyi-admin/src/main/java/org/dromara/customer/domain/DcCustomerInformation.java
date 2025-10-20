@@ -159,5 +159,17 @@ public class DcCustomerInformation extends TenantEntity {
      */
     private Integer customerType;
 
+    /**
+     * 立案账号
+     */
+    private String caseFillingAccount;
+    /**
+     * 立案密码
+     */
+    private String caseFillingPwd;
+    /**
+     * 客户服务城市
+     */
+    private String customerCity;
 
 }
