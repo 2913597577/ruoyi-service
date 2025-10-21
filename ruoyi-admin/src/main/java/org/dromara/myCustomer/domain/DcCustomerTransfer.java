@@ -215,6 +215,21 @@ public class DcCustomerTransfer extends TenantEntity {
      */
     @TableLogic
     private String delFlag;
-
+    /**
+     * 尾款支付条件
+     */
+    private String balancePayType;
+    /**
+     * 合同编号
+     */
+    private String contractCode;
+    /**
+     * 合同ossId
+     */
+    private String contractOssId;
+    /**
+     * 客户服务城市
+     */
+    private String customerCity;
 
 }

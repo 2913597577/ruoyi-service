@@ -166,7 +166,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         DcCustomerTransfer dcCustomerTransfer = baseMapper.selectById(id);
         dcCustomerTransfer.setFinanceConfirmed(auditStatus);
         boolean flag = baseMapper.updateById(dcCustomerTransfer) > 0;
-        if (flag) {
+        if (flag && auditStatus == 1) {
             DcCustomerInformationBo dcCustomerInformation = new DcCustomerInformationBo();
             dcCustomerInformation.setSignDate(dcCustomerTransfer.getCreateTime());
             dcCustomerInformation.setContractNo(dcCustomerTransfer.getId().toString());

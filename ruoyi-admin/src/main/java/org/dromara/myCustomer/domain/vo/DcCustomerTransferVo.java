@@ -249,4 +249,24 @@ public class DcCustomerTransferVo implements Serializable {
      */
     @ExcelProperty(value = "交易时间")
     private Date createTime;
+
+    /**
+     * 尾款支付条件
+     */
+    @ExcelProperty(value = "尾款支付条件")
+    private String balancePayType;
+    /**
+     * 合同编号
+     */
+    @ExcelProperty(value = "合同编号")
+    private String contractCode;
+    /**
+     * 合同ossId
+     */
+    private String contractOssId;
+    /**
+     * 客户服务城市
+     */
+    @ExcelProperty(value = "客户服务城市")
+    private String customerCity;
 }
