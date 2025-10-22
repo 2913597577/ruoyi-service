@@ -45,6 +45,14 @@ public class DcCustomerOutVisitController extends BaseController {
     @SaCheckPermission("customerOutVisit:customerOutVisit:list")
     @GetMapping("/list")
     public TableDataInfo<DcCustomerOutVisitVo> list(DcCustomerOutVisitBo bo, PageQuery pageQuery) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        // 法务支持
+        if (loginUser.getRoleId() == 1980464458593992706L) {
+            bo.setLegalSupportId(loginUser.getUserId());
+        }
         return dcCustomerOutVisitService.queryPageList(bo, pageQuery);
     }
 
@@ -55,6 +63,14 @@ public class DcCustomerOutVisitController extends BaseController {
     @Log(title = "客户出访记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(DcCustomerOutVisitBo bo, HttpServletResponse response) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return;
+        }
+        // 法务支持
+        if (loginUser.getRoleId() == 1980464458593992706L) {
+            bo.setLegalSupportId(loginUser.getUserId());
+        }
         List<DcCustomerOutVisitVo> list = dcCustomerOutVisitService.queryList(bo);
         ExcelUtil.exportExcel(list, "客户出访记录", DcCustomerOutVisitVo.class, response);
     }

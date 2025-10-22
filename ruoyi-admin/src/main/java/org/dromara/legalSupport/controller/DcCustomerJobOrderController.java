@@ -50,6 +50,14 @@ public class DcCustomerJobOrderController extends BaseController {
     @SaCheckPermission("customerJobOrder:customerJobOrder:list")
     @GetMapping("/list")
     public TableDataInfo<DcCustomerJobOrderVo> list(DcCustomerJobOrderBo bo, PageQuery pageQuery) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        // 法务支持
+        if (loginUser.getRoleId() == 1980464458593992706L) {
+            bo.setLegalSupportId(loginUser.getUserId());
+        }
         return dcCustomerJobOrderService.queryPageList(bo, pageQuery);
     }
 
@@ -60,6 +68,14 @@ public class DcCustomerJobOrderController extends BaseController {
     @Log(title = "工单管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(DcCustomerJobOrderBo bo, HttpServletResponse response) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return;
+        }
+        // 法务支持
+        if (loginUser.getRoleId() == 1980464458593992706L) {
+            bo.setLegalSupportId(loginUser.getUserId());
+        }
         List<DcCustomerJobOrderVo> list = dcCustomerJobOrderService.queryList(bo);
         ExcelUtil.exportExcel(list, "工单管理", DcCustomerJobOrderVo.class, response);
     }

@@ -82,7 +82,6 @@ public class DcCustomerInformationBo extends BaseEntity {
     /**
      * 签约类型
      */
-    @NotNull(message = "签约类型不能为空", groups = {AddGroup.class, EditGroup.class})
     private Integer contractType;
 
     /**

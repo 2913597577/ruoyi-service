@@ -1,26 +1,27 @@
 package org.dromara.customer.controller;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
-import org.dromara.common.idempotent.annotation.RepeatSubmit;
-import org.dromara.common.log.annotation.Log;
-import org.dromara.common.web.core.BaseController;
-import org.dromara.common.mybatis.core.page.PageQuery;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
-import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.excel.utils.ExcelUtil;
-import org.dromara.customer.domain.vo.DcIntentionCustomerVo;
-import org.dromara.customer.domain.bo.DcIntentionCustomerBo;
-import org.dromara.customer.service.IDcIntentionCustomerService;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
+import org.dromara.common.log.annotation.Log;
+import org.dromara.common.log.enums.BusinessType;
+import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.web.core.BaseController;
+import org.dromara.customer.domain.bo.DcIntentionCustomerBo;
+import org.dromara.customer.domain.vo.DcIntentionCustomerVo;
+import org.dromara.customer.service.IDcIntentionCustomerService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 客户意向登记
@@ -64,7 +65,7 @@ public class DcIntentionCustomerController extends BaseController {
     @SaCheckPermission("intentioncustomer:intentionCustomer:query")
     @GetMapping("/{id}")
     public R<DcIntentionCustomerVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Long id) {
+                                            @PathVariable Long id) {
         return R.ok(dcIntentionCustomerService.queryById(id));
     }
 

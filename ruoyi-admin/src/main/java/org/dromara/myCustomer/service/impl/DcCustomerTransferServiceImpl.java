@@ -81,7 +81,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     private LambdaQueryWrapper<DcCustomerTransfer> buildQueryWrapper(DcCustomerTransferBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerTransfer> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCustomerTransfer::getId);
+        lqw.orderByDesc(DcCustomerTransfer::getCreateBy);
         lqw.like(StringUtils.isNotBlank(bo.getCompanyName()), DcCustomerTransfer::getCompanyName, bo.getCompanyName());
         lqw.eq(StringUtils.isNotBlank(bo.getContactPerson()), DcCustomerTransfer::getContactPerson, bo.getContactPerson());
         lqw.eq(StringUtils.isNotBlank(bo.getContactInfo()), DcCustomerTransfer::getContactInfo, bo.getContactInfo());
@@ -173,7 +173,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setCustomerName(dcCustomerTransfer.getCompanyName());
             dcCustomerInformation.setPrincipal(dcCustomerTransfer.getContactPerson());
             dcCustomerInformation.setPrincipalPhone(dcCustomerTransfer.getContactInfo());
-            dcCustomerInformation.setContractType(dcCustomerTransfer.getContractType());
+            dcCustomerInformation.setContractType(0);
             dcCustomerInformation.setPackageType(dcCustomerTransfer.getServiceType());
             dcCustomerInformation.setActualReceipt(dcCustomerTransfer.getActualPayment());
             dcCustomerInformation.setBalance(dcCustomerTransfer.getBalanceStatus());

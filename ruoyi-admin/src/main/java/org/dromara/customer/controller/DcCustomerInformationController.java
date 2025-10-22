@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
@@ -15,6 +16,7 @@ import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
@@ -47,6 +49,14 @@ public class DcCustomerInformationController extends BaseController {
     @SaCheckPermission("customerInfo:customerInfo:list")
     @GetMapping("/list")
     public TableDataInfo<DcCustomerInformationVo> list(DcCustomerInformationBo bo, PageQuery pageQuery) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        // 法务支持
+        if (loginUser.getRoleId() == 1980464458593992706L) {
+            bo.setLawyerId(loginUser.getUserId());
+        }
         return dcCustomerInformationService.queryPageList(bo, pageQuery);
     }
 
@@ -57,6 +67,14 @@ public class DcCustomerInformationController extends BaseController {
     @Log(title = "客户总表", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(DcCustomerInformationBo bo, HttpServletResponse response) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return;
+        }
+        // 法务支持
+        if (loginUser.getRoleId() == 1980464458593992706L) {
+            bo.setLawyerId(loginUser.getUserId());
+        }
         List<DcCustomerInformationVo> list = dcCustomerInformationService.queryList(bo);
         ExcelUtil.exportExcel(list, "客户总表", DcCustomerInformationVo.class, response);
     }
