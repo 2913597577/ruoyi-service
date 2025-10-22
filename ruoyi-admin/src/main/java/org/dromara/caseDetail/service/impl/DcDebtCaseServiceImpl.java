@@ -1,24 +1,24 @@
 package org.dromara.caseDetail.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.caseDetail.domain.DcDebtCase;
 import org.dromara.caseDetail.domain.bo.DcDebtCaseBo;
 import org.dromara.caseDetail.domain.vo.DcDebtCaseVo;
-import org.dromara.caseDetail.domain.DcDebtCase;
 import org.dromara.caseDetail.mapper.DcDebtCaseMapper;
 import org.dromara.caseDetail.service.IDcDebtCaseService;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 欠款案件表Service业务层处理
@@ -40,7 +40,7 @@ public class DcDebtCaseServiceImpl implements IDcDebtCaseService {
      * @return 欠款案件表
      */
     @Override
-    public DcDebtCaseVo queryById(Long id){
+    public DcDebtCaseVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -87,6 +87,8 @@ public class DcDebtCaseServiceImpl implements IDcDebtCaseService {
         lqw.eq(bo.getFilingDate() != null, DcDebtCase::getFilingDate, bo.getFilingDate());
         lqw.eq(bo.getNextContactTime() != null, DcDebtCase::getNextContactTime, bo.getNextContactTime());
         lqw.eq(bo.getCaseStatus() != null, DcDebtCase::getCaseStatus, bo.getCaseStatus());
+        lqw.eq(bo.getLegalSupportId() != null, DcDebtCase::getLegalSupportId, bo.getLegalSupportId());
+        lqw.like(StringUtils.isNotBlank(bo.getLegalSupportName()), DcDebtCase::getLegalSupportName, bo.getLegalSupportName());
         return lqw;
     }
 
@@ -123,7 +125,7 @@ public class DcDebtCaseServiceImpl implements IDcDebtCaseService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcDebtCase entity){
+    private void validEntityBeforeSave(DcDebtCase entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -136,7 +138,7 @@ public class DcDebtCaseServiceImpl implements IDcDebtCaseService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;
