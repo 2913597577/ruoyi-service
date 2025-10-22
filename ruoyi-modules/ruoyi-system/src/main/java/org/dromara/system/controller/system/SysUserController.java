@@ -74,7 +74,8 @@ public class SysUserController extends BaseController {
         List<RoleDTO> roles = loginUser.getRoles();
         // 法务支持
         SysUserBo user = new SysUserBo();
-        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
+        if ("1969581806504747009".equals(deptId) && roles != null
+            && roles.get(0).getRoleId() == 1980464458593992706L) {
             user.setUserId(loginUser.getUserId());
         }
         user.setDeptId(Long.valueOf(deptId));
