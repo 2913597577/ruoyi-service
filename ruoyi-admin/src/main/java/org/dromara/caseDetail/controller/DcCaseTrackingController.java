@@ -11,6 +11,8 @@ import org.dromara.caseDetail.domain.vo.DcDebtCaseVo;
 import org.dromara.caseDetail.service.IDcCaseTrackingService;
 import org.dromara.caseDetail.service.IDcDebtCaseService;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.dto.RoleDTO;
+import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -19,6 +21,7 @@ import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
@@ -49,6 +52,15 @@ public class DcCaseTrackingController extends BaseController {
     @SaCheckPermission("caseProgress:caseProgress:list")
     @GetMapping("/list")
     public TableDataInfo<DcCaseTrackingVo> list(DcCaseTrackingBo bo, PageQuery pageQuery) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        // 法务支持
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
+            bo.setLegalSupportId(loginUser.getUserId());
+        }
         return dcCaseTrackingService.queryPageList(bo, pageQuery);
     }
 
@@ -59,6 +71,16 @@ public class DcCaseTrackingController extends BaseController {
     @Log(title = "案件进展表", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(DcCaseTrackingBo bo, HttpServletResponse response) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return;
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        // 法务支持
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
+            bo.setLegalSupportId(loginUser.getUserId());
+        }
+
         List<DcCaseTrackingVo> list = dcCaseTrackingService.queryList(bo);
         ExcelUtil.exportExcel(list, "案件进展表", DcCaseTrackingVo.class, response);
     }

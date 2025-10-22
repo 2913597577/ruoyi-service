@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.validate.AddGroup;
@@ -55,8 +56,9 @@ public class DcCustomerRiskRefundController extends BaseController {
         if (loginUser == null) {
             return null;
         }
+        List<RoleDTO> roles = loginUser.getRoles();
         // 法务支持
-        if (loginUser.getRoleId() == 1980464458593992706L) {
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
             bo.setLawyerId(loginUser.getUserId());
         }
         return dcCustomerRiskRefundService.queryPageList(bo, pageQuery);
@@ -73,8 +75,9 @@ public class DcCustomerRiskRefundController extends BaseController {
         if (loginUser == null) {
             return;
         }
+        List<RoleDTO> roles = loginUser.getRoles();
         // 法务支持
-        if (loginUser.getRoleId() == 1980464458593992706L) {
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
             bo.setLawyerId(loginUser.getUserId());
         }
         List<DcCustomerRiskRefundVo> list = dcCustomerRiskRefundService.queryList(bo);

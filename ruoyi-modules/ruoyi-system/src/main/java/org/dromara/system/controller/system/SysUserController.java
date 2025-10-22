@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.SystemConstants;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -66,7 +67,16 @@ public class SysUserController extends BaseController {
 
     @GetMapping("/listByDept")
     public TableDataInfo<SysUserVo> list(@RequestParam String deptId, PageQuery pageQuery) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        // 法务支持
         SysUserBo user = new SysUserBo();
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
+            user.setUserId(loginUser.getUserId());
+        }
         user.setDeptId(Long.valueOf(deptId));
         return userService.selectPageUserList(user, pageQuery);
     }

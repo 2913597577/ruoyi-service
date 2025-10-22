@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.service.commonService;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Validated
 @RequiredArgsConstructor
@@ -118,6 +121,11 @@ public class commonController {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return R.warn("用户未登录");
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        // 法务支持
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
+            legalSupportId = loginUser.getUserId() + "";
         }
         return R.ok(commonService.getAllTrackingRecords(customerId, legalSupportId, trackingType, trackingTime, nextTrackingTime, pageNum, pageSize));
     }

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
@@ -49,8 +50,9 @@ public class DcCustomerTrackingController extends BaseController {
         if (loginUser == null) {
             return null;
         }
+        List<RoleDTO> roles = loginUser.getRoles();
         // 法务支持
-        if (loginUser.getRoleId() == 1980464458593992706L) {
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
             bo.setLegalSupportId(loginUser.getUserId());
         }
         return dcCustomerTrackingService.queryPageList(bo, pageQuery);
@@ -67,8 +69,9 @@ public class DcCustomerTrackingController extends BaseController {
         if (loginUser == null) {
             return;
         }
+        List<RoleDTO> roles = loginUser.getRoles();
         // 法务支持
-        if (loginUser.getRoleId() == 1980464458593992706L) {
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
             bo.setLegalSupportId(loginUser.getUserId());
         }
         List<DcCustomerTrackingVo> list = dcCustomerTrackingService.queryList(bo);

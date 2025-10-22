@@ -9,6 +9,7 @@ import org.dromara.caseDetail.domain.bo.DcInsuranceCaseBo;
 import org.dromara.caseDetail.domain.vo.DcInsuranceCaseVo;
 import org.dromara.caseDetail.service.IDcInsuranceCaseService;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
@@ -45,6 +46,15 @@ public class DcInsuranceCaseController extends BaseController {
     @SaCheckPermission("insuranceCase:insuranceCase:list")
     @GetMapping("/list")
     public TableDataInfo<DcInsuranceCaseVo> list(DcInsuranceCaseBo bo, PageQuery pageQuery) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        // 法务支持
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
+            bo.setLegalSupportId(loginUser.getUserId());
+        }
         return dcInsuranceCaseService.queryPageList(bo, pageQuery);
     }
 
@@ -55,6 +65,15 @@ public class DcInsuranceCaseController extends BaseController {
     @Log(title = "保险记录表", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(DcInsuranceCaseBo bo, HttpServletResponse response) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return;
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        // 法务支持
+        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
+            bo.setLegalSupportId(loginUser.getUserId());
+        }
         List<DcInsuranceCaseVo> list = dcInsuranceCaseService.queryList(bo);
         ExcelUtil.exportExcel(list, "保险记录表", DcInsuranceCaseVo.class, response);
     }
