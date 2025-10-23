@@ -200,5 +200,10 @@ public class DcCustomerInformationVo implements Serializable {
      * 客户服务城市
      */
     private String customerCity;
+    /**
+     * 是否分配法务支持 0-否 1-是
+     */
+    private Integer isAssigned;
+
 
 }

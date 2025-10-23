@@ -153,6 +153,7 @@ public class DcCustomerInformationController extends BaseController {
             return R.warn("该员工不是法务支持员工");
         }
         dcCustomerInformationVo.setLawyerId(Long.parseLong(userId));
+        dcCustomerInformationVo.setIsAssigned(1);
         DcCustomerInformationBo update = new DcCustomerInformationBo();
         MapstructUtils.convert(dcCustomerInformationVo, update);
         if (dcCustomerInformationService.updateByBo(update)) {

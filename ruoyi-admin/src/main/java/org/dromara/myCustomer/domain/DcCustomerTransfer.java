@@ -232,4 +232,17 @@ public class DcCustomerTransfer extends TenantEntity {
      */
     private String customerCity;
 
+    /**
+     * 审核人名称
+     */
+    private String auditUserName;
+    /**
+     * 审核人id
+     */
+    private Long auditUserId;
+    /**
+     * 审核时间
+     */
+    private Date auditTime;
+
 }

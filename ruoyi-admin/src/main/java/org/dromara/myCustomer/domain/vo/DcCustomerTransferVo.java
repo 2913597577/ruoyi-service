@@ -269,4 +269,18 @@ public class DcCustomerTransferVo implements Serializable {
      */
     @ExcelProperty(value = "客户服务城市")
     private String customerCity;
+    /**
+     * 审核人名称
+     */
+    @ExcelProperty(value = "审核人名称")
+    private String auditUserName;
+    /**
+     * 审核人id
+     */
+    private Long auditUserId;
+    /**
+     * 审核时间
+     */
+    @ExcelProperty(value = "审核时间")
+    private Date auditTime;
 }

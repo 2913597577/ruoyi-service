@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
@@ -23,6 +24,7 @@ import org.dromara.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -105,6 +107,8 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(StringUtils.isNotBlank(bo.getLawyerConsultation()), DcCustomerTransfer::getLawyerConsultation, bo.getLawyerConsultation());
         lqw.eq(StringUtils.isNotBlank(bo.getOtherFee()), DcCustomerTransfer::getOtherFee, bo.getOtherFee());
         lqw.eq(bo.getFinanceConfirmed() != null, DcCustomerTransfer::getFinanceConfirmed, bo.getFinanceConfirmed());
+        lqw.eq(bo.getAuditUserId() != null, DcCustomerTransfer::getAuditUserId, bo.getAuditUserId());
+        lqw.like(StringUtils.isNotBlank(bo.getAuditUserName()), DcCustomerTransfer::getAuditUserName, bo.getAuditUserName());
         return lqw;
     }
 
@@ -163,8 +167,12 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     @Override
     public Boolean audit(Long id, Integer auditStatus) {
         Long userId = LoginHelper.getUserId();
+        LoginUser loginUser = LoginHelper.getLoginUser();
         DcCustomerTransfer dcCustomerTransfer = baseMapper.selectById(id);
         dcCustomerTransfer.setFinanceConfirmed(auditStatus);
+        dcCustomerTransfer.setAuditUserId(userId);
+        dcCustomerTransfer.setAuditUserName(loginUser == null ? "" : loginUser.getNickname());
+        dcCustomerTransfer.setAuditTime(new Date());
         boolean flag = baseMapper.updateById(dcCustomerTransfer) > 0;
         if (flag && auditStatus == 1) {
             DcCustomerInformationBo dcCustomerInformation = new DcCustomerInformationBo();

@@ -92,6 +92,7 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         lqw.eq(StringUtils.isNotBlank(bo.getRemarks()), DcCustomerInformation::getRemarks, bo.getRemarks());
         lqw.eq(bo.getActionType() != null, DcCustomerInformation::getActionType, bo.getActionType());
         lqw.eq(bo.getTransferId() != null, DcCustomerInformation::getTransferId, bo.getTransferId());
+        lqw.eq(bo.getIsAssigned() != null, DcCustomerInformation::getIsAssigned, bo.getIsAssigned());
         return lqw;
     }
 

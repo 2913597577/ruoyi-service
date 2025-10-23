@@ -115,6 +115,8 @@ public class DcCustomerTransferController extends BaseController {
             return R.warn("财务审核通过，不允许修改");
         }
         bo.setFinanceConfirmed(0);
+        bo.setAuditUserName(null);
+        bo.setAuditUserId(null);
         return toAjax(dcCustomerTransferService.updateByBo(bo));
     }
 
