@@ -19,14 +19,14 @@ import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.mapper.DcCustomerTransferMapper;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
+import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
+import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
+import org.dromara.performance.service.IDcCustomerPerformanceService;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 客户信息录入Service业务层处理
@@ -42,6 +42,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     private final DcCustomerTransferMapper baseMapper;
     private final DcCustomerInformationServiceImpl dcCustomerInformationService;
     private final ISysUserService sysUserService;
+    private final IDcCustomerPerformanceService dcCustomerPerformanceService;
 
     /**
      * 查询客户信息录入
@@ -51,7 +52,14 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
      */
     @Override
     public DcCustomerTransferVo queryById(Long id) {
-        return baseMapper.selectVoById(id);
+        DcCustomerTransferVo vo = baseMapper.selectVoById(id);
+        if (vo != null) {
+            DcCustomerPerformanceBo dcCustomerPerformanceBo = new DcCustomerPerformanceBo();
+            dcCustomerPerformanceBo.setTransferId(vo.getId());
+            List<DcCustomerPerformanceVo> dcCustomerPerformanceVos = dcCustomerPerformanceService.queryList(dcCustomerPerformanceBo);
+            vo.setPerformanceInfo(dcCustomerPerformanceVos);
+        }
+        return vo;
     }
 
     /**
@@ -65,6 +73,12 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     public TableDataInfo<DcCustomerTransferVo> queryPageList(DcCustomerTransferBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<DcCustomerTransfer> lqw = buildQueryWrapper(bo);
         Page<DcCustomerTransferVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        for (DcCustomerTransferVo vo : result.getRecords()) {
+            DcCustomerPerformanceBo dcCustomerPerformanceBo = new DcCustomerPerformanceBo();
+            dcCustomerPerformanceBo.setTransferId(vo.getId());
+            List<DcCustomerPerformanceVo> dcCustomerPerformanceVos = dcCustomerPerformanceService.queryList(dcCustomerPerformanceBo);
+            vo.setPerformanceInfo(dcCustomerPerformanceVos);
+        }
         return TableDataInfo.build(result);
     }
 
@@ -77,7 +91,14 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     @Override
     public List<DcCustomerTransferVo> queryList(DcCustomerTransferBo bo) {
         LambdaQueryWrapper<DcCustomerTransfer> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
+        List<DcCustomerTransferVo> list = baseMapper.selectVoList(lqw);
+        for (DcCustomerTransferVo vo : list) {
+            DcCustomerPerformanceBo dcCustomerPerformanceBo = new DcCustomerPerformanceBo();
+            dcCustomerPerformanceBo.setTransferId(vo.getId());
+            List<DcCustomerPerformanceVo> dcCustomerPerformanceVos = dcCustomerPerformanceService.queryList(dcCustomerPerformanceBo);
+            vo.setPerformanceInfo(dcCustomerPerformanceVos);
+        }
+        return list;
     }
 
     private LambdaQueryWrapper<DcCustomerTransfer> buildQueryWrapper(DcCustomerTransferBo bo) {
@@ -125,6 +146,17 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
+            for (DcCustomerPerformanceBo dcCustomerPerformanceBo : bo.getPerformanceInfo()) {
+                if (dcCustomerPerformanceBo.getUserId() == null) {
+                    continue;
+                }
+                dcCustomerPerformanceBo.setTransferId(add.getId());
+                dcCustomerPerformanceBo.setUserId(dcCustomerPerformanceBo.getUserId());
+                dcCustomerPerformanceBo.setUserName(dcCustomerPerformanceBo.getUserName());
+                dcCustomerPerformanceBo.setBalance(dcCustomerPerformanceBo.getBalance());
+                dcCustomerPerformanceBo.setCity(dcCustomerPerformanceBo.getCity());
+                dcCustomerPerformanceService.insertByBo(dcCustomerPerformanceBo);
+            }
         }
         return flag;
     }
@@ -139,6 +171,21 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     public Boolean updateByBo(DcCustomerTransferBo bo) {
         DcCustomerTransfer update = MapstructUtils.convert(bo, DcCustomerTransfer.class);
         validEntityBeforeSave(update);
+        for (DcCustomerPerformanceBo dcCustomerPerformanceBo : bo.getPerformanceInfo()) {
+            if (dcCustomerPerformanceBo.getUserId() == null) {
+                continue;
+            }
+            dcCustomerPerformanceBo.setTransferId(update.getId());
+            dcCustomerPerformanceBo.setUserId(dcCustomerPerformanceBo.getUserId());
+            dcCustomerPerformanceBo.setUserName(dcCustomerPerformanceBo.getUserName());
+            dcCustomerPerformanceBo.setBalance(dcCustomerPerformanceBo.getBalance());
+            dcCustomerPerformanceBo.setCity(dcCustomerPerformanceBo.getCity());
+            if (dcCustomerPerformanceBo.getId() == null) {
+                dcCustomerPerformanceService.insertByBo(dcCustomerPerformanceBo);
+                continue;
+            }
+            dcCustomerPerformanceService.updateByBo(dcCustomerPerformanceBo);
+        }
         return baseMapper.updateById(update) > 0;
     }
 
@@ -161,7 +208,18 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return baseMapper.deleteByIds(ids) > 0;
+        boolean flag = baseMapper.deleteByIds(ids) > 0;
+        if (flag) {
+            for (Long id : ids) {
+                DcCustomerPerformanceBo dcCustomerPerformanceBo = new DcCustomerPerformanceBo();
+                dcCustomerPerformanceBo.setTransferId(id);
+                List<DcCustomerPerformanceVo> dcCustomerPerformanceVos = dcCustomerPerformanceService.queryList(dcCustomerPerformanceBo);
+                for (DcCustomerPerformanceVo dcCustomerPerformanceVo : dcCustomerPerformanceVos) {
+                    dcCustomerPerformanceService.deleteWithValidByIds(Collections.singletonList(dcCustomerPerformanceVo.getId()), true);
+                }
+            }
+        }
+        return flag;
     }
 
     @Override

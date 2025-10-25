@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.file.MimeTypeUtils;
 import org.dromara.common.core.validate.AddGroup;
@@ -18,12 +19,14 @@ import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.helper.DataPermissionHelper;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 import org.dromara.customer.service.impl.DcCustomerInformationServiceImpl;
 import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
+import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.dromara.system.service.ISysOssService;
 import org.springframework.http.MediaType;
@@ -31,6 +34,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -98,7 +102,29 @@ public class DcCustomerTransferController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody DcCustomerTransferBo bo) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("请先登录");
+        }
+        BigDecimal total = BigDecimal.ZERO;
+        if (bo.getActualPayment() != null) {
+            total = bo.getActualPayment().add(bo.getBalanceStatus() == null ? BigDecimal.ZERO : bo.getBalanceStatus());
+        }
+
+        // 计算 performanceInfo 中的 balance 总和
+        BigDecimal performanceTotal = BigDecimal.ZERO;
+        for (DcCustomerPerformanceBo dcCustomerPerformanceBo : bo.getPerformanceInfo()) {
+            if (dcCustomerPerformanceBo.getBalance() != null) {
+                performanceTotal = performanceTotal.add(dcCustomerPerformanceBo.getBalance());
+            }
+        }
+
+        // 检查 performance balance 总和是否超过 total
+        if (performanceTotal.compareTo(total) > 0) {
+            return R.warn("业绩分配总额不能超过合同总金额");
+        }
         bo.setFinanceConfirmed(0);
+        bo.setInviterId(loginUser.getUserId());
         return toAjax(dcCustomerTransferService.insertByBo(bo));
     }
 
@@ -113,6 +139,23 @@ public class DcCustomerTransferController extends BaseController {
         DcCustomerTransferVo dcCustomerTransferVo = dcCustomerTransferService.queryById(bo.getId());
         if (dcCustomerTransferVo.getFinanceConfirmed() != null && dcCustomerTransferVo.getFinanceConfirmed() == 1) {
             return R.warn("财务审核通过，不允许修改");
+        }
+        BigDecimal total = BigDecimal.ZERO;
+        if (bo.getActualPayment() != null) {
+            total = bo.getActualPayment().add(bo.getBalanceStatus() == null ? BigDecimal.ZERO : bo.getBalanceStatus());
+        }
+
+        // 计算 performanceInfo 中的 balance 总和
+        BigDecimal performanceTotal = BigDecimal.ZERO;
+        for (DcCustomerPerformanceBo dcCustomerPerformanceBo : bo.getPerformanceInfo()) {
+            if (dcCustomerPerformanceBo.getBalance() != null) {
+                performanceTotal = performanceTotal.add(dcCustomerPerformanceBo.getBalance());
+            }
+        }
+
+        // 检查 performance balance 总和是否超过 total
+        if (performanceTotal.compareTo(total) > 0) {
+            return R.warn("业绩分配总额不能超过合同总金额");
         }
         bo.setFinanceConfirmed(0);
         bo.setAuditUserName(null);

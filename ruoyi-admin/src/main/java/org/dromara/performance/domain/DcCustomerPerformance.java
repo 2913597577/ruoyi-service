@@ -1,11 +1,14 @@
 package org.dromara.performance.domain;
 
-import org.dromara.common.tenant.core.TenantEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.math.BigDecimal;
 
 /**
  * 业绩归属登记对象 dc_customer_performance
@@ -40,12 +43,12 @@ public class DcCustomerPerformance extends TenantEntity {
     /**
      * 业绩所属用户名字
      */
-    private Long userName;
+    private String userName;
 
     /**
      * 业绩所属金额
      */
-    private Long balance;
+    private BigDecimal balance;
 
     /**
      * 业绩所属城市

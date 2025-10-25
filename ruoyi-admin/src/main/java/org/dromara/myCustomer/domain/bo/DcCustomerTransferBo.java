@@ -9,9 +9,11 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
+import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 客户信息录入业务对象 dc_customer_transfer
@@ -240,6 +242,8 @@ public class DcCustomerTransferBo extends BaseEntity {
      * 审核时间
      */
     private Date auditTime;
+
+    private List<DcCustomerPerformanceBo> performanceInfo;
 
 
 }

@@ -17,6 +17,8 @@ import org.dromara.caseDetail.mapper.DcDebtCaseMapper;
 import org.dromara.caseDetail.mapper.DcInsuranceCaseMapper;
 import org.dromara.caseDetail.service.IDcCaseTrackingService;
 import org.dromara.caseDetail.service.IDcInsuranceCaseService;
+import org.dromara.common.core.domain.dto.RoleDTO;
+import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.customer.domain.DcCustomerIntention;
@@ -68,12 +70,19 @@ public class commonService {
     private final IDcInsuranceCaseService dcInsuranceCaseService;
 
     public JSONArray getCustomerByUserId(long userId) {
-        boolean superAdmin = LoginHelper.isSuperAdmin(userId);
-        List<DcCustomerInformationVo> list = new ArrayList<>();
-        if (superAdmin) {
-            list = informationMapper.selectVoList();
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
         }
-        if (!superAdmin) {
+        
+
+        List<RoleDTO> roles = loginUser.getRoles();
+        // 法务支持员工
+        boolean isLegalSupport = roles != null && roles.get(0).getRoleId() == 1980464458593992706L;
+
+        List<DcCustomerInformationVo> list = informationMapper.selectVoList();
+
+        if (isLegalSupport) {
             Map<String, Object> queryMap = new HashMap<>();
             queryMap.put("lawyer_id", userId);
             list = informationMapper.selectVoByMap(queryMap);

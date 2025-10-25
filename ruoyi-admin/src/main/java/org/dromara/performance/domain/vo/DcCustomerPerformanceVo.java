@@ -1,17 +1,14 @@
 package org.dromara.performance.domain.vo;
 
-import org.dromara.performance.domain.DcCustomerPerformance;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
-import org.dromara.common.excel.convert.ExcelDictConvert;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.dromara.performance.domain.DcCustomerPerformance;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
-
+import java.math.BigDecimal;
 
 
 /**
@@ -50,13 +47,13 @@ public class DcCustomerPerformanceVo implements Serializable {
      * 业绩所属用户名字
      */
     @ExcelProperty(value = "业绩所属用户名字")
-    private Long userName;
+    private String userName;
 
     /**
      * 业绩所属金额
      */
     @ExcelProperty(value = "业绩所属金额")
-    private Long balance;
+    private BigDecimal balance;
 
     /**
      * 业绩所属城市

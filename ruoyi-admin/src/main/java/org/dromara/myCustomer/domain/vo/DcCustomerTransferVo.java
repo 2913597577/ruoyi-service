@@ -5,11 +5,13 @@ import cn.idev.excel.annotation.ExcelProperty;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
+import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -283,4 +285,7 @@ public class DcCustomerTransferVo implements Serializable {
      */
     @ExcelProperty(value = "审核时间")
     private Date auditTime;
+
+    private List<DcCustomerPerformanceVo> performanceInfo;
+
 }
