@@ -42,6 +42,11 @@ public interface IDcCustomerInformationService {
     List<DcCustomerInformationVo> queryList(DcCustomerInformationBo bo);
 
     /**
+     * 查询符合条件的客户数量
+     */
+    Long queryCount(DcCustomerInformationBo bo);
+
+    /**
      * 新增客户总表
      *
      * @param bo 客户总表

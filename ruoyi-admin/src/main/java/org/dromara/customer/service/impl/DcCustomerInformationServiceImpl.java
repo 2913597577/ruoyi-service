@@ -71,6 +71,12 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         return baseMapper.selectVoList(lqw);
     }
 
+    @Override
+    public Long queryCount(DcCustomerInformationBo bo) {
+        LambdaQueryWrapper<DcCustomerInformation> lqw = buildQueryWrapper(bo);
+        return baseMapper.selectCount(lqw);
+    }
+
     private LambdaQueryWrapper<DcCustomerInformation> buildQueryWrapper(DcCustomerInformationBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerInformation> lqw = Wrappers.lambdaQuery();

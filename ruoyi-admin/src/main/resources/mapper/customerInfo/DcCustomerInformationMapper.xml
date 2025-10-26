@@ -29,4 +29,37 @@
         </if>
     </select>
 
+    <select id="selectCustomerPackageType" resultType="map">
+        SELECT package_type, COUNT(1) as count
+        FROM dc_customer_information
+        WHERE del_flag = 0
+        <if test="lawyerId != null">
+            AND lawyer_id = #{lawyerId}
+        </if>
+        GROUP BY package_type
+
+    </select>
+
+    <select id="selectExpiringCustomers" resultType="map">
+        SELECT *
+        FROM dc_customer_information
+        WHERE del_flag = 0
+        AND expire_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 2 DAY)
+        AND DATE_ADD(CURDATE(), INTERVAL 2 DAY)
+        <if test="lawyerId != null">
+            AND lawyer_id = #{lawyerId}
+        </if>
+    </select>
+
+    <select id="selectCustomersWithBalance" resultType="map">
+        SELECT *
+        FROM dc_customer_information
+        WHERE del_flag = 0
+        AND balance > 0
+        <if test="lawyerId != null">
+            AND lawyer_id = #{lawyerId}
+        </if>
+    </select>
+
+
 </mapper>

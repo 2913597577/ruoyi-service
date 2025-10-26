@@ -1,5 +1,6 @@
 package org.dromara.customer.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.customer.domain.DcCustomerInformation;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
@@ -18,4 +19,11 @@ public interface DcCustomerInformationMapper extends BaseMapperPlus<DcCustomerIn
     List<Map<String, Object>> selectCustomerCountByType();
 
     List<Map<String, Object>> selectByYearMonth(Integer year, Integer month, Integer day, Long userId);
+
+    List<Map<String, Object>> selectCustomerPackageType(@Param("lawyerId") Long lawyerId);
+
+    List<Map<String, Object>> selectExpiringCustomers(@Param("lawyerId") Long lawyerId);
+
+    List<Map<String, Object>> selectCustomersWithBalance(@Param("lawyerId") Long lawyerId);
+
 }

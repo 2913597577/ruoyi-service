@@ -4,4 +4,26 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dromara.legalSupport.mapper.DcCustomerOutVisitMapper">
 
+    <select id="selectMonthlyOutVisit" resultType="map">
+        SELECT *
+        FROM dc_customer_out_visit
+        WHERE del_flag = 0
+        AND visit_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01')
+        AND LAST_DAY(CURDATE())
+        <if test="legalSupportId != null">
+            AND legal_support_id = #{legalSupportId}
+        </if>
+    </select>
+
+    <select id="selectTodayFollowUpByLegalSupport" resultType="map">
+        SELECT *
+        FROM dc_customer_out_visit
+        WHERE del_flag = 0
+        AND next_visit_time >= CURDATE()
+        AND next_visit_time &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+        <if test="legalSupportId != null">
+            AND legal_support_id = #{legalSupportId}
+        </if>
+    </select>
+
 </mapper>

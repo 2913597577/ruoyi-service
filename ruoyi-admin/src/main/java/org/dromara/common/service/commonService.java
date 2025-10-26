@@ -13,6 +13,7 @@ import org.dromara.caseDetail.domain.bo.DcInsuranceCaseBo;
 import org.dromara.caseDetail.domain.vo.DcCaseTrackingVo;
 import org.dromara.caseDetail.domain.vo.DcDebtCaseVo;
 import org.dromara.caseDetail.domain.vo.DcInsuranceCaseVo;
+import org.dromara.caseDetail.mapper.DcCaseTrackingMapper;
 import org.dromara.caseDetail.mapper.DcDebtCaseMapper;
 import org.dromara.caseDetail.mapper.DcInsuranceCaseMapper;
 import org.dromara.caseDetail.service.IDcCaseTrackingService;
@@ -23,15 +24,22 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.customer.domain.DcCustomerIntention;
 import org.dromara.customer.domain.DcCustomerRiskRefund;
+import org.dromara.customer.domain.bo.DcCustomerInformationBo;
+import org.dromara.customer.domain.bo.DcCustomerIntentionBo;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 import org.dromara.customer.domain.vo.DcCustomerIntentionVo;
 import org.dromara.customer.mapper.DcCustomerInformationMapper;
 import org.dromara.customer.mapper.DcCustomerIntentionMapper;
+import org.dromara.customer.mapper.DcCustomerIntentionTrackingMapper;
 import org.dromara.customer.mapper.DcCustomerRiskRefundMapper;
+import org.dromara.customer.service.IDcCustomerInformationService;
+import org.dromara.customer.service.IDcCustomerIntentionService;
 import org.dromara.legalSupport.domain.bo.DcCustomerJobOrderBo;
 import org.dromara.legalSupport.domain.bo.DcCustomerOutVisitBo;
 import org.dromara.legalSupport.domain.vo.DcCustomerJobOrderVo;
 import org.dromara.legalSupport.domain.vo.DcCustomerOutVisitVo;
+import org.dromara.legalSupport.mapper.DcCustomerJobOrderMapper;
+import org.dromara.legalSupport.mapper.DcCustomerOutVisitMapper;
 import org.dromara.legalSupport.service.IDcCustomerJobOrderService;
 import org.dromara.legalSupport.service.IDcCustomerOutVisitService;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
@@ -41,9 +49,12 @@ import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.mapper.DcCustomerTrackingMapper;
 import org.dromara.myCustomer.mapper.DcCustomerTransferMapper;
 import org.dromara.myCustomer.service.IDcCustomerTrackingService;
+import org.dromara.performance.mapper.DcCustomerPerformanceMapper;
+import org.dromara.performance.mapper.DcPerformanceTaskMapper;
 import org.dromara.system.service.ISysRoleService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,8 +72,17 @@ public class commonService {
     private final DcCustomerTrackingMapper trackingMapper;
     private final DcInsuranceCaseMapper insuranceCaseMapper;
     private final DcDebtCaseMapper debtCaseMapper;
+    private final DcCustomerOutVisitMapper customerOutVisitMapper;
+    private final DcCustomerJobOrderMapper dcCustomerJobOrderMapper;
+    private final DcDebtCaseMapper dcDebtCaseMapper;
+    private final DcCaseTrackingMapper dcCaseTrackingMapper;
+    private final DcCustomerPerformanceMapper dcCustomerPerformanceMapper;
+    private final DcPerformanceTaskMapper dcPerformanceTaskMapper;
+    private final DcCustomerIntentionTrackingMapper dcCustomerIntentionTrackingMapper;
     private final ISysRoleService roleService;
 
+    private final IDcCustomerInformationService dcCustomerInformationService;
+    private final IDcCustomerIntentionService dcCustomerIntentionService;
     private final IDcCustomerTrackingService dcCustomerTrackingService;
     private final IDcCustomerJobOrderService dcCustomerJobOrderService;
     private final IDcCustomerOutVisitService dcCustomerOutVisitService;
@@ -74,7 +94,7 @@ public class commonService {
         if (loginUser == null) {
             return null;
         }
-        
+
 
         List<RoleDTO> roles = loginUser.getRoles();
         // 法务支持员工
@@ -364,6 +384,150 @@ public class commonService {
             json.add(jsonObject);
         }
         return json;
+    }
+
+    public JSONObject getLegalSupportPerformance(Long userId) {
+
+        JSONObject result = new JSONObject();
+
+        //  客户
+        DcCustomerInformationBo dcCustomerInformationBo = new DcCustomerInformationBo();
+        dcCustomerInformationBo.setLawyerId(userId);
+        List<DcCustomerInformationVo> dcCustomerInformationVos = dcCustomerInformationService.queryList(dcCustomerInformationBo);
+
+        // todo 近三十天未跟进
+
+        // 意向客户
+        DcCustomerIntentionBo dcCustomerIntentionBo = new DcCustomerIntentionBo();
+        dcCustomerIntentionBo.setLegalSupportId(userId);
+        List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryList(dcCustomerIntentionBo);
+        // 临期客户
+        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(userId);
+        // 尾款客户
+        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(userId);
+        // 本月内勤数量
+        List<Map<String, Object>> monthlyTracking = trackingMapper.selectMonthlyTrackingByLegalSupport(userId);
+        // 出访数量
+        List<Map<String, Object>> monthlyOutVisit = customerOutVisitMapper.selectMonthlyOutVisit(userId);
+        // 保险数量
+        List<Map<String, Object>> monthlyInsurance = insuranceCaseMapper.selectMonthlyInsuranceCase(userId);
+        // 工单数量
+        List<Map<String, Object>> monthlyJobOrder = dcCustomerJobOrderMapper.selectMonthlyJobOrder(userId);
+        // 案件数量
+        List<Map<String, Object>> monthlyCase = dcDebtCaseMapper.selectMonthlyDebtCase(userId);
+        // 案件跟踪数量
+        List<Map<String, Object>> monthlyCaseTracking = dcCaseTrackingMapper.selectMonthlyCaseTracking(userId);
+
+        int customerTotal = dcCustomerInformationVos == null ? 0 : dcCustomerInformationVos.size();
+        int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
+        int expiringTotal = expiringCustomers == null ? 0 : expiringCustomers.size();
+        int balanceTotal = customersWithBalance == null ? 0 : customersWithBalance.size();
+        int trackingTotal = monthlyTracking == null ? 0 : monthlyTracking.size();
+        int outVisitTotal = monthlyOutVisit == null ? 0 : monthlyOutVisit.size();
+        int insuranceTotal = monthlyInsurance == null ? 0 : monthlyInsurance.size();
+        int jobOrderTotal = monthlyJobOrder == null ? 0 : monthlyJobOrder.size();
+        int caseTotal = monthlyCase == null ? 0 : monthlyCase.size();
+        int caseTrackingTotal = monthlyCaseTracking == null ? 0 : monthlyCaseTracking.size();
+
+        // 客户统计
+        JSONObject customerCount = new JSONObject();
+        customerCount.put("customerTotal", customerTotal);
+        customerCount.put("intentionTotal", intentionTotal);
+        customerCount.put("expiringTotal", expiringTotal);
+        customerCount.put("balanceTotal", balanceTotal);
+        customerCount.put("trackingTotal", trackingTotal);
+        customerCount.put("outVisitTotal", outVisitTotal);
+        customerCount.put("insuranceTotal", insuranceTotal);
+        customerCount.put("jobOrderTotal", jobOrderTotal);
+        customerCount.put("caseTotal", caseTotal);
+        customerCount.put("caseTrackingTotal", caseTrackingTotal);
+
+        // 业绩统计
+
+        // 本月已完成业绩 userId, username,monthBalance,performanceRank
+        List<Map<String, Object>> monthGoal = dcPerformanceTaskMapper.selectPerformanceTaskByLegalSupportAndMonth(userId, null);
+        List<Map<String, Object>> monthAchievedPerformance = dcCustomerPerformanceMapper.selectUserPerformanceRank(null, null, userId);
+        // 年度累计业绩金额
+        List<Map<String, Object>> YearAchievedPerformance = dcCustomerPerformanceMapper.selectUserPerformanceRank(LocalDate.now().getYear(), null, userId);
+        // 套餐类型对比
+        List<Map<String, Object>> packageType = informationMapper.selectCustomerPackageType(userId);
+
+        JSONObject performanceCount = new JSONObject();
+        Map<String, Object> map1 = monthAchievedPerformance != null && !monthAchievedPerformance.isEmpty() ? monthAchievedPerformance.get(0) : null;
+        Map<String, Object> map2 = YearAchievedPerformance != null && !YearAchievedPerformance.isEmpty() ? YearAchievedPerformance.get(0) : null;
+        Map<String, Object> map3 = monthGoal != null && !monthGoal.isEmpty() ? monthGoal.get(0) : null;
+        String monthAchievedBalance = "0";
+        String monthPerformanceRank = "";
+        String yearAchievedBalance = "0";
+        String yearPerformanceRank = "";
+        String monthPerformanceGoal = "0";
+        String monthVisitGoal = "0";
+        if (map1 != null && !map1.isEmpty()) {
+            monthAchievedBalance = map1.get("monthBalance") == null ? "0" : map1.get("monthBalance").toString();
+            monthPerformanceRank = map1.get("performanceRank") == null ? "" : map1.get("performanceRank").toString();
+        }
+        if (map2 != null && !map2.isEmpty()) {
+            yearAchievedBalance = map2.get("monthBalance") == null ? "0" : map2.get("monthBalance").toString();
+            yearPerformanceRank = map2.get("performanceRank") == null ? "" : map2.get("performanceRank").toString();
+        }
+        if (map3 != null && !map3.isEmpty()) {
+            monthPerformanceGoal = map3.get("sum1") == null ? "0" : map3.get("sum1").toString();
+            monthVisitGoal = map3.get("sum2") == null ? "0" : map3.get("sum2").toString();
+        }
+        performanceCount.put("monthAchievedBalance", monthAchievedBalance);
+        performanceCount.put("monthPerformanceRank", monthPerformanceRank);
+        performanceCount.put("yearAchievedBalance", yearAchievedBalance);
+        performanceCount.put("yearPerformanceRank", yearPerformanceRank);
+        performanceCount.put("monthPerformanceGoal", monthPerformanceGoal);
+        performanceCount.put("monthVisitGoal", monthVisitGoal);
+
+        // 今日代办事项
+        // 意向客户
+        List<Map<String, Object>> intentionTodayNeed = dcCustomerIntentionTrackingMapper.selectTodayFollowUpByLegalSupport(userId);
+        // 内勤记录
+        List<Map<String, Object>> trackingTodayNeed = trackingMapper.selectTodayFollowUpByLegalSupport(userId);
+        // 出访记录
+        List<Map<String, Object>> outVisitTodayNeed = customerOutVisitMapper.selectTodayFollowUpByLegalSupport(userId);
+        // 案件跟踪记录
+        List<Map<String, Object>> caseTodayNeed = dcCaseTrackingMapper.selectTodayFollowUpByLegalSupport(userId);
+
+        JSONArray neededInfo = new JSONArray();
+        for (Map<String, Object> map : intentionTodayNeed) {
+            JSONObject todayNeed = new JSONObject();
+            todayNeed.put("customerId", map.get("customer_id"));
+            todayNeed.put("customerName", map.get("customer_name"));
+            todayNeed.put("remark", "意向客户跟踪");
+            neededInfo.add(todayNeed);
+        }
+        for (Map<String, Object> map : trackingTodayNeed) {
+            JSONObject todayNeed = new JSONObject();
+            Long customerId = map.get("customer_id") == null ? null : Long.parseLong(map.get("customer_id").toString());
+            DcCustomerTransfer dcCustomerTransfer = transferMapper.selectById(customerId);
+            todayNeed.put("customerId", map.get("customer_id"));
+            todayNeed.put("customerName", dcCustomerTransfer == null ? "" : dcCustomerTransfer.getCompanyName());
+            todayNeed.put("remark", "内勤跟踪");
+            neededInfo.add(todayNeed);
+        }
+        for (Map<String, Object> map : outVisitTodayNeed) {
+            JSONObject todayNeed = new JSONObject();
+            todayNeed.put("customerId", map.get("customer_id"));
+            todayNeed.put("customerName", map.get("customer_name"));
+            todayNeed.put("remark", "出访跟踪");
+            neededInfo.add(todayNeed);
+        }
+        for (Map<String, Object> map : caseTodayNeed) {
+            JSONObject todayNeed = new JSONObject();
+            todayNeed.put("customerId", map.get("customer_id"));
+            todayNeed.put("customerName", map.get("customer_name"));
+            todayNeed.put("remark", "案件记录跟踪");
+            neededInfo.add(todayNeed);
+        }
+
+        result.put("customerCount", customerCount);
+        result.put("performanceCount", performanceCount);
+        result.put("neededInfo", neededInfo);
+        result.put("packageType", packageType);
+        return result;
     }
 
 }

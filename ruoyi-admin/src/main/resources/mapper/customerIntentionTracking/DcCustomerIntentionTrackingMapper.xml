@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dromara.customer.mapper.DcCustomerIntentionTrackingMapper">
+
+
+    <select id="selectTodayFollowUpByLegalSupport" resultType="map">
+        SELECT t.*
+        FROM dc_customer_intention_tracking t
+        LEFT JOIN dc_customer_intention i ON t.intention_id = i.id
+        WHERE t.del_flag = 0
+        AND i.del_flag = 0
+        AND t.next_tracking_date >= CURDATE()
+        AND t.next_tracking_date &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+        <if test="legalSupportId != null">
+            AND i.legal_support_id = #{legalSupportId}
+        </if>
+    </select>
+
 
 </mapper>

@@ -1,8 +1,12 @@
 package org.dromara.legalSupport.mapper;
 
+import org.apache.ibatis.annotations.Param;
+import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.legalSupport.domain.DcCustomerJobOrder;
 import org.dromara.legalSupport.domain.vo.DcCustomerJobOrderVo;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 工单管理Mapper接口
@@ -11,5 +15,7 @@ import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
  * @date 2025-09-21
  */
 public interface DcCustomerJobOrderMapper extends BaseMapperPlus<DcCustomerJobOrder, DcCustomerJobOrderVo> {
+
+    List<Map<String, Object>> selectMonthlyJobOrder(@Param("legalSupportId") Long legalSupportId);
 
 }

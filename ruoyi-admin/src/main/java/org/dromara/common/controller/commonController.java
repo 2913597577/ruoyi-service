@@ -144,4 +144,18 @@ public class commonController {
         return R.ok(commonService.getCaseDetail(loginUser.getUserId()));
     }
 
+    /**
+     * 法务支持绩效
+     *
+     * @return
+     */
+    @GetMapping("/getLegalSupportPerformance")
+    public R<JSONObject> getLegalSupportPerformance() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getLegalSupportPerformance(loginUser.getUserId()));
+    }
+
 }

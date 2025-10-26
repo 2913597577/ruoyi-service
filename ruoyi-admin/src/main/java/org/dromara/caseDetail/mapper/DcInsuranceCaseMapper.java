@@ -1,5 +1,6 @@
 package org.dromara.caseDetail.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.dromara.caseDetail.domain.DcInsuranceCase;
 import org.dromara.caseDetail.domain.vo.DcInsuranceCaseVo;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface DcInsuranceCaseMapper extends BaseMapperPlus<DcInsuranceCase, DcInsuranceCaseVo> {
 
     List<Map<String, Object>> selectByYearMonth(Integer year, Integer month, Integer day, Long userId);
+
+    List<Map<String, Object>> selectMonthlyInsuranceCase(@Param("legalSupportId") Long legalSupportId);
 
 }
