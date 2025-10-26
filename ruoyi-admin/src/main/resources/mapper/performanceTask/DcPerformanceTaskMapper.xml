@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.performance.mapper.DcPerformanceTaskMapper">
+
+    <select id="selectPerformanceTaskByLegalSupportAndMonth" resultType="map">
+        SELECT
+        legal_support_id,
+        legal_support_name,
+        SUM(performance_goal) as sum1,
+        SUM(visit_goal) as sum2,
+        SUM(achieved_performance_goal) as sum3,
+        SUM(achieved_visit_goal) as sum4
+        FROM dc_performance_task
+        WHERE 1=1
+        <if test="legalSupportId != null">
+            AND legal_support_id = #{legalSupportId}
+        </if>
+        <if test="taskMonth != null">
+            AND task_month = #{taskMonth}
+        </if>
+        <if test="taskMonth == null">
+            AND task_month = DATE_FORMAT(CURRENT_DATE(), '%Y%m')
+        </if>
+        GROUP BY legal_support_id, legal_support_name
+    </select>
+
+
+    <select id="selectPerformanceTaskByLegalSupportAndYear" resultType="map">
+        SELECT
+        legal_support_id,
+        legal_support_name,
+        SUM(performance_goal) as sum1,
+        SUM(visit_goal) as sum2,
+        SUM(achieved_performance_goal) as sum3,
+        SUM(achieved_visit_goal) as sum4
+        FROM dc_performance_task
+        WHERE 1=1
+        <if test="legalSupportId != null">
+            AND legal_support_id = #{legalSupportId}
+        </if>
+        <if test="taskYear != null">
+            AND YEAR(STR_TO_DATE(task_month, '%Y%m')) = #{taskYear}
+        </if>
+        <if test="taskYear == null">
+            AND YEAR(STR_TO_DATE(task_month, '%Y%m')) = YEAR(CURRENT_DATE())
+        </if>
+        GROUP BY legal_support_id, legal_support_name
+    </select>
+
+</mapper>
