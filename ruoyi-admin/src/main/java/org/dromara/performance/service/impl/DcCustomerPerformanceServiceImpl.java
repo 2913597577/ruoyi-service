@@ -1,24 +1,26 @@
 package org.dromara.performance.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.performance.domain.DcCustomerPerformance;
 import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
 import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
-import org.dromara.performance.domain.DcCustomerPerformance;
 import org.dromara.performance.mapper.DcCustomerPerformanceMapper;
 import org.dromara.performance.service.IDcCustomerPerformanceService;
+import org.dromara.system.domain.vo.SysUserVo;
+import org.dromara.system.service.ISysUserService;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 业绩归属登记Service业务层处理
@@ -32,6 +34,7 @@ import java.util.Collection;
 public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceService {
 
     private final DcCustomerPerformanceMapper baseMapper;
+    private final ISysUserService sysUserService;
 
     /**
      * 查询业绩归属登记
@@ -40,7 +43,7 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
      * @return 业绩归属登记
      */
     @Override
-    public DcCustomerPerformanceVo queryById(Long id){
+    public DcCustomerPerformanceVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -53,6 +56,7 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
      */
     @Override
     public TableDataInfo<DcCustomerPerformanceVo> queryPageList(DcCustomerPerformanceBo bo, PageQuery pageQuery) {
+        test();
         LambdaQueryWrapper<DcCustomerPerformance> lqw = buildQueryWrapper(bo);
         Page<DcCustomerPerformanceVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
@@ -79,6 +83,8 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
         lqw.like(bo.getUserName() != null, DcCustomerPerformance::getUserName, bo.getUserName());
         lqw.eq(bo.getBalance() != null, DcCustomerPerformance::getBalance, bo.getBalance());
         lqw.eq(StringUtils.isNotBlank(bo.getCity()), DcCustomerPerformance::getCity, bo.getCity());
+        lqw.eq(bo.getCreaterId() != null, DcCustomerPerformance::getCreaterId, bo.getCreaterId());
+        lqw.eq(StringUtils.isNotBlank(bo.getCreaterName()), DcCustomerPerformance::getCreaterName, bo.getCreaterName());
         return lqw;
     }
 
@@ -115,7 +121,7 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcCustomerPerformance entity){
+    private void validEntityBeforeSave(DcCustomerPerformance entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -128,9 +134,26 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;
+    }
+
+    public void test() {
+        List<DcCustomerPerformanceVo> dcCustomerPerformanceVos = queryList(new DcCustomerPerformanceBo());
+        for (DcCustomerPerformanceVo dcCustomerPerformanceVo : dcCustomerPerformanceVos) {
+            SysUserVo sysUserVo = sysUserService.selectUserById(dcCustomerPerformanceVo.getCreateBy());
+            DcCustomerPerformanceBo dcCustomerPerformanceBo = new DcCustomerPerformanceBo();
+            dcCustomerPerformanceBo.setId(dcCustomerPerformanceVo.getId());
+            dcCustomerPerformanceBo.setTransferId(dcCustomerPerformanceVo.getTransferId());
+            dcCustomerPerformanceBo.setUserId(dcCustomerPerformanceVo.getUserId());
+            dcCustomerPerformanceBo.setUserName(dcCustomerPerformanceVo.getUserName());
+            dcCustomerPerformanceBo.setBalance(dcCustomerPerformanceVo.getBalance());
+            dcCustomerPerformanceBo.setCity(dcCustomerPerformanceVo.getCity());
+            dcCustomerPerformanceBo.setCreaterId(sysUserVo.getUserId());
+            dcCustomerPerformanceBo.setCreaterName(sysUserVo.getNickName());
+            updateByBo(dcCustomerPerformanceBo);
+        }
     }
 }

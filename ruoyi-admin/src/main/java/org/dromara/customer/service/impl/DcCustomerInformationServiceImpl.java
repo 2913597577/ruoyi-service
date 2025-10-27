@@ -80,7 +80,7 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
     private LambdaQueryWrapper<DcCustomerInformation> buildQueryWrapper(DcCustomerInformationBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerInformation> lqw = Wrappers.lambdaQuery();
-        lqw.orderByDesc(DcCustomerInformation::getCreateBy);
+        lqw.orderByDesc(DcCustomerInformation::getCreateTime);
         lqw.eq(bo.getSignDate() != null, DcCustomerInformation::getSignDate, bo.getSignDate());
         lqw.eq(StringUtils.isNotBlank(bo.getContractNo()), DcCustomerInformation::getContractNo, bo.getContractNo());
         lqw.like(StringUtils.isNotBlank(bo.getCustomerName()), DcCustomerInformation::getCustomerName, bo.getCustomerName());

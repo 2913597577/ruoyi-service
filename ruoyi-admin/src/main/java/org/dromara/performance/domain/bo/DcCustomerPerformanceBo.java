@@ -59,5 +59,11 @@ public class DcCustomerPerformanceBo extends BaseEntity {
     @NotBlank(message = "业绩所属城市不能为空", groups = {AddGroup.class, EditGroup.class})
     private String city;
 
+    private Long createBy;
+
+    private Long createrId;
+
+    private String createrName;
+
 
 }

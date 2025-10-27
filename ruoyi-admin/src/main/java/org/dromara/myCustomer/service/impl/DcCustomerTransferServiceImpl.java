@@ -104,7 +104,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     private LambdaQueryWrapper<DcCustomerTransfer> buildQueryWrapper(DcCustomerTransferBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerTransfer> lqw = Wrappers.lambdaQuery();
-        lqw.orderByDesc(DcCustomerTransfer::getCreateBy);
+        lqw.orderByDesc(DcCustomerTransfer::getCreateTime);
         lqw.like(StringUtils.isNotBlank(bo.getCompanyName()), DcCustomerTransfer::getCompanyName, bo.getCompanyName());
         lqw.eq(StringUtils.isNotBlank(bo.getContactPerson()), DcCustomerTransfer::getContactPerson, bo.getContactPerson());
         lqw.eq(StringUtils.isNotBlank(bo.getContactInfo()), DcCustomerTransfer::getContactInfo, bo.getContactInfo());
@@ -249,6 +249,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setInviterId(dcCustomerTransfer.getInviterId());
             dcCustomerInformation.setServiceDuration(dcCustomerTransfer.getServiceDuration());
             dcCustomerInformation.setContractAmount(dcCustomerTransfer.getContractAmount());
+            dcCustomerInformation.setContractCode(dcCustomerTransfer.getContractCode());
             dcCustomerInformation.setCustomerType(1);
             SysUserVo inviter = sysUserService.selectUserById(dcCustomerTransfer.getInviterId());
             SysUserVo closer = sysUserService.selectUserById(dcCustomerTransfer.getAccountManagerId());

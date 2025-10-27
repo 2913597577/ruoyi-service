@@ -5,8 +5,6 @@ import cn.idev.excel.annotation.ExcelProperty;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import lombok.Data;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
-import org.dromara.common.excel.convert.ExcelDictConvert;
 import org.dromara.customer.domain.DcCustomerInformation;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
 
@@ -36,7 +34,6 @@ public class DcCustomerInformationVo implements Serializable {
     /**
      * 主键ID
      */
-    @ExcelProperty(value = "主键ID")
     private Long id;
 
     /**
@@ -72,8 +69,7 @@ public class DcCustomerInformationVo implements Serializable {
     /**
      * 法务法务支持（律师id）
      */
-    @ExcelProperty(value = "法务法务支持", converter = ExcelDictConvert.class)
-    @ExcelDictFormat(readConverterExp = "律=师id")
+    @ExcelProperty(value = "法务法务支持")
     private Long lawyerId;
 
     /**
@@ -157,8 +153,7 @@ public class DcCustomerInformationVo implements Serializable {
     /**
      * 客户id（流转单id）
      */
-    @ExcelProperty(value = "客户id", converter = ExcelDictConvert.class)
-    @ExcelDictFormat(readConverterExp = "流转单id")
+    @ExcelProperty(value = "客户id")
     private Long transferId;
 
     /**

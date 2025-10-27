@@ -61,5 +61,11 @@ public class DcCustomerPerformance extends TenantEntity {
     @TableLogic
     private String delFlag;
 
+    private Long createBy;
+
+    private Long createrId;
+
+    private String createrName;
+
 
 }

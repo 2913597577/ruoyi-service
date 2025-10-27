@@ -61,5 +61,12 @@ public class DcCustomerPerformanceVo implements Serializable {
     @ExcelProperty(value = "业绩所属城市")
     private String city;
 
+    private Long createBy;
+
+    private Long createrId;
+
+    @ExcelProperty(value = "分配人")
+    private String createrName;
+
 
 }

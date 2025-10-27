@@ -1,26 +1,29 @@
 package org.dromara.performance.controller;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
-import org.dromara.common.idempotent.annotation.RepeatSubmit;
-import org.dromara.common.log.annotation.Log;
-import org.dromara.common.web.core.BaseController;
-import org.dromara.common.mybatis.core.page.PageQuery;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
-import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.excel.utils.ExcelUtil;
-import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
-import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
-import org.dromara.performance.service.IDcCustomerPerformanceService;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
+import org.dromara.common.log.annotation.Log;
+import org.dromara.common.log.enums.BusinessType;
+import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.web.core.BaseController;
+import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
+import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
+import org.dromara.performance.service.IDcCustomerPerformanceService;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 业绩归属登记
@@ -64,7 +67,7 @@ public class DcCustomerPerformanceController extends BaseController {
     @SaCheckPermission("customerPerformance:customerPerformance:query")
     @GetMapping("/{id}")
     public R<DcCustomerPerformanceVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Long id) {
+                                              @PathVariable Long id) {
         return R.ok(dcCustomerPerformanceService.queryById(id));
     }
 
@@ -76,6 +79,12 @@ public class DcCustomerPerformanceController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody DcCustomerPerformanceBo bo) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.fail("请先登录");
+        }
+        bo.setCreaterId(loginUser.getUserId());
+        bo.setCreaterName(loginUser.getNickname());
         return toAjax(dcCustomerPerformanceService.insertByBo(bo));
     }
 
