@@ -253,7 +253,7 @@ public class DcCustomerTransferBo extends BaseEntity {
     private String invoiceContent;
 
     /**
-     * 发票状态(1-待开票 2-已开票 3-驳回)
+     * 发票状态(0-待开票 1-已开票 )
      */
     private Integer invoiceStatus;
 
