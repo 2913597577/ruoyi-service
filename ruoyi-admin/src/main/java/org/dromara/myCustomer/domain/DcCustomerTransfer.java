@@ -245,10 +245,19 @@ public class DcCustomerTransfer extends TenantEntity {
      */
     private Date auditTime;
 
+    /**
+     * 发票要求
+     */
     private String invoiceRequirements;
 
+   /**
+   * 发票内容
+   */
     private String invoiceContent;
 
+    /**
+   * 发票状态
+   */
     private Integer invoiceStatus;
 
 

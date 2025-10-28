@@ -286,12 +286,27 @@ public class DcCustomerTransferVo implements Serializable {
     @ExcelProperty(value = "审核时间")
     private Date auditTime;
 
+    /**
+     * 发票要求
+     */
+    @ExcelProperty(value = "发票要求")
     private String invoiceRequirements;
 
+    /**
+     * 发票内容
+     */
+    @ExcelProperty(value = "发票内容")
     private String invoiceContent;
 
+    /**
+     * 发票状态
+     */
+    @ExcelProperty(value = "发票状态")
     private Integer invoiceStatus;
 
+    /**
+     * 业绩信息
+     */
     private List<DcCustomerPerformanceVo> performanceInfo;
 
 }

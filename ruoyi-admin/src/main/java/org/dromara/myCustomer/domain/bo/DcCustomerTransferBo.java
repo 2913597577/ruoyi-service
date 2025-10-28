@@ -242,12 +242,21 @@ public class DcCustomerTransferBo extends BaseEntity {
      * 审核时间
      */
     private Date auditTime;
-
+    /**
+     * 发票要求
+     */
     private String invoiceRequirements;
 
+    /**
+     * 发票内容
+     */
     private String invoiceContent;
 
+    /**
+     * 发票状态(1-待开票 2-已开票 3-驳回)
+     */
     private Integer invoiceStatus;
+
 
     private List<DcCustomerPerformanceBo> performanceInfo;
 
