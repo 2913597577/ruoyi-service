@@ -245,4 +245,11 @@ public class DcCustomerTransfer extends TenantEntity {
      */
     private Date auditTime;
 
+    private String invoiceRequirements;
+
+    private String invoiceContent;
+
+    private Integer invoiceStatus;
+
+
 }

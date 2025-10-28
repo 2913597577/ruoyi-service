@@ -129,6 +129,9 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(StringUtils.isNotBlank(bo.getOtherFee()), DcCustomerTransfer::getOtherFee, bo.getOtherFee());
         lqw.eq(bo.getFinanceConfirmed() != null, DcCustomerTransfer::getFinanceConfirmed, bo.getFinanceConfirmed());
         lqw.eq(bo.getAuditUserId() != null, DcCustomerTransfer::getAuditUserId, bo.getAuditUserId());
+        lqw.eq(bo.getInvoiceStatus() != null, DcCustomerTransfer::getInvoiceStatus, bo.getInvoiceStatus());
+        lqw.eq(StringUtils.isNotBlank(bo.getInvoiceRequirements()), DcCustomerTransfer::getInvoiceRequirements, bo.getInvoiceRequirements());
+        lqw.eq(StringUtils.isNotBlank(bo.getInvoiceContent()), DcCustomerTransfer::getInvoiceContent, bo.getInvoiceContent());
         lqw.like(StringUtils.isNotBlank(bo.getAuditUserName()), DcCustomerTransfer::getAuditUserName, bo.getAuditUserName());
         return lqw;
     }

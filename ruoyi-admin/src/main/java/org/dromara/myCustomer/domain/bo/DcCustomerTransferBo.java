@@ -243,6 +243,12 @@ public class DcCustomerTransferBo extends BaseEntity {
      */
     private Date auditTime;
 
+    private String invoiceRequirements;
+
+    private String invoiceContent;
+
+    private Integer invoiceStatus;
+
     private List<DcCustomerPerformanceBo> performanceInfo;
 
 
