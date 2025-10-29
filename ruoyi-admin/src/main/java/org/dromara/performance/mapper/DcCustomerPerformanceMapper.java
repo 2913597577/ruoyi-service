@@ -5,6 +5,7 @@ import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.performance.domain.DcCustomerPerformance;
 import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,5 +19,20 @@ public interface DcCustomerPerformanceMapper extends BaseMapperPlus<DcCustomerPe
 
     List<Map<String, Object>> selectUserPerformanceRank(@Param("year") Integer year, @Param("month") Integer month,
                                                         @Param("userId") Long userId);
+
+    /**
+     * 分页查询客户业绩列表
+     */
+    List<Map<String, Object>> selectListByPage(@Param("userId") Long[] userId,
+                                               @Param("transferId") Long[] transferId,
+                                               @Param("city") String[] city,
+                                               @Param("serviceCity") String[] serviceCity,
+                                               @Param("inviterId") Long[] inviterId,
+                                               @Param("serviceType") Integer[] serviceType,
+                                               @Param("serviceStart") Date serviceStart,
+                                               @Param("serviceEnd") Date serviceEnd,
+                                               @Param("page") Integer page,
+                                               @Param("pageSize") Integer pageSize);
+
 
 }

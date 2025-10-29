@@ -37,5 +37,65 @@
         </if>
     </select>
 
+    <select id="selectListByPage" resultType="map">
+        SELECT p.*,
+        t.company_name as companyName,
+        t.customer_city as serviceCity,
+        t.inviter_id as inviterId,
+        t.service_type as serviceType,
+        t.service_start as serviceStart,
+        t.service_end as serviceEnd
+        FROM dc_customer_performance p
+        left join dc_customer_transfer t
+        ON p.transfer_id = t.id
+        WHERE p.del_flag = 0 AND t.del_flag = 0
+        <if test="userId != null and userId.size() > 0">
+            AND p.user_id IN
+            <foreach collection="userId" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="transferId != null and transferId.size() > 0">
+            AND p.transfer_id IN
+            <foreach collection="transferId" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="city != null and city.size() > 0">
+            AND p.city IN
+            <foreach collection="city" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="serviceCity != null and serviceCity.size() > 0">
+            AND t.customer_city IN
+            <foreach collection="serviceCity" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="inviterId != null and inviterId.size() > 0">
+            AND t.inviter_id IN
+            <foreach collection="inviterId" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="serviceType != null and serviceType.size() > 0">
+            AND t.service_type IN
+            <foreach collection="serviceType" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="serviceStart != null">
+            AND DATE(t.service_start) = #{serviceStart}
+        </if>
+        <if test="serviceEnd != null">
+            AND DATE(t.service_end) = #{serviceEnd}
+        </if>
+        order by p.create_time desc
+        <if test="page != null and pageSize != null">
+            LIMIT #{page},#{pageSize}
+        </if>
+    </select>
+
 
 </mapper>

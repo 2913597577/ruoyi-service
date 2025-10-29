@@ -1,12 +1,14 @@
 package org.dromara.performance.service;
 
-import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
-import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
+import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 业绩归属登记Service接口
@@ -65,4 +67,8 @@ public interface IDcCustomerPerformanceService {
      * @return 是否删除成功
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    List<Map<String, Object>> selectListByPage(Long[] userId, Long[] transferId, String[] city,
+                                               String[] serviceCity, Long[] inviterId, Integer[] serviceType,
+                                               Date serviceStart, Date serviceEnd, Integer page, Integer pageSize);
 }

@@ -19,6 +19,7 @@ import org.dromara.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
      */
     @Override
     public TableDataInfo<DcCustomerPerformanceVo> queryPageList(DcCustomerPerformanceBo bo, PageQuery pageQuery) {
-        test();
+        //test();
         LambdaQueryWrapper<DcCustomerPerformance> lqw = buildQueryWrapper(bo);
         Page<DcCustomerPerformanceVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
@@ -138,6 +139,18 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;
+    }
+
+    @Override
+    public List<Map<String, Object>> selectListByPage(Long[] userId, Long[] transferId, String[] city,
+                                                      String[] serviceCity, Long[] inviterId, Integer[] serviceType,
+                                                      Date serviceStart, Date serviceEnd, Integer page, Integer pageSize) {
+        // 计算偏移量
+        Integer offset = (page != null && pageSize != null) ? page * pageSize : null;
+
+        return baseMapper.selectListByPage(userId, transferId, city, serviceCity,
+            inviterId, serviceType, serviceStart, serviceEnd,
+            offset, pageSize);
     }
 
     public void test() {
