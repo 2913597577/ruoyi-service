@@ -239,7 +239,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         if (flag && auditStatus == 1) {
             DcCustomerInformationBo dcCustomerInformation = new DcCustomerInformationBo();
             dcCustomerInformation.setSignDate(dcCustomerTransfer.getCreateTime());
-            dcCustomerInformation.setContractNo(dcCustomerTransfer.getId().toString());
+            dcCustomerInformation.setContractNo(dcCustomerTransfer.getContractOssId());
             dcCustomerInformation.setCustomerName(dcCustomerTransfer.getCompanyName());
             dcCustomerInformation.setPrincipal(dcCustomerTransfer.getContactPerson());
             dcCustomerInformation.setPrincipalPhone(dcCustomerTransfer.getContactInfo());
@@ -254,6 +254,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setServiceDuration(dcCustomerTransfer.getServiceDuration());
             dcCustomerInformation.setContractAmount(dcCustomerTransfer.getContractAmount());
             dcCustomerInformation.setContractCode(dcCustomerTransfer.getContractCode());
+            dcCustomerInformation.setCustomerCity(dcCustomerTransfer.getCustomerCity());
             dcCustomerInformation.setCustomerType(1);
             SysUserVo inviter = sysUserService.selectUserById(dcCustomerTransfer.getInviterId());
             SysUserVo closer = sysUserService.selectUserById(dcCustomerTransfer.getAccountManagerId());
