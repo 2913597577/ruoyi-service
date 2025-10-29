@@ -142,16 +142,25 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
     }
 
     @Override
-    public List<Map<String, Object>> selectListByPage(Long[] userId, Long[] transferId, String[] city,
-                                                      String[] serviceCity, Long[] inviterId, Integer[] serviceType,
+    public List<Map<String, Object>> selectListByPage(List<Long> userId, List<Long> transferId, List<String> city,
+                                                      List<String> serviceCity, List<Long> inviterId, List<Integer> serviceType,
                                                       Date serviceStart, Date serviceEnd, Integer page, Integer pageSize) {
         // 计算偏移量
-        Integer offset = (page != null && pageSize != null) ? page * pageSize : null;
+        Integer offset = (page != null && pageSize != null) ? (page - 1) * pageSize : null;
 
         return baseMapper.selectListByPage(userId, transferId, city, serviceCity,
             inviterId, serviceType, serviceStart, serviceEnd,
             offset, pageSize);
     }
+
+    @Override
+    public int countListByPage(List<Long> userId, List<Long> transferId, List<String> city,
+                               List<String> serviceCity, List<Long> inviterId, List<Integer> serviceType,
+                               Date serviceStart, Date serviceEnd) {
+        return baseMapper.selectListByPageCount(userId, transferId, city, serviceCity,
+            inviterId, serviceType, serviceStart, serviceEnd);
+    }
+
 
     public void test() {
         List<DcCustomerPerformanceVo> dcCustomerPerformanceVos = queryList(new DcCustomerPerformanceBo());

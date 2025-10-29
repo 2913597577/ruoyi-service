@@ -68,7 +68,12 @@ public interface IDcCustomerPerformanceService {
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
 
-    List<Map<String, Object>> selectListByPage(Long[] userId, Long[] transferId, String[] city,
-                                               String[] serviceCity, Long[] inviterId, Integer[] serviceType,
+    List<Map<String, Object>> selectListByPage(List<Long> userId, List<Long> transferId, List<String> city,
+                                               List<String> serviceCity, List<Long> inviterId, List<Integer> serviceType,
                                                Date serviceStart, Date serviceEnd, Integer page, Integer pageSize);
+
+    int countListByPage(List<Long> userId, List<Long> transferId, List<String> city,
+                        List<String> serviceCity, List<Long> inviterId, List<Integer> serviceType,
+                        Date serviceStart, Date serviceEnd);
+
 }

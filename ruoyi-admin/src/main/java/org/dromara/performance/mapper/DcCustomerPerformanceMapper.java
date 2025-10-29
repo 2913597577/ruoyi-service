@@ -23,16 +23,28 @@ public interface DcCustomerPerformanceMapper extends BaseMapperPlus<DcCustomerPe
     /**
      * 分页查询客户业绩列表
      */
-    List<Map<String, Object>> selectListByPage(@Param("userId") Long[] userId,
-                                               @Param("transferId") Long[] transferId,
-                                               @Param("city") String[] city,
-                                               @Param("serviceCity") String[] serviceCity,
-                                               @Param("inviterId") Long[] inviterId,
-                                               @Param("serviceType") Integer[] serviceType,
+    List<Map<String, Object>> selectListByPage(@Param("userId") List<Long> userId,
+                                               @Param("transferId") List<Long> transferId,
+                                               @Param("city") List<String> city,
+                                               @Param("serviceCity") List<String> serviceCity,
+                                               @Param("inviterId") List<Long> inviterId,
+                                               @Param("serviceType") List<Integer> serviceType,
                                                @Param("serviceStart") Date serviceStart,
                                                @Param("serviceEnd") Date serviceEnd,
                                                @Param("page") Integer page,
                                                @Param("pageSize") Integer pageSize);
+
+    /**
+     * 统计客户业绩数量
+     */
+    int selectListByPageCount(@Param("userId") List<Long> userId,
+                              @Param("transferId") List<Long> transferId,
+                              @Param("city") List<String> city,
+                              @Param("serviceCity") List<String> serviceCity,
+                              @Param("inviterId") List<Long> inviterId,
+                              @Param("serviceType") List<Integer> serviceType,
+                              @Param("serviceStart") Date serviceStart,
+                              @Param("serviceEnd") Date serviceEnd);
 
 
 }

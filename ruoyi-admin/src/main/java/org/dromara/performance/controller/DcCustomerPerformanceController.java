@@ -1,7 +1,7 @@
 package org.dromara.performance.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -21,13 +21,11 @@ import org.dromara.common.web.core.BaseController;
 import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
 import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
 import org.dromara.performance.service.IDcCustomerPerformanceService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 业绩归属登记
@@ -52,27 +50,36 @@ public class DcCustomerPerformanceController extends BaseController {
         return dcCustomerPerformanceService.queryPageList(bo, pageQuery);
     }
 
-    @GetMapping("/selectListByPage")
-    public R<JSONArray> list(
-        @RequestParam(required = false) Long[] userId,
-        @RequestParam(required = false) Long[] transferId,
-        @RequestParam(required = false) String[] city,
-        @RequestParam(required = false) String[] serviceCity,
-        @RequestParam(required = false) Long[] inviterId,
-        @RequestParam(required = false) Integer[] serviceType,
-        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date serviceStart,
-        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date serviceEnd,
-        @RequestParam(required = false, defaultValue = "0") Integer page,
-        @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
 
-        List<Map<String, Object>> list = dcCustomerPerformanceService.selectListByPage(
+    @PostMapping("/selectListByPage")
+    public R<JSONObject> list(@RequestBody Map<String, Object> params) {
+        List<Long> userId = convertToList(params.get("userId"), Long.class);
+        List<Long> transferId = convertToList(params.get("transferId"), Long.class);
+        List<String> city = convertToList(params.get("city"), String.class);
+        List<String> serviceCity = convertToList(params.get("serviceCity"), String.class);
+        List<Long> inviterId = convertToList(params.get("inviterId"), Long.class);
+        List<Integer> serviceType = convertToList(params.get("serviceType"), Integer.class);
+        Date serviceStart = parseDate(params.get("serviceStart"));
+        Date serviceEnd = parseDate(params.get("serviceEnd"));
+        Integer pageNum = params.get("pageNum") != null ? Integer.valueOf(params.get("pageNum").toString()) : 0;
+        Integer pageSize = params.get("pageSize") != null ? Integer.valueOf(params.get("pageSize").toString()) : 10;
+
+
+        int count = dcCustomerPerformanceService.countListByPage(
             userId, transferId, city, serviceCity, inviterId, serviceType,
-            serviceStart, serviceEnd, page, pageSize);
-        if (list == null || list.isEmpty()) {
+            serviceStart, serviceEnd);
+        if (count == 0) {
             return R.ok();
         }
-        return R.ok(JSONArray.parseArray(JSONArray.toJSONString(list)));
+        List<Map<String, Object>> list = dcCustomerPerformanceService.selectListByPage(
+            userId, transferId, city, serviceCity, inviterId, serviceType,
+            serviceStart, serviceEnd, pageNum, pageSize);
+        JSONObject data = new JSONObject();
+        data.put("count", count);
+        data.put("list", list);
+        return R.ok(data);
     }
+
 
     /**
      * 导出业绩归属登记列表
@@ -136,5 +143,33 @@ public class DcCustomerPerformanceController extends BaseController {
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {
         return toAjax(dcCustomerPerformanceService.deleteWithValidByIds(List.of(ids), true));
+    }
+
+    private <T> List<T> convertToList(Object obj, Class<T> clazz) {
+        if (obj == null) {
+            return new ArrayList<>();
+        }
+        if (obj instanceof List) {
+            return (List<T>) obj;
+        }
+        if (obj instanceof Object[]) {
+            return Arrays.asList((T[]) obj);
+        }
+        return new ArrayList<>();
+    }
+
+    private Date parseDate(Object dateObj) {
+        if (dateObj == null) {
+            return null;
+        }
+        try {
+            if (dateObj instanceof String) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                return sdf.parse((String) dateObj);
+            }
+            return (Date) dateObj;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
