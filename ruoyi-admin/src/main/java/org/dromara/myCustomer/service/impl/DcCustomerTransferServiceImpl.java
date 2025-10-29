@@ -106,7 +106,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         LambdaQueryWrapper<DcCustomerTransfer> lqw = Wrappers.lambdaQuery();
         lqw.orderByDesc(DcCustomerTransfer::getCreateTime);
         lqw.like(StringUtils.isNotBlank(bo.getCompanyName()), DcCustomerTransfer::getCompanyName, bo.getCompanyName());
-        lqw.eq(StringUtils.isNotBlank(bo.getContactPerson()), DcCustomerTransfer::getContactPerson, bo.getContactPerson());
+        lqw.like(StringUtils.isNotBlank(bo.getContactPerson()), DcCustomerTransfer::getContactPerson, bo.getContactPerson());
         lqw.eq(StringUtils.isNotBlank(bo.getContactInfo()), DcCustomerTransfer::getContactInfo, bo.getContactInfo());
         lqw.eq(StringUtils.isNotBlank(bo.getContactPosition()), DcCustomerTransfer::getContactPosition, bo.getContactPosition());
         lqw.eq(bo.getContactAge() != null, DcCustomerTransfer::getContactAge, bo.getContactAge());
@@ -128,6 +128,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(StringUtils.isNotBlank(bo.getLawyerConsultation()), DcCustomerTransfer::getLawyerConsultation, bo.getLawyerConsultation());
         lqw.eq(StringUtils.isNotBlank(bo.getOtherFee()), DcCustomerTransfer::getOtherFee, bo.getOtherFee());
         lqw.eq(bo.getFinanceConfirmed() != null, DcCustomerTransfer::getFinanceConfirmed, bo.getFinanceConfirmed());
+        lqw.eq(bo.getCustomerCity()!= null, DcCustomerTransfer::getCustomerCity, bo.getCustomerCity());
         lqw.eq(bo.getAuditUserId() != null, DcCustomerTransfer::getAuditUserId, bo.getAuditUserId());
         lqw.eq(bo.getInvoiceStatus() != null, DcCustomerTransfer::getInvoiceStatus, bo.getInvoiceStatus());
         lqw.eq(StringUtils.isNotBlank(bo.getInvoiceRequirements()), DcCustomerTransfer::getInvoiceRequirements, bo.getInvoiceRequirements());

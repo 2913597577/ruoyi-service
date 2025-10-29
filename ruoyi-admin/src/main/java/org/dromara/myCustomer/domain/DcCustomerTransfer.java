@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -124,11 +125,13 @@ public class DcCustomerTransfer extends TenantEntity {
     /**
      * 服务周期开始时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date serviceStart;
 
     /**
      * 服务周期结束时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date serviceEnd;
 
     /**
