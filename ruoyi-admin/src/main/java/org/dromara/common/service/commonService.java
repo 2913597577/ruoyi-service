@@ -38,8 +38,10 @@ import org.dromara.legalSupport.domain.bo.DcCustomerJobOrderBo;
 import org.dromara.legalSupport.domain.bo.DcCustomerOutVisitBo;
 import org.dromara.legalSupport.domain.vo.DcCustomerJobOrderVo;
 import org.dromara.legalSupport.domain.vo.DcCustomerOutVisitVo;
+import org.dromara.legalSupport.domain.vo.DcLegalSupportChangeRecordVo;
 import org.dromara.legalSupport.mapper.DcCustomerJobOrderMapper;
 import org.dromara.legalSupport.mapper.DcCustomerOutVisitMapper;
+import org.dromara.legalSupport.mapper.DcLegalSupportChangeRecordMapper;
 import org.dromara.legalSupport.service.IDcCustomerJobOrderService;
 import org.dromara.legalSupport.service.IDcCustomerOutVisitService;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
@@ -79,6 +81,7 @@ public class commonService {
     private final DcCustomerPerformanceMapper dcCustomerPerformanceMapper;
     private final DcPerformanceTaskMapper dcPerformanceTaskMapper;
     private final DcCustomerIntentionTrackingMapper dcCustomerIntentionTrackingMapper;
+    private final DcLegalSupportChangeRecordMapper dcLegalSupportChangeRecordMapper;
     private final ISysRoleService roleService;
 
     private final IDcCustomerInformationService dcCustomerInformationService;
@@ -102,13 +105,23 @@ public class commonService {
 
         List<DcCustomerInformationVo> list = informationMapper.selectVoList();
 
+        JSONArray json = new JSONArray();
         if (isLegalSupport) {
             Map<String, Object> queryMap = new HashMap<>();
-            queryMap.put("lawyer_id", userId);
-            list = informationMapper.selectVoByMap(queryMap);
+            queryMap.put("legal_support_id", userId);
+            List<DcLegalSupportChangeRecordVo> list1 = dcLegalSupportChangeRecordMapper.selectVoByMap(queryMap);
+            for (DcLegalSupportChangeRecordVo recordVo : list1) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("transfer_id", recordVo.getCustomerId());
+                jsonObject.put("customer_id", recordVo.getCustomerId());
+                jsonObject.put("customer_name", recordVo.getCustomerName());
+                jsonObject.put("customer_realName", recordVo.getCustomerName());
+                json.add(jsonObject);
+            }
+            return json;
         }
 
-        JSONArray json = new JSONArray();
+
         for (DcCustomerInformationVo customerInformationVo : list) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("transfer_id", customerInformationVo.getTransferId());
