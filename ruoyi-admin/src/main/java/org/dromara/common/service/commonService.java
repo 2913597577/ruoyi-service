@@ -110,11 +110,10 @@ public class commonService {
 
         JSONArray json = new JSONArray();
         for (DcCustomerInformationVo customerInformationVo : list) {
-            DcCustomerTransfer dcCustomerTransfer = transferMapper.selectById(customerInformationVo.getTransferId());
-            String companyName = dcCustomerTransfer == null ? "" : dcCustomerTransfer.getCompanyName();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("transfer_id", customerInformationVo.getTransferId());
-            jsonObject.put("customer_name", customerInformationVo.getCustomerName() + "(" + companyName + ")");
+            jsonObject.put("customer_id", customerInformationVo.getId());
+            jsonObject.put("customer_name", customerInformationVo.getCustomerName());
             jsonObject.put("customer_realName", customerInformationVo.getCustomerName());
             json.add(jsonObject);
         }

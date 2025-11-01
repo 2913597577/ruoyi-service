@@ -22,6 +22,8 @@ import org.dromara.common.web.core.BaseController;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 import org.dromara.customer.service.IDcCustomerInformationService;
+import org.dromara.legalSupport.domain.bo.DcLegalSupportChangeRecordBo;
+import org.dromara.legalSupport.service.IDcLegalSupportChangeRecordService;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.service.ISysUserService;
 import org.springframework.validation.annotation.Validated;
@@ -43,6 +45,7 @@ public class DcCustomerInformationController extends BaseController {
 
     private final IDcCustomerInformationService dcCustomerInformationService;
     private final ISysUserService sysUserService;
+    private final IDcLegalSupportChangeRecordService dcLegalSupportChangeRecordService;
 
     /**
      * 查询客户总表列表
@@ -136,7 +139,10 @@ public class DcCustomerInformationController extends BaseController {
     @Log(title = "分配法务支持", businessType = BusinessType.UPDATE)
     @GetMapping("/assign")
     public R<Void> assign(@RequestParam(defaultValue = "0") String id, @RequestParam(defaultValue = "0") String userId) {
-
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("请登录");
+        }
         DcCustomerInformationVo dcCustomerInformationVo = dcCustomerInformationService.queryById(Long.valueOf(id));
         if (dcCustomerInformationVo == null) {
             return R.warn("客户不存在");
@@ -157,6 +163,13 @@ public class DcCustomerInformationController extends BaseController {
         DcCustomerInformationBo update = new DcCustomerInformationBo();
         MapstructUtils.convert(dcCustomerInformationVo, update);
         if (dcCustomerInformationService.updateByBo(update)) {
+            DcLegalSupportChangeRecordBo bo = new DcLegalSupportChangeRecordBo();
+            bo.setCustomerId(dcCustomerInformationVo.getId());
+            bo.setCustomerName(dcCustomerInformationVo.getCustomerName());
+            bo.setLegalSupportId(sysUserVo.getUserId());
+            bo.setLegalSupportName(sysUserVo.getNickName());
+            bo.setRemark1(loginUser.getNickname());
+            dcLegalSupportChangeRecordService.insertByBo(bo);
             return R.ok();
         }
         return R.warn("分配失败");
