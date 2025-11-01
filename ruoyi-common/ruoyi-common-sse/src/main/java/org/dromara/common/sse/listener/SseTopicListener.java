@@ -28,6 +28,9 @@ public class SseTopicListener implements ApplicationRunner, Ordered {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         sseEmitterManager.subscribeMessage((message) -> {
+            if ("欢迎登录RuoYi-Vue-Plus后台管理系统".equals(message.getMessage())) {
+                message.setMessage("欢迎登录大成企业服务管理系统");
+            }
             log.info("SSE主题订阅收到消息session keys={} message={}", message.getUserIds(), message.getMessage());
             // 如果key不为空就按照key发消息 如果为空就群发
             if (CollUtil.isNotEmpty(message.getUserIds())) {
