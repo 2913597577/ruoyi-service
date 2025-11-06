@@ -4,6 +4,8 @@ import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.dromara.common.translation.annotation.Translation;
+import org.dromara.common.translation.constant.TransConstant;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
 import org.dromara.performance.domain.vo.DcCustomerPerformanceVo;
 
@@ -266,6 +268,12 @@ public class DcCustomerTransferVo implements Serializable {
      * 合同ossId
      */
     private String contractOssId;
+
+    /**
+     * 客户地点照片Url
+     */
+    @Translation(type = TransConstant.OSS_ID_TO_URL, mapper = "contractOssId")
+    private String contractUrl;
     /**
      * 客户服务城市
      */
