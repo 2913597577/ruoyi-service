@@ -71,6 +71,15 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
      */
     @Override
     public TableDataInfo<DcCustomerTransferVo> queryPageList(DcCustomerTransferBo bo, PageQuery pageQuery) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return TableDataInfo.build();
+        }
+
+        if (loginUser.getRolePermission() != null && loginUser.getRolePermission().contains("SalesCenter")) {
+            bo.setInviterId(loginUser.getUserId());
+        }
+
         LambdaQueryWrapper<DcCustomerTransfer> lqw = buildQueryWrapper(bo);
         Page<DcCustomerTransferVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         for (DcCustomerTransferVo vo : result.getRecords()) {
@@ -128,8 +137,9 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(StringUtils.isNotBlank(bo.getLawyerConsultation()), DcCustomerTransfer::getLawyerConsultation, bo.getLawyerConsultation());
         lqw.eq(StringUtils.isNotBlank(bo.getOtherFee()), DcCustomerTransfer::getOtherFee, bo.getOtherFee());
         lqw.eq(bo.getFinanceConfirmed() != null, DcCustomerTransfer::getFinanceConfirmed, bo.getFinanceConfirmed());
-        lqw.eq(bo.getCustomerCity()!= null, DcCustomerTransfer::getCustomerCity, bo.getCustomerCity());
+        lqw.eq(bo.getCustomerCity() != null, DcCustomerTransfer::getCustomerCity, bo.getCustomerCity());
         lqw.eq(bo.getAuditUserId() != null, DcCustomerTransfer::getAuditUserId, bo.getAuditUserId());
+        lqw.eq(bo.getInviterId() != null, DcCustomerTransfer::getInviterId, bo.getInviterId());
         lqw.eq(bo.getInvoiceStatus() != null, DcCustomerTransfer::getInvoiceStatus, bo.getInvoiceStatus());
         lqw.eq(StringUtils.isNotBlank(bo.getInvoiceRequirements()), DcCustomerTransfer::getInvoiceRequirements, bo.getInvoiceRequirements());
         lqw.eq(StringUtils.isNotBlank(bo.getInvoiceContent()), DcCustomerTransfer::getInvoiceContent, bo.getInvoiceContent());
