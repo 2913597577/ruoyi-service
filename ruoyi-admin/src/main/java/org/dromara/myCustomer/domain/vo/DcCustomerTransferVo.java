@@ -313,6 +313,93 @@ public class DcCustomerTransferVo implements Serializable {
     private Integer invoiceStatus;
 
     /**
+     * 决策人
+     */
+    @ExcelProperty(value = "决策人")
+    private String decisionMaker;
+    /**
+     * 决策人联系方式
+     */
+    @ExcelProperty(value = "决策人联系方式")
+    private String decisionMakerContact;
+    /**
+     * 决策人职务
+     */
+    @ExcelProperty(value = "决策人职务")
+    private String decisionMakerPosition;
+    /**
+     * 决策人年龄
+     */
+    @ExcelProperty(value = "决策人年龄")
+    private Integer decisionMakerAge;
+    /**
+     * 二次开发类型
+     * 0-续费、1-尾款、2-咨询费、3-升级常法、4-律师函、5-合同定审、6-立案、7-诉讼文书、8-法务其他、9-财税代账、10-财税其他
+     */
+    @ExcelProperty(value = "二次开发类型")
+    private Integer secondDevelopmentType;
+    /**
+     * 是否二次收费
+     */
+    @ExcelProperty(value = "是否二次收费")
+    private Integer isSecondaryCharge;
+    /**
+     * 债务人
+     */
+    @ExcelProperty(value = "债务人")
+    private String debtor;
+    /**
+     * 欠款金额
+     */
+    @ExcelProperty(value = "欠款金额")
+    private BigDecimal debtAmount;
+    /**
+     * 债务人联系方式
+     */
+    @ExcelProperty(value = "债务人联系方式")
+    private String debtorContact;
+    /**
+     * 证据备注
+     */
+    @ExcelProperty(value = "证据备注")
+    private String evidenceRemark;
+    /**
+     * 客户来源
+     * 0-销售外呼、1-地推引流、2-客户转介绍、3-电商媒体、4-上门/来电、5-员工资源、6-其他来源
+     */
+    @ExcelProperty(value = "客户来源")
+    private String customerSource;
+    /**
+     * 推荐人id（客户id）
+     */
+    @ExcelProperty(value = "推荐人id")
+    private Long referrerId;
+    /**
+     * 推荐人名称
+     */
+    @ExcelProperty(value = "推荐人名称")
+    private String referrer;
+    /**
+     * 省份
+     */
+    @ExcelProperty(value = "省份")
+    private String province;
+    /**
+     * 城市
+     */
+    @ExcelProperty(value = "城市")
+    private String city;
+    /**
+     * 区
+     */
+    @ExcelProperty(value = "区")
+    private String district;
+    /**
+     * 客户id
+     */
+    private Long customerId;
+
+    /**
      * 业绩信息
      */
     private List<DcCustomerPerformanceVo> performanceInfo;

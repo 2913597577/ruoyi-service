@@ -75,6 +75,9 @@ public interface IDcCustomerTransferService {
     Boolean audit(Long id, Integer auditStatus);
 
 
+    Boolean auditSecond(Long id, Integer auditStatus);
+
+
     boolean updatePicture(Long id, Long pictureId);
 
 }

@@ -187,6 +187,7 @@ public class DcCustomerTransferController extends BaseController {
     @PostMapping(value = "/audit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public R<AvatarVo> audit(@RequestParam Long id,
                              @RequestParam Integer auditStatus,
+                             @RequestParam Integer isSecondaryCharge,
                              @RequestPart(value = "pictureUrl", required = false) MultipartFile pictureUrl) {
         DcCustomerTransferVo dcCustomerTransferVo = dcCustomerTransferService.queryById(id);
         if (dcCustomerTransferVo == null) {
@@ -216,12 +217,20 @@ public class DcCustomerTransferController extends BaseController {
 
         SysOssVo oss = ossService.upload(pictureUrl);
         url = oss.getUrl();
-        DcCustomerInformationVo result = dcCustomerInformationService.queryListByTransferId(id);
-        if (result != null) {
-            return R.warn("客户总表已存在");
+
+        boolean updateStatus = false;
+        if (isSecondaryCharge == 0) {
+            DcCustomerInformationVo result = dcCustomerInformationService.queryListByTransferId(id);
+            if (result != null) {
+                return R.warn("客户总表已存在");
+            }
+            updateStatus = dcCustomerTransferService.audit(id, auditStatus);
+        }
+        if (isSecondaryCharge == 1) {
+            updateStatus = dcCustomerTransferService.auditSecond(id, auditStatus);
         }
 
-        if (dcCustomerTransferService.audit(id, auditStatus)) {
+        if (updateStatus) {
             updateSuccess = DataPermissionHelper.ignore(() -> dcCustomerTransferService.updatePicture(id, oss.getOssId()));
         }
 

@@ -158,4 +158,16 @@ public class commonController {
         return R.ok(commonService.getLegalSupportPerformance(loginUser.getUserId()));
     }
 
+    /**
+     * 获取客户基本信息
+     */
+    @GetMapping("/getTransferList")
+    public R<JSONArray> getTransferList() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getTransferList());
+    }
+
 }

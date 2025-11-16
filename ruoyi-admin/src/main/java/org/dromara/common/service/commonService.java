@@ -3,6 +3,7 @@ package org.dromara.common.service;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -46,11 +47,13 @@ import org.dromara.legalSupport.service.IDcCustomerJobOrderService;
 import org.dromara.legalSupport.service.IDcCustomerOutVisitService;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
 import org.dromara.myCustomer.domain.bo.DcCustomerTrackingBo;
+import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTrackingVo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.mapper.DcCustomerTrackingMapper;
 import org.dromara.myCustomer.mapper.DcCustomerTransferMapper;
 import org.dromara.myCustomer.service.IDcCustomerTrackingService;
+import org.dromara.myCustomer.service.IDcCustomerTransferService;
 import org.dromara.performance.mapper.DcCustomerPerformanceMapper;
 import org.dromara.performance.mapper.DcPerformanceTaskMapper;
 import org.dromara.system.service.ISysRoleService;
@@ -91,6 +94,7 @@ public class commonService {
     private final IDcCustomerOutVisitService dcCustomerOutVisitService;
     private final IDcCaseTrackingService dcCaseTrackingService;
     private final IDcInsuranceCaseService dcInsuranceCaseService;
+    private final IDcCustomerTransferService dcCustomerTransferService;
 
     public JSONArray getCustomerByUserId(long userId) {
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -542,4 +546,10 @@ public class commonService {
         return result;
     }
 
+    public JSONArray getTransferList() {
+        DcCustomerTransferBo bo = new DcCustomerTransferBo();
+        bo.setIsSecondaryCharge(0);
+        List<DcCustomerTransferVo> list = dcCustomerTransferService.queryList(bo);
+        return JSONArray.parseArray(JSON.toJSONString(list));
+    }
 }

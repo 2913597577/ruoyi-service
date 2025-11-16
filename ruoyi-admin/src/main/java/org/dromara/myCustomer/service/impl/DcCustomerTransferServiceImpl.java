@@ -13,6 +13,8 @@ import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
+import org.dromara.customer.domain.bo.DcCustomerInformationLogBo;
+import org.dromara.customer.service.impl.DcCustomerInformationLogServiceImpl;
 import org.dromara.customer.service.impl.DcCustomerInformationServiceImpl;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
 import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
@@ -41,6 +43,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
 
     private final DcCustomerTransferMapper baseMapper;
     private final DcCustomerInformationServiceImpl dcCustomerInformationService;
+    private final DcCustomerInformationLogServiceImpl dcCustomerInformationLogService;
     private final ISysUserService sysUserService;
     private final IDcCustomerPerformanceService dcCustomerPerformanceService;
 
@@ -144,6 +147,31 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(StringUtils.isNotBlank(bo.getInvoiceRequirements()), DcCustomerTransfer::getInvoiceRequirements, bo.getInvoiceRequirements());
         lqw.eq(StringUtils.isNotBlank(bo.getInvoiceContent()), DcCustomerTransfer::getInvoiceContent, bo.getInvoiceContent());
         lqw.like(StringUtils.isNotBlank(bo.getAuditUserName()), DcCustomerTransfer::getAuditUserName, bo.getAuditUserName());
+        // 决策人信息
+        lqw.like(StringUtils.isNotBlank(bo.getDecisionMaker()), DcCustomerTransfer::getDecisionMaker, bo.getDecisionMaker());
+        lqw.eq(StringUtils.isNotBlank(bo.getDecisionMakerContact()), DcCustomerTransfer::getDecisionMakerContact, bo.getDecisionMakerContact());
+        lqw.eq(StringUtils.isNotBlank(bo.getDecisionMakerPosition()), DcCustomerTransfer::getDecisionMakerPosition, bo.getDecisionMakerPosition());
+        lqw.eq(bo.getDecisionMakerAge() != null, DcCustomerTransfer::getDecisionMakerAge, bo.getDecisionMakerAge());
+
+        // 二开相关
+        lqw.eq(bo.getSecondDevelopmentType() != null, DcCustomerTransfer::getSecondDevelopmentType, bo.getSecondDevelopmentType());
+        lqw.eq(bo.getIsSecondaryCharge() != null, DcCustomerTransfer::getIsSecondaryCharge, bo.getIsSecondaryCharge());
+
+        // 债务人信息
+        lqw.like(StringUtils.isNotBlank(bo.getDebtor()), DcCustomerTransfer::getDebtor, bo.getDebtor());
+        lqw.eq(bo.getDebtAmount() != null, DcCustomerTransfer::getDebtAmount, bo.getDebtAmount());
+        lqw.eq(StringUtils.isNotBlank(bo.getDebtorContact()), DcCustomerTransfer::getDebtorContact, bo.getDebtorContact());
+        lqw.like(StringUtils.isNotBlank(bo.getEvidenceRemark()), DcCustomerTransfer::getEvidenceRemark, bo.getEvidenceRemark());
+
+        // 客户来源与推荐人
+        lqw.eq(StringUtils.isNotBlank(bo.getCustomerSource()), DcCustomerTransfer::getCustomerSource, bo.getCustomerSource());
+        lqw.eq(bo.getReferrerId() != null, DcCustomerTransfer::getReferrerId, bo.getReferrerId());
+        lqw.like(StringUtils.isNotBlank(bo.getReferrer()), DcCustomerTransfer::getReferrer, bo.getReferrer());
+
+        // 省市区地址
+        lqw.eq(StringUtils.isNotBlank(bo.getProvince()), DcCustomerTransfer::getProvince, bo.getProvince());
+        lqw.eq(StringUtils.isNotBlank(bo.getCity()), DcCustomerTransfer::getCity, bo.getCity());
+        lqw.eq(StringUtils.isNotBlank(bo.getDistrict()), DcCustomerTransfer::getDistrict, bo.getDistrict());
         return lqw;
     }
 
@@ -271,6 +299,46 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setTransferPerson(inviter == null ? "" : inviter.getNickName());
             dcCustomerInformation.setCloser(closer == null ? "" : closer.getNickName());
             flag = dcCustomerInformationService.insertByBo(dcCustomerInformation);
+        }
+        return flag;
+    }
+
+    @Override
+    public Boolean auditSecond(Long id, Integer auditStatus) {
+        Long userId = LoginHelper.getUserId();
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        DcCustomerTransfer dcCustomerTransfer = baseMapper.selectById(id);
+        dcCustomerTransfer.setFinanceConfirmed(auditStatus);
+        dcCustomerTransfer.setAuditUserId(userId);
+        dcCustomerTransfer.setAuditUserName(loginUser == null ? "" : loginUser.getNickname());
+        dcCustomerTransfer.setAuditTime(new Date());
+        boolean flag = baseMapper.updateById(dcCustomerTransfer) > 0;
+        if (flag && auditStatus == 1) {
+            DcCustomerInformationLogBo dcCustomerInformation = new DcCustomerInformationLogBo();
+            dcCustomerInformation.setSignDate(dcCustomerTransfer.getCreateTime());
+            dcCustomerInformation.setContractNo(dcCustomerTransfer.getContractOssId());
+            dcCustomerInformation.setCustomerName(dcCustomerTransfer.getCompanyName());
+            dcCustomerInformation.setPrincipal(dcCustomerTransfer.getContactPerson());
+            dcCustomerInformation.setPrincipalPhone(dcCustomerTransfer.getContactInfo());
+            dcCustomerInformation.setContractType(0);
+            dcCustomerInformation.setPackageType(dcCustomerTransfer.getServiceType());
+            dcCustomerInformation.setActualReceipt(dcCustomerTransfer.getActualPayment());
+            dcCustomerInformation.setBalance(dcCustomerTransfer.getBalanceStatus());
+            dcCustomerInformation.setExpireDate(dcCustomerTransfer.getServiceEnd());
+            dcCustomerInformation.setTransferId(dcCustomerTransfer.getId());
+            dcCustomerInformation.setAccountManagerId(dcCustomerTransfer.getAccountManagerId());
+            dcCustomerInformation.setInviterId(dcCustomerTransfer.getInviterId());
+            dcCustomerInformation.setServiceDuration(dcCustomerTransfer.getServiceDuration());
+            dcCustomerInformation.setContractAmount(dcCustomerTransfer.getContractAmount());
+            dcCustomerInformation.setContractCode(dcCustomerTransfer.getContractCode());
+            dcCustomerInformation.setCustomerCity(dcCustomerTransfer.getCustomerCity());
+            dcCustomerInformation.setCustomerInfoId(dcCustomerTransfer.getCustomerId());
+            dcCustomerInformation.setCustomerType(1);
+            SysUserVo inviter = sysUserService.selectUserById(dcCustomerTransfer.getInviterId());
+            SysUserVo closer = sysUserService.selectUserById(dcCustomerTransfer.getAccountManagerId());
+            dcCustomerInformation.setTransferPerson(inviter == null ? "" : inviter.getNickName());
+            dcCustomerInformation.setCloser(closer == null ? "" : closer.getNickName());
+            flag = dcCustomerInformationLogService.insertByBo(dcCustomerInformation);
         }
         return flag;
     }
