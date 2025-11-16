@@ -110,14 +110,14 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
      * @return 是否新增成功
      */
     @Override
-    public Boolean insertByBo(DcCustomerInformationBo bo) {
+    public Long insertByBo(DcCustomerInformationBo bo) {
         DcCustomerInformation add = MapstructUtils.convert(bo, DcCustomerInformation.class);
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
         }
-        return flag;
+        return add.getId();
     }
 
     /**

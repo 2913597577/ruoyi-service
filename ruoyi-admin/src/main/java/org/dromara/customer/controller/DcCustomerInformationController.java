@@ -105,7 +105,7 @@ public class DcCustomerInformationController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody DcCustomerInformationBo bo) {
-        return toAjax(dcCustomerInformationService.insertByBo(bo));
+        return toAjax(dcCustomerInformationService.insertByBo(bo) > 0);
     }
 
     /**

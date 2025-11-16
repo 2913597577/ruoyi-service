@@ -52,7 +52,7 @@ public interface IDcCustomerInformationService {
      * @param bo 客户总表
      * @return 是否新增成功
      */
-    Boolean insertByBo(DcCustomerInformationBo bo);
+    Long insertByBo(DcCustomerInformationBo bo);
 
     /**
      * 修改客户总表

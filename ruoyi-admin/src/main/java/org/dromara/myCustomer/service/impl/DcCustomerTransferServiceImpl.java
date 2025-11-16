@@ -298,7 +298,10 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             SysUserVo closer = sysUserService.selectUserById(dcCustomerTransfer.getAccountManagerId());
             dcCustomerInformation.setTransferPerson(inviter == null ? "" : inviter.getNickName());
             dcCustomerInformation.setCloser(closer == null ? "" : closer.getNickName());
-            flag = dcCustomerInformationService.insertByBo(dcCustomerInformation);
+            long customerId = dcCustomerInformationService.insertByBo(dcCustomerInformation);
+            dcCustomerTransfer.setCustomerId(customerId);
+            baseMapper.updateById(dcCustomerTransfer);
+            flag = customerId > 0;
         }
         return flag;
     }

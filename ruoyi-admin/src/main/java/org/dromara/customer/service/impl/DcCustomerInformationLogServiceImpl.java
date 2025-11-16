@@ -1,24 +1,24 @@
 package org.dromara.customer.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.customer.domain.DcCustomerInformationLog;
 import org.dromara.customer.domain.bo.DcCustomerInformationLogBo;
 import org.dromara.customer.domain.vo.DcCustomerInformationLogVo;
-import org.dromara.customer.domain.DcCustomerInformationLog;
 import org.dromara.customer.mapper.DcCustomerInformationLogMapper;
 import org.dromara.customer.service.IDcCustomerInformationLogService;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 客户信息记录Service业务层处理
@@ -40,7 +40,7 @@ public class DcCustomerInformationLogServiceImpl implements IDcCustomerInformati
      * @return 客户信息记录
      */
     @Override
-    public DcCustomerInformationLogVo queryById(Long id){
+    public DcCustomerInformationLogVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -84,6 +84,7 @@ public class DcCustomerInformationLogServiceImpl implements IDcCustomerInformati
         lqw.eq(bo.getCustomerType() != null, DcCustomerInformationLog::getCustomerType, bo.getCustomerType());
         lqw.eq(StringUtils.isNotBlank(bo.getCustomerCity()), DcCustomerInformationLog::getCustomerCity, bo.getCustomerCity());
         lqw.eq(bo.getIsAssigned() != null, DcCustomerInformationLog::getIsAssigned, bo.getIsAssigned());
+        lqw.eq(bo.getCustomerInfoId() != null, DcCustomerInformationLog::getCustomerInfoId, bo.getCustomerInfoId());
         return lqw;
     }
 
@@ -120,7 +121,7 @@ public class DcCustomerInformationLogServiceImpl implements IDcCustomerInformati
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcCustomerInformationLog entity){
+    private void validEntityBeforeSave(DcCustomerInformationLog entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -133,7 +134,7 @@ public class DcCustomerInformationLogServiceImpl implements IDcCustomerInformati
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;

@@ -549,6 +549,7 @@ public class commonService {
     public JSONArray getTransferList() {
         DcCustomerTransferBo bo = new DcCustomerTransferBo();
         bo.setIsSecondaryCharge(0);
+        bo.setFinanceConfirmed(1);
         List<DcCustomerTransferVo> list = dcCustomerTransferService.queryList(bo);
         return JSONArray.parseArray(JSON.toJSONString(list));
     }
