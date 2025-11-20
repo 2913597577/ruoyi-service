@@ -200,5 +200,10 @@ public class DcCustomerInformationVo implements Serializable {
      */
     private Integer isAssigned;
 
+    /**
+     * 是否高风险客户 0-否 1-是
+     */
+    private Integer isHighRisk;
+
 
 }

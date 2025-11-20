@@ -139,6 +139,9 @@ public class DcCustomerChurnApproveServiceImpl implements IDcCustomerChurnApprov
             dcCustomerChurnApprove.setStatus(BusinessStatusEnum.WAITING.getStatus());
         }
         baseMapper.updateById(dcCustomerChurnApprove);
+        if (BusinessStatusEnum.FINISH.getStatus().equals(processEvent.getStatus())) {
+            baseMapper.updateCustomerTypeById(dcCustomerChurnApprove.getCustomerId(), 3);
+        }
     }
 
     /**

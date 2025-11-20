@@ -139,6 +139,9 @@ public class DcHighRiskCustomerServiceImpl implements IDcHighRiskCustomerService
             dcHighRiskCustomer.setStatus(BusinessStatusEnum.WAITING.getStatus());
         }
         baseMapper.updateById(dcHighRiskCustomer);
+        if (BusinessStatusEnum.FINISH.getStatus().equals(processEvent.getStatus())) {
+            baseMapper.updateRiskTypeById(dcHighRiskCustomer.getCustomerId(), 1);
+        }
     }
 
     /**
