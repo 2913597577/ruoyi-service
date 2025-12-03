@@ -412,6 +412,7 @@ public class commonService {
         List<DcCustomerInformationVo> dcCustomerInformationVos = dcCustomerInformationService.queryList(dcCustomerInformationBo);
 
         // todo 近三十天未跟进
+        List<Map<String, Object>> outstandingCustomer = informationMapper.selectOutstandingCustomer(userId);
 
         // 意向客户
         DcCustomerIntentionBo dcCustomerIntentionBo = new DcCustomerIntentionBo();
@@ -444,6 +445,7 @@ public class commonService {
         int jobOrderTotal = monthlyJobOrder == null ? 0 : monthlyJobOrder.size();
         int caseTotal = monthlyCase == null ? 0 : monthlyCase.size();
         int caseTrackingTotal = monthlyCaseTracking == null ? 0 : monthlyCaseTracking.size();
+        int outstandingTotal = outstandingCustomer == null ? 0 : outstandingCustomer.size();
 
         // 客户统计
         JSONObject customerCount = new JSONObject();
@@ -457,6 +459,7 @@ public class commonService {
         customerCount.put("jobOrderTotal", jobOrderTotal);
         customerCount.put("caseTotal", caseTotal);
         customerCount.put("caseTrackingTotal", caseTrackingTotal);
+        customerCount.put("outstandingTotal", outstandingTotal);
 
         // 业绩统计
 

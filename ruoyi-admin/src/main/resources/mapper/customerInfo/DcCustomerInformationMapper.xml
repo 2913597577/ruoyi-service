@@ -62,4 +62,65 @@
     </select>
 
 
+    <select id="selectInactiveCustomersInLast30Days" resultType="map">
+        SELECT
+        *
+        FROM
+        dc_customer_information
+        WHERE
+        id NOT IN (
+        SELECT
+        customer_id
+        FROM
+        dc_customer_tracking
+        WHERE
+        del_flag = 0
+        AND tracking_time >= DATE_SUB( CURDATE(), INTERVAL 30 DAY ))
+        AND id NOT IN (
+        SELECT
+        customer_id
+        FROM
+        dc_customer_out_visit
+        WHERE
+        del_flag = 0
+        AND visit_time >= DATE_SUB( CURDATE(), INTERVAL 30 DAY ))
+        AND id NOT IN (
+        SELECT
+        customer_id
+        FROM
+        dc_insurance_case
+        WHERE
+        del_flag = 0
+        AND order_date >= DATE_SUB( CURDATE(), INTERVAL 30 DAY ))
+        AND id NOT IN (
+        SELECT
+        customer_id
+        FROM
+        dc_debt_case
+        WHERE
+        del_flag = 0
+        AND filing_date >= DATE_SUB( CURDATE(), INTERVAL 30 DAY ))
+        AND id NOT IN (
+        SELECT
+        customer_id
+        FROM
+        dc_customer_job_order
+        WHERE
+        del_flag = 0
+        AND create_time >= DATE_SUB( CURDATE(), INTERVAL 30 DAY ))
+        AND id NOT IN (
+        SELECT
+        customer_id
+        FROM
+        dc_case_tracking
+        WHERE
+        del_flag = 0
+        AND tracking_time >= DATE_SUB( CURDATE(), INTERVAL 30 DAY ))
+        AND del_flag = 0
+        <if test="lawyerId != null">
+            AND lawyer_id = #{lawyerId}
+        </if>
+    </select>
+
+
 </mapper>
