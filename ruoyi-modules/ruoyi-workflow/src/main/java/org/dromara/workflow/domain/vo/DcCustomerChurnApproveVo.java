@@ -25,13 +25,11 @@ public class DcCustomerChurnApproveVo implements Serializable {
     /**
      * id
      */
-    @ExcelProperty(value = "id")
     private Long id;
 
     /**
      * 租户编号
      */
-    @ExcelProperty(value = "租户编号")
     private String tenantId;
 
     /**
@@ -43,7 +41,6 @@ public class DcCustomerChurnApproveVo implements Serializable {
     /**
      * 客户id
      */
-    @ExcelProperty(value = "客户id")
     private Long customerId;
 
     /**

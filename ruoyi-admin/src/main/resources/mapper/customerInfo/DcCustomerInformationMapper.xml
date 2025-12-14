@@ -62,7 +62,7 @@
     </select>
 
 
-    <select id="selectInactiveCustomersInLast30Days" resultType="map">
+    <select id="selectOutstandingCustomer" resultType="map">
         SELECT
         *
         FROM

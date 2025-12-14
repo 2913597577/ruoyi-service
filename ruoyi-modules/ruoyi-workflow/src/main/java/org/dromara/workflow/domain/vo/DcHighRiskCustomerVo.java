@@ -26,13 +26,11 @@ public class DcHighRiskCustomerVo implements Serializable {
     /**
      * 自增主键ID
      */
-    @ExcelProperty(value = "自增主键ID")
     private Long id;
 
     /**
      * 客户id
      */
-    @ExcelProperty(value = "客户id")
     private Long customerId;
 
     /**

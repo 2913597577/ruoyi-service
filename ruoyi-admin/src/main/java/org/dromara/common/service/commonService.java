@@ -556,4 +556,19 @@ public class commonService {
         List<DcCustomerTransferVo> list = dcCustomerTransferService.queryList(bo);
         return JSONArray.parseArray(JSON.toJSONString(list));
     }
+
+    public JSONObject getPerformance(Long userId) {
+
+        DcCustomerInformationBo dcCustomerInformationBo = new DcCustomerInformationBo();
+
+        long customerTotal = dcCustomerInformationService.queryCount(dcCustomerInformationBo);
+        List<Map<String, Object>> OutstandingCustomer = informationMapper.selectOutstandingCustomer(null);
+        DcCustomerIntentionBo dcCustomerIntentionBo = new DcCustomerIntentionBo();
+        List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryList(dcCustomerIntentionBo);
+        // 临期客户
+        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(userId);
+        // 尾款客户
+        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(userId);
+        return null;
+    }
 }
