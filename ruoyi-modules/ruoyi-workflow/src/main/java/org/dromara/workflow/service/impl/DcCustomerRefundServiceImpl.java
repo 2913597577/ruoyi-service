@@ -111,6 +111,9 @@ public class DcCustomerRefundServiceImpl implements IDcCustomerRefundService {
             entity.setStatus(BusinessStatusEnum.WAITING.getStatus());
         }
         baseMapper.updateById(entity);
+        if (BusinessStatusEnum.FINISH.getStatus().equals(processEvent.getStatus())) {
+            baseMapper.updateRefundTypeById(entity.getId());
+        }
     }
 
     /**
