@@ -176,4 +176,16 @@ public class commonController {
         return R.ok(commonService.getTransferList());
     }
 
+    /**
+     * 获取团队业绩统计
+     */
+    @GetMapping("/getPerformance")
+    public R<JSONObject> getPerformance() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getPerformance(loginUser));
+    }
+
 }

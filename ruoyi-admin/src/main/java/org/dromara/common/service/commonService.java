@@ -56,7 +56,9 @@ import org.dromara.myCustomer.service.IDcCustomerTrackingService;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
 import org.dromara.performance.mapper.DcCustomerPerformanceMapper;
 import org.dromara.performance.mapper.DcPerformanceTaskMapper;
+import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.service.ISysRoleService;
+import org.dromara.system.service.ISysUserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -95,6 +97,8 @@ public class commonService {
     private final IDcCaseTrackingService dcCaseTrackingService;
     private final IDcInsuranceCaseService dcInsuranceCaseService;
     private final IDcCustomerTransferService dcCustomerTransferService;
+
+    private final ISysUserService userService;
 
     public JSONArray getCustomerByUserId(long userId) {
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -462,43 +466,9 @@ public class commonService {
         customerCount.put("outstandingTotal", outstandingTotal);
 
         // 业绩统计
-
-        // 本月已完成业绩 userId, username,monthBalance,performanceRank
-        List<Map<String, Object>> monthGoal = dcPerformanceTaskMapper.selectPerformanceTaskByLegalSupportAndMonth(userId, null);
-        List<Map<String, Object>> monthAchievedPerformance = dcCustomerPerformanceMapper.selectUserPerformanceRank(null, null, userId);
-        // 年度累计业绩金额
-        List<Map<String, Object>> YearAchievedPerformance = dcCustomerPerformanceMapper.selectUserPerformanceRank(LocalDate.now().getYear(), null, userId);
+        JSONObject performanceCount = performanceCount(userId);
         // 套餐类型对比
         List<Map<String, Object>> packageType = informationMapper.selectCustomerPackageType(userId);
-
-        JSONObject performanceCount = new JSONObject();
-        Map<String, Object> map1 = monthAchievedPerformance != null && !monthAchievedPerformance.isEmpty() ? monthAchievedPerformance.get(0) : null;
-        Map<String, Object> map2 = YearAchievedPerformance != null && !YearAchievedPerformance.isEmpty() ? YearAchievedPerformance.get(0) : null;
-        Map<String, Object> map3 = monthGoal != null && !monthGoal.isEmpty() ? monthGoal.get(0) : null;
-        String monthAchievedBalance = "0";
-        String monthPerformanceRank = "";
-        String yearAchievedBalance = "0";
-        String yearPerformanceRank = "";
-        String monthPerformanceGoal = "0";
-        String monthVisitGoal = "0";
-        if (map1 != null && !map1.isEmpty()) {
-            monthAchievedBalance = map1.get("monthBalance") == null ? "0" : map1.get("monthBalance").toString();
-            monthPerformanceRank = map1.get("performanceRank") == null ? "" : map1.get("performanceRank").toString();
-        }
-        if (map2 != null && !map2.isEmpty()) {
-            yearAchievedBalance = map2.get("monthBalance") == null ? "0" : map2.get("monthBalance").toString();
-            yearPerformanceRank = map2.get("performanceRank") == null ? "" : map2.get("performanceRank").toString();
-        }
-        if (map3 != null && !map3.isEmpty()) {
-            monthPerformanceGoal = map3.get("sum1") == null ? "0" : map3.get("sum1").toString();
-            monthVisitGoal = map3.get("sum2") == null ? "0" : map3.get("sum2").toString();
-        }
-        performanceCount.put("monthAchievedBalance", monthAchievedBalance);
-        performanceCount.put("monthPerformanceRank", monthPerformanceRank);
-        performanceCount.put("yearAchievedBalance", yearAchievedBalance);
-        performanceCount.put("yearPerformanceRank", yearPerformanceRank);
-        performanceCount.put("monthPerformanceGoal", monthPerformanceGoal);
-        performanceCount.put("monthVisitGoal", monthVisitGoal);
 
         // 今日代办事项
         // 意向客户
@@ -557,8 +527,8 @@ public class commonService {
         return JSONArray.parseArray(JSON.toJSONString(list));
     }
 
-    public JSONObject getPerformance(Long userId) {
-
+    public JSONObject getPerformance(LoginUser loginUser) {
+        JSONObject result = new JSONObject();
         DcCustomerInformationBo dcCustomerInformationBo = new DcCustomerInformationBo();
 
         long customerTotal = dcCustomerInformationService.queryCount(dcCustomerInformationBo);
@@ -566,9 +536,94 @@ public class commonService {
         DcCustomerIntentionBo dcCustomerIntentionBo = new DcCustomerIntentionBo();
         List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryList(dcCustomerIntentionBo);
         // 临期客户
-        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(userId);
+        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(null);
         // 尾款客户
-        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(userId);
-        return null;
+        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(null);
+
+        int outStandingTotal = OutstandingCustomer == null ? 0 : OutstandingCustomer.size();
+        int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
+        int expiringTotal = expiringCustomers == null ? 0 : expiringCustomers.size();
+        int balanceTotal = customersWithBalance == null ? 0 : customersWithBalance.size();
+
+        // 团队业绩和目标累计变量
+        double teamMonthAchievedBalance = 0.0;
+        double teamYearAchievedBalance = 0.0;
+        double teamMonthPerformanceGoal = 0.0;
+        double teamMonthVisitGoal = 0.0;
+        JSONArray teamPerformanceList = new JSONArray();
+        List<SysUserVo> sysUserVos = userService.selectUserListByDept(loginUser.getDeptId());
+        for (SysUserVo sysUserVo : sysUserVos) {
+            JSONObject performanceCount = performanceCount(sysUserVo.getUserId());
+            performanceCount.put("userName", sysUserVo.getNickName());
+            teamPerformanceList.add(performanceCount);
+            teamMonthAchievedBalance += parseDouble(performanceCount.getString("monthAchievedBalance"));
+            teamYearAchievedBalance += parseDouble(performanceCount.getString("yearAchievedBalance"));
+            teamMonthPerformanceGoal += parseDouble(performanceCount.getString("monthPerformanceGoal"));
+            teamMonthVisitGoal += parseDouble(performanceCount.getString("monthVisitGoal"));
+        }
+        JSONObject teamPerformance = new JSONObject();
+        teamPerformance.put("teamMonthAchievedBalance", teamMonthAchievedBalance);
+        teamPerformance.put("teamYearAchievedBalance", teamYearAchievedBalance);
+        teamPerformance.put("teamMonthPerformanceGoal", teamMonthPerformanceGoal);
+        teamPerformance.put("teamMonthVisitGoal", teamMonthVisitGoal);
+        result.put("customerTotal", customerTotal);
+        result.put("outStandingTotal", outStandingTotal);
+        result.put("intentionTotal", intentionTotal);
+        result.put("expiringTotal", expiringTotal);
+        result.put("balanceTotal", balanceTotal);
+        result.put("teamPerformanceList", teamPerformanceList);
+        result.put("teamPerformance", teamPerformance);
+
+        return result;
+    }
+
+    public JSONObject performanceCount(Long userId) {
+        // 本月已完成业绩 userId, username,monthBalance,performanceRank
+        List<Map<String, Object>> monthGoal = dcPerformanceTaskMapper.selectPerformanceTaskByLegalSupportAndMonth(userId, null);
+        List<Map<String, Object>> monthAchievedPerformance = dcCustomerPerformanceMapper.selectUserPerformanceRank(null, null, userId);
+        // 年度累计业绩金额
+        List<Map<String, Object>> YearAchievedPerformance = dcCustomerPerformanceMapper.selectUserPerformanceRank(LocalDate.now().getYear(), null, userId);
+
+        JSONObject performanceCount = new JSONObject();
+        Map<String, Object> map1 = monthAchievedPerformance != null && !monthAchievedPerformance.isEmpty() ? monthAchievedPerformance.get(0) : null;
+        Map<String, Object> map2 = YearAchievedPerformance != null && !YearAchievedPerformance.isEmpty() ? YearAchievedPerformance.get(0) : null;
+        Map<String, Object> map3 = monthGoal != null && !monthGoal.isEmpty() ? monthGoal.get(0) : null;
+        String monthAchievedBalance = "0";
+        String monthPerformanceRank = "";
+        String yearAchievedBalance = "0";
+        String yearPerformanceRank = "";
+        String monthPerformanceGoal = "0";
+        String monthVisitGoal = "0";
+        if (map1 != null && !map1.isEmpty()) {
+            monthAchievedBalance = map1.get("monthBalance") == null ? "0" : map1.get("monthBalance").toString();
+            monthPerformanceRank = map1.get("performanceRank") == null ? "" : map1.get("performanceRank").toString();
+        }
+        if (map2 != null && !map2.isEmpty()) {
+            yearAchievedBalance = map2.get("monthBalance") == null ? "0" : map2.get("monthBalance").toString();
+            yearPerformanceRank = map2.get("performanceRank") == null ? "" : map2.get("performanceRank").toString();
+        }
+        if (map3 != null && !map3.isEmpty()) {
+            monthPerformanceGoal = map3.get("sum1") == null ? "0" : map3.get("sum1").toString();
+            monthVisitGoal = map3.get("sum2") == null ? "0" : map3.get("sum2").toString();
+        }
+        performanceCount.put("monthAchievedBalance", monthAchievedBalance);
+        performanceCount.put("monthPerformanceRank", monthPerformanceRank);
+        performanceCount.put("yearAchievedBalance", yearAchievedBalance);
+        performanceCount.put("yearPerformanceRank", yearPerformanceRank);
+        performanceCount.put("monthPerformanceGoal", monthPerformanceGoal);
+        performanceCount.put("monthVisitGoal", monthVisitGoal);
+
+        return performanceCount;
+    }
+
+    private double parseDouble(String value) {
+        if (value == null || value.isEmpty()) {
+            return 0.0;
+        }
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
     }
 }
