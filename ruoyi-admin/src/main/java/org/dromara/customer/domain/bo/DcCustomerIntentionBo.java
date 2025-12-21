@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.customer.domain.DcCustomerIntention;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -30,6 +31,7 @@ public class DcCustomerIntentionBo extends BaseEntity {
     /**
      * 提报日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date submissionDate;
 
     /**

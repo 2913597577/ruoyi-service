@@ -93,7 +93,7 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         lqw.eq(bo.getPackageType() != null, DcCustomerInformation::getPackageType, bo.getPackageType());
         lqw.eq(bo.getActualReceipt() != null, DcCustomerInformation::getActualReceipt, bo.getActualReceipt());
         lqw.eq(bo.getBalance() != null, DcCustomerInformation::getBalance, bo.getBalance());
-        lqw.eq(bo.getExpireDate() != null, DcCustomerInformation::getExpireDate, bo.getExpireDate());
+        lqw.le(bo.getExpireDate() != null, DcCustomerInformation::getExpireDate, bo.getExpireDate());
         lqw.eq(StringUtils.isNotBlank(bo.getContractCode()), DcCustomerInformation::getContractCode, bo.getContractCode());
         lqw.eq(StringUtils.isNotBlank(bo.getRemarks()), DcCustomerInformation::getRemarks, bo.getRemarks());
         lqw.eq(bo.getActionType() != null, DcCustomerInformation::getActionType, bo.getActionType());

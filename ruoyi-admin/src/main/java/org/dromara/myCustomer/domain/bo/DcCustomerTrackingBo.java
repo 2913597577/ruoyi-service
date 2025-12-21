@@ -8,6 +8,7 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.myCustomer.domain.DcCustomerTracking;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -52,6 +53,7 @@ public class DcCustomerTrackingBo extends BaseEntity {
     /**
      * 跟踪时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date trackingTime;
 
     /**
@@ -62,6 +64,7 @@ public class DcCustomerTrackingBo extends BaseEntity {
     /**
      * 下次跟踪时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date nextTime;
 
     /**

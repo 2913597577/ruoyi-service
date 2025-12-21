@@ -1,24 +1,24 @@
 package org.dromara.customer.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.customer.domain.DcCustomerRiskRefund;
 import org.dromara.customer.domain.bo.DcCustomerRiskRefundBo;
 import org.dromara.customer.domain.vo.DcCustomerRiskRefundVo;
-import org.dromara.customer.domain.DcCustomerRiskRefund;
 import org.dromara.customer.mapper.DcCustomerRiskRefundMapper;
 import org.dromara.customer.service.IDcCustomerRiskRefundService;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 客户风险/退费Service业务层处理
@@ -40,7 +40,7 @@ public class DcCustomerRiskRefundServiceImpl implements IDcCustomerRiskRefundSer
      * @return 客户风险/退费
      */
     @Override
-    public DcCustomerRiskRefundVo queryById(Long id){
+    public DcCustomerRiskRefundVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -81,9 +81,9 @@ public class DcCustomerRiskRefundServiceImpl implements IDcCustomerRiskRefundSer
         lqw.eq(StringUtils.isNotBlank(bo.getPrincipalPhone()), DcCustomerRiskRefund::getPrincipalPhone, bo.getPrincipalPhone());
         lqw.eq(bo.getInviterId() != null, DcCustomerRiskRefund::getInviterId, bo.getInviterId());
         lqw.eq(bo.getSignDate() != null, DcCustomerRiskRefund::getSignDate, bo.getSignDate());
-        lqw.eq(bo.getExpireDate() != null, DcCustomerRiskRefund::getExpireDate, bo.getExpireDate());
+        lqw.le(bo.getExpireDate() != null, DcCustomerRiskRefund::getExpireDate, bo.getExpireDate());
         lqw.eq(bo.getContractAmount() != null, DcCustomerRiskRefund::getContractAmount, bo.getContractAmount());
-        lqw.eq(StringUtils.isNotBlank(bo.getServiceHours()), DcCustomerRiskRefund::getServiceHours, bo.getServiceHours());
+        lqw.like(StringUtils.isNotBlank(bo.getServiceHours()), DcCustomerRiskRefund::getServiceHours, bo.getServiceHours());
         lqw.eq(bo.getCustomerType() != null, DcCustomerRiskRefund::getCustomerType, bo.getCustomerType());
         lqw.eq(StringUtils.isNotBlank(bo.getReasons()), DcCustomerRiskRefund::getReasons, bo.getReasons());
         lqw.eq(bo.getRefundAmount() != null, DcCustomerRiskRefund::getRefundAmount, bo.getRefundAmount());
@@ -126,7 +126,7 @@ public class DcCustomerRiskRefundServiceImpl implements IDcCustomerRiskRefundSer
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcCustomerRiskRefund entity){
+    private void validEntityBeforeSave(DcCustomerRiskRefund entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -139,7 +139,7 @@ public class DcCustomerRiskRefundServiceImpl implements IDcCustomerRiskRefundSer
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;

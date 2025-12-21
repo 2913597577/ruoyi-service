@@ -8,6 +8,7 @@ import org.dromara.caseDetail.domain.DcDebtCase;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -62,6 +63,7 @@ public class DcDebtCaseBo extends BaseEntity {
     /**
      * 需求接收时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date requestReceiveTime;
 
     /**
@@ -82,11 +84,13 @@ public class DcDebtCaseBo extends BaseEntity {
     /**
      * 立案日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date filingDate;
 
     /**
      * 下次联系时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date nextContactTime;
 
     /**

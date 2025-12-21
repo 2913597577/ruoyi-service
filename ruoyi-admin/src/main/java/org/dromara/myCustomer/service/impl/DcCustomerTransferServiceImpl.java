@@ -135,8 +135,8 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(bo.getBalanceStatus() != null, DcCustomerTransfer::getBalanceStatus, bo.getBalanceStatus());
         lqw.eq(bo.getContractType() != null, DcCustomerTransfer::getContractType, bo.getContractType());
         lqw.eq(bo.getServiceType() != null, DcCustomerTransfer::getServiceType, bo.getServiceType());
-        lqw.eq(bo.getServiceStart() != null, DcCustomerTransfer::getServiceStart, bo.getServiceStart());
-        lqw.eq(bo.getServiceEnd() != null, DcCustomerTransfer::getServiceEnd, bo.getServiceEnd());
+        lqw.ge(bo.getServiceStart() != null, DcCustomerTransfer::getServiceStart, bo.getServiceStart());
+        lqw.le(bo.getServiceEnd() != null, DcCustomerTransfer::getServiceEnd, bo.getServiceEnd());
         lqw.eq(StringUtils.isNotBlank(bo.getLawyerConsultation()), DcCustomerTransfer::getLawyerConsultation, bo.getLawyerConsultation());
         lqw.eq(StringUtils.isNotBlank(bo.getOtherFee()), DcCustomerTransfer::getOtherFee, bo.getOtherFee());
         lqw.eq(bo.getFinanceConfirmed() != null, DcCustomerTransfer::getFinanceConfirmed, bo.getFinanceConfirmed());

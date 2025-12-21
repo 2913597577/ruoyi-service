@@ -9,6 +9,7 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.legalSupport.domain.DcCustomerJobOrder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -71,6 +72,7 @@ public class DcCustomerJobOrderBo extends BaseEntity {
      * 交付时间
      */
     @NotNull(message = "交付时间不能为空", groups = {AddGroup.class, EditGroup.class})
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date deliveryTime;
 
     /**

@@ -10,6 +10,7 @@ import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
 import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -127,11 +128,13 @@ public class DcCustomerTransferBo extends BaseEntity {
     /**
      * 服务周期开始时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date serviceStart;
 
     /**
      * 服务周期结束时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date serviceEnd;
 
     /**

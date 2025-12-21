@@ -8,6 +8,7 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.legalSupport.domain.DcCustomerOutVisit;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -51,11 +52,13 @@ public class DcCustomerOutVisitBo extends BaseEntity {
     /**
      * 出访时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date visitTime;
 
     /**
      * 下次出访时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date nextVisitTime;
 
     /**

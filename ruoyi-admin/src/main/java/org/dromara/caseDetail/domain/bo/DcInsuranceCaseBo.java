@@ -8,6 +8,7 @@ import org.dromara.caseDetail.domain.DcInsuranceCase;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -37,6 +38,7 @@ public class DcInsuranceCaseBo extends BaseEntity {
     /**
      * 下单日期
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
 
     /**

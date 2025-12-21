@@ -1,5 +1,7 @@
 package org.dromara.legalSupport.domain.bo;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +11,9 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.legalSupport.domain.DcLegalSupportChangeRecord;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * 法务支持变更业务对象 dc_legal_support_change_record
@@ -49,5 +54,9 @@ public class DcLegalSupportChangeRecordBo extends BaseEntity {
     private Long legalSupportId;
 
     private String remark1;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @TableField(fill = FieldFill.INSERT)
+    private Date createTime;
 
 }

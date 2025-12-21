@@ -11,6 +11,7 @@ import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.customer.domain.DcCustomerInformation;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -102,6 +103,7 @@ public class DcCustomerInformationBo extends BaseEntity {
     /**
      * 到期时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expireDate;
 
     /**
