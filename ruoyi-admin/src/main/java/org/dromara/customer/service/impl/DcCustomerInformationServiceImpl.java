@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.core.utils.DateUtils;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
@@ -100,7 +101,11 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         lqw.eq(bo.getTransferId() != null, DcCustomerInformation::getTransferId, bo.getTransferId());
         lqw.eq(bo.getIsAssigned() != null, DcCustomerInformation::getIsAssigned, bo.getIsAssigned());
         lqw.eq(bo.getIsHighRisk() != null, DcCustomerInformation::getIsHighRisk, bo.getIsHighRisk());
+        lqw.eq(bo.getIsRefund() != null, DcCustomerInformation::getIsRefund, bo.getIsRefund());
         lqw.eq(bo.getCustomerType() != null, DcCustomerInformation::getCustomerType, bo.getCustomerType());
+        lqw.lt(bo.getIsExpire() != null && bo.getIsExpire() == 1, DcCustomerInformation::getExpireDate, DateUtils.getDate());
+        lqw.ge(bo.getIsExpire() != null && bo.getIsExpire() == 0, DcCustomerInformation::getExpireDate, DateUtils.getDate());
+
         return lqw;
     }
 

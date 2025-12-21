@@ -40,6 +40,7 @@ public class DcCustomerInformationBo extends BaseEntity {
      * 签约日期
      */
     @NotNull(message = "签约日期不能为空", groups = {AddGroup.class, EditGroup.class})
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date signDate;
 
     /**
@@ -185,5 +186,9 @@ public class DcCustomerInformationBo extends BaseEntity {
      * 是否高风险客户 0-否 1-是
      */
     private Integer isHighRisk;
+    /**
+     * 是否到期 0-否 1-是
+     */
+    private Integer isExpire;
 
 }

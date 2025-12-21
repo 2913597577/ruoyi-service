@@ -415,7 +415,7 @@ public class commonService {
         dcCustomerInformationBo.setLawyerId(userId);
         List<DcCustomerInformationVo> dcCustomerInformationVos = dcCustomerInformationService.queryList(dcCustomerInformationBo);
 
-        // todo 近三十天未跟进
+        // 近二十天未跟进
         List<Map<String, Object>> outstandingCustomer = informationMapper.selectOutstandingCustomer(userId);
 
         // 意向客户

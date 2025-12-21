@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.file.MimeTypeUtils;
@@ -60,13 +61,23 @@ public class DcCustomerTransferController extends BaseController {
     @SaCheckPermission("myCustomer:customerTransfer:list")
     @GetMapping("/list")
     public TableDataInfo<DcCustomerTransferVo> list(DcCustomerTransferBo bo, PageQuery pageQuery) {
-//        LoginUser loginUser = LoginHelper.getLoginUser();
-//        if (loginUser==null){
-//            return null;
-//        }
-//        long deptId = loginUser.getDeptId();
-//        SysDeptVo deptVo= sysDeptService.selectDeptById(deptId);
-
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        String deptCategory = loginUser.getDeptCategory();
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            bo.setCustomerCity(city);
+        }
+        bo.setCreateDept(loginUser.getDeptId());
+        List<RoleDTO> roles = loginUser.getRoles();
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey() != null && role.getRoleKey().contains("employee")) {
+                bo.setCreateBy(loginUser.getUserId());
+            }
+        }
 
         return dcCustomerTransferService.queryPageList(bo, pageQuery);
     }
@@ -78,6 +89,24 @@ public class DcCustomerTransferController extends BaseController {
     @Log(title = "客户信息录入", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(DcCustomerTransferBo bo, HttpServletResponse response) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return;
+        }
+        String deptCategory = loginUser.getDeptCategory();
+        if (StringUtils.isNotBlank(deptCategory)) {
+            String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            bo.setCity(city);
+        }
+        bo.setCreateDept(loginUser.getDeptId());
+        List<RoleDTO> roles = loginUser.getRoles();
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey() != null && role.getRoleKey().contains("employee")) {
+                bo.setCreateBy(loginUser.getUserId());
+            }
+        }
+
         List<DcCustomerTransferVo> list = dcCustomerTransferService.queryList(bo);
         ExcelUtil.exportExcel(list, "客户信息录入", DcCustomerTransferVo.class, response);
     }

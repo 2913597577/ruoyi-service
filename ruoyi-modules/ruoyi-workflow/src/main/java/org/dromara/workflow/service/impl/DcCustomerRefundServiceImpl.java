@@ -18,9 +18,11 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.workflow.common.ConditionalOnEnable;
+import org.dromara.workflow.domain.DcCustomerChurnApprove;
 import org.dromara.workflow.domain.DcCustomerRefund;
 import org.dromara.workflow.domain.bo.DcCustomerRefundBo;
 import org.dromara.workflow.domain.vo.DcCustomerRefundVo;
+import org.dromara.workflow.mapper.DcCustomerChurnApproveMapper;
 import org.dromara.workflow.mapper.DcCustomerRefundMapper;
 import org.dromara.workflow.service.IDcCustomerRefundService;
 import org.springframework.context.event.EventListener;
@@ -40,6 +42,7 @@ import java.util.Map;
 public class DcCustomerRefundServiceImpl implements IDcCustomerRefundService {
 
     private final DcCustomerRefundMapper baseMapper;
+    private final DcCustomerChurnApproveMapper dcCustomerChurnApproveMapper;
     private final WorkflowService workflowService;
 
     @Override
@@ -113,6 +116,14 @@ public class DcCustomerRefundServiceImpl implements IDcCustomerRefundService {
         baseMapper.updateById(entity);
         if (BusinessStatusEnum.FINISH.getStatus().equals(processEvent.getStatus())) {
             baseMapper.updateRefundTypeById(entity.getId());
+            DcCustomerChurnApprove dcCustomerChurnApprove = new DcCustomerChurnApprove();
+            dcCustomerChurnApprove.setCustomerId(entity.getCustomerId());
+            dcCustomerChurnApprove.setCustomerName(entity.getCustomerName());
+            dcCustomerChurnApprove.setApplyType("退费");
+            dcCustomerChurnApprove.setStatus("finish");
+            dcCustomerChurnApprove.setRemark("客户退费审批通过自动转为流失客户");
+            dcCustomerChurnApproveMapper.insert(dcCustomerChurnApprove);
+            dcCustomerChurnApproveMapper.updateCustomerTypeById(dcCustomerChurnApprove.getCustomerId(), 3);
         }
     }
 
