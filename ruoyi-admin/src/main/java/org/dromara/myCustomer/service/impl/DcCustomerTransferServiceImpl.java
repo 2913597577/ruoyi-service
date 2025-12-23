@@ -172,6 +172,9 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(StringUtils.isNotBlank(bo.getProvince()), DcCustomerTransfer::getProvince, bo.getProvince());
         lqw.eq(StringUtils.isNotBlank(bo.getCity()), DcCustomerTransfer::getCity, bo.getCity());
         lqw.eq(StringUtils.isNotBlank(bo.getDistrict()), DcCustomerTransfer::getDistrict, bo.getDistrict());
+
+        lqw.eq(bo.getCreateBy() != null, DcCustomerTransfer::getCreateBy, bo.getCreateBy());
+        lqw.eq(bo.getCreateDept() != null, DcCustomerTransfer::getCreateDept, bo.getCreateDept());
         return lqw;
     }
 
@@ -197,6 +200,9 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
                 dcCustomerPerformanceBo.setUserName(dcCustomerPerformanceBo.getUserName());
                 dcCustomerPerformanceBo.setBalance(dcCustomerPerformanceBo.getBalance());
                 dcCustomerPerformanceBo.setCity(dcCustomerPerformanceBo.getCity());
+                dcCustomerPerformanceBo.setCreateBy(LoginHelper.getUserId());
+                dcCustomerPerformanceBo.setCreaterId(LoginHelper.getUserId());
+                dcCustomerPerformanceBo.setCreaterName(LoginHelper.getUsername());
                 dcCustomerPerformanceService.insertByBo(dcCustomerPerformanceBo);
             }
         }

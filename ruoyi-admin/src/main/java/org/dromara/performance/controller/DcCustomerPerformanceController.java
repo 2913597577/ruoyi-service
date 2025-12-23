@@ -117,7 +117,7 @@ public class DcCustomerPerformanceController extends BaseController {
             return R.fail("请先登录");
         }
         bo.setCreaterId(loginUser.getUserId());
-        bo.setCreaterName(loginUser.getNickname());
+        bo.setCreaterName(loginUser.getNickname() == null ? loginUser.getUsername() : loginUser.getNickname());
         return toAjax(dcCustomerPerformanceService.insertByBo(bo));
     }
 

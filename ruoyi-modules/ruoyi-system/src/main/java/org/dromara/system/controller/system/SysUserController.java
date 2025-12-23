@@ -82,6 +82,12 @@ public class SysUserController extends BaseController {
         return userService.selectPageUserList(user, pageQuery);
     }
 
+    @GetMapping("/selectAll")
+    public List<SysUserVo> selectAll(SysUserBo user) {
+        return userService.selectAll(user);
+    }
+
+
     /**
      * 导出用户列表
      */

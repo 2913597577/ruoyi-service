@@ -61,6 +61,13 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
         return TableDataInfo.build(page);
     }
 
+    @Override
+    public List<SysUserVo> selectAll(SysUserBo user) {
+        return baseMapper.selectVoList(new LambdaQueryWrapper<SysUser>()
+            .ne(SysUser::getUserId, 1L));
+    }
+
+
     /**
      * 根据条件分页查询用户列表
      *

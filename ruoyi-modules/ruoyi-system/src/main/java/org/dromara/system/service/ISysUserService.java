@@ -25,6 +25,9 @@ public interface ISysUserService {
      */
     TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery);
 
+
+    List<SysUserVo> selectAll(SysUserBo user);
+
     /**
      * 导出用户列表
      *

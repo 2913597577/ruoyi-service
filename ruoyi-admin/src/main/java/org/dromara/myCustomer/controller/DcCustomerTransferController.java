@@ -70,12 +70,16 @@ public class DcCustomerTransferController extends BaseController {
             String city = deptCategory.substring(0, deptCategory.indexOf('_'));
             bo.setCustomerCity(city);
         }
-        bo.setCreateDept(loginUser.getDeptId());
         List<RoleDTO> roles = loginUser.getRoles();
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
-            if (role.getRoleKey() != null && role.getRoleKey().contains("employee")) {
-                bo.setCreateBy(loginUser.getUserId());
+            if (role.getRoleKey() != null && !role.getRoleKey().contains("FinanceCenter")) {
+                if (role.getRoleKey().contains("Employee")) {
+                    bo.setCreateBy(loginUser.getUserId());
+                }
+                if (role.getRoleKey().contains("Manager")) {
+                    bo.setCreateDept(loginUser.getDeptId());
+                }
             }
         }
 
