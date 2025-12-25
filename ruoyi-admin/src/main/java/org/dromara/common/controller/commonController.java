@@ -188,4 +188,13 @@ public class commonController {
         return R.ok(commonService.getPerformance(loginUser));
     }
 
+    @GetMapping("/getLeaderPerformance")
+    public R<JSONObject> getLeaderPerformance() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getLeaderPerformance());
+    }
+
 }

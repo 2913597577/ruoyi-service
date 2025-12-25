@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.caseDetail.domain.bo.DcCaseTrackingBo;
@@ -56,9 +57,12 @@ import org.dromara.myCustomer.service.IDcCustomerTrackingService;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
 import org.dromara.performance.mapper.DcCustomerPerformanceMapper;
 import org.dromara.performance.mapper.DcPerformanceTaskMapper;
+import org.dromara.system.domain.bo.SysDeptBo;
+import org.dromara.system.domain.bo.SysDictDataBo;
+import org.dromara.system.domain.vo.SysDeptVo;
+import org.dromara.system.domain.vo.SysDictDataVo;
 import org.dromara.system.domain.vo.SysUserVo;
-import org.dromara.system.service.ISysRoleService;
-import org.dromara.system.service.ISysUserService;
+import org.dromara.system.service.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -99,6 +103,9 @@ public class commonService {
     private final IDcCustomerTransferService dcCustomerTransferService;
 
     private final ISysUserService userService;
+    private final ISysDeptService deptService;
+    private final ISysDictTypeService dictTypeService;
+    private final ISysDictDataService dictDataService;
 
     public JSONArray getCustomerByUserId(long userId) {
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -416,16 +423,16 @@ public class commonService {
         List<DcCustomerInformationVo> dcCustomerInformationVos = dcCustomerInformationService.queryList(dcCustomerInformationBo);
 
         // 近二十天未跟进
-        List<Map<String, Object>> outstandingCustomer = informationMapper.selectOutstandingCustomer(userId);
+        List<Map<String, Object>> outstandingCustomer = informationMapper.selectOutstandingCustomer(userId, null);
 
         // 意向客户
         DcCustomerIntentionBo dcCustomerIntentionBo = new DcCustomerIntentionBo();
         dcCustomerIntentionBo.setLegalSupportId(userId);
         List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryList(dcCustomerIntentionBo);
         // 临期客户
-        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(userId);
+        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(userId, null);
         // 尾款客户
-        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(userId);
+        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(userId, null);
         // 本月内勤数量
         List<Map<String, Object>> monthlyTracking = trackingMapper.selectMonthlyTrackingByLegalSupport(userId);
         // 出访数量
@@ -532,48 +539,78 @@ public class commonService {
         DcCustomerInformationBo dcCustomerInformationBo = new DcCustomerInformationBo();
 
         long customerTotal = dcCustomerInformationService.queryCount(dcCustomerInformationBo);
-        List<Map<String, Object>> OutstandingCustomer = informationMapper.selectOutstandingCustomer(null);
+        List<Map<String, Object>> OutstandingCustomer = informationMapper.selectOutstandingCustomer(null, null);
         DcCustomerIntentionBo dcCustomerIntentionBo = new DcCustomerIntentionBo();
         List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryList(dcCustomerIntentionBo);
         // 临期客户
-        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(null);
+        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(null, null);
         // 尾款客户
-        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(null);
+        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(null, null);
 
         int outStandingTotal = OutstandingCustomer == null ? 0 : OutstandingCustomer.size();
         int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
         int expiringTotal = expiringCustomers == null ? 0 : expiringCustomers.size();
         int balanceTotal = customersWithBalance == null ? 0 : customersWithBalance.size();
 
-        // 团队业绩和目标累计变量
-        double teamMonthAchievedBalance = 0.0;
-        double teamYearAchievedBalance = 0.0;
-        double teamMonthPerformanceGoal = 0.0;
-        double teamMonthVisitGoal = 0.0;
-        JSONArray teamPerformanceList = new JSONArray();
-        List<SysUserVo> sysUserVos = userService.selectUserListByDept(loginUser.getDeptId());
-        for (SysUserVo sysUserVo : sysUserVos) {
-            JSONObject performanceCount = performanceCount(sysUserVo.getUserId());
-            performanceCount.put("userName", sysUserVo.getNickName());
-            teamPerformanceList.add(performanceCount);
-            teamMonthAchievedBalance += parseDouble(performanceCount.getString("monthAchievedBalance"));
-            teamYearAchievedBalance += parseDouble(performanceCount.getString("yearAchievedBalance"));
-            teamMonthPerformanceGoal += parseDouble(performanceCount.getString("monthPerformanceGoal"));
-            teamMonthVisitGoal += parseDouble(performanceCount.getString("monthVisitGoal"));
-        }
-        JSONObject teamPerformance = new JSONObject();
-        teamPerformance.put("teamMonthAchievedBalance", teamMonthAchievedBalance);
-        teamPerformance.put("teamYearAchievedBalance", teamYearAchievedBalance);
-        teamPerformance.put("teamMonthPerformanceGoal", teamMonthPerformanceGoal);
-        teamPerformance.put("teamMonthVisitGoal", teamMonthVisitGoal);
+
         result.put("customerTotal", customerTotal);
         result.put("outStandingTotal", outStandingTotal);
         result.put("intentionTotal", intentionTotal);
         result.put("expiringTotal", expiringTotal);
         result.put("balanceTotal", balanceTotal);
-        result.put("teamPerformanceList", teamPerformanceList);
-        result.put("teamPerformance", teamPerformance);
+        // 团队业绩和目标累计变量
+        JSONObject performance = getPerformanceByDept(loginUser.getDeptId());
+        result.put("teamPerformanceList", performance == null ? new JSONArray() : performance.get("teamPerformanceList"));
+        result.put("teamPerformance", performance == null ? new JSONObject() : performance.get("teamPerformance"));
 
+        return result;
+    }
+
+    public JSONObject getLeaderPerformance() {
+        JSONObject result = new JSONObject();
+        SysDictDataBo sysDictDataBo = new SysDictDataBo();
+        sysDictDataBo.setDictType("dc_sercive_city");
+        List<SysDictDataVo> sysDictDataVos = dictDataService.selectDictDataList(sysDictDataBo);
+        for (SysDictDataVo sysDictDataVo : sysDictDataVos) {
+            JSONObject count = new JSONObject();
+            List<Long> deptIds = getDeptIdsByCity(sysDictDataVo.getDictValue());
+            if (CollectionUtils.isEmpty(deptIds)) {
+                continue;
+            }
+
+            count.put("cityName", sysDictDataVo.getDictLabel());
+            count.put("cityCode", sysDictDataVo.getDictValue());
+            List<DcCustomerInformationVo> dcCustomerInformationVos = dcCustomerInformationService.queryListByCreateDepts(deptIds);
+            List<Map<String, Object>> OutstandingCustomer = informationMapper.selectOutstandingCustomer(null, deptIds);
+            List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryListByCreateDepts(deptIds);
+            List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(null, deptIds);
+            List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(null, deptIds);
+
+            long customerTotal = dcCustomerInformationVos == null ? 0 : dcCustomerInformationVos.size();
+            int outStandingTotal = OutstandingCustomer == null ? 0 : OutstandingCustomer.size();
+            int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
+            int expiringTotal = expiringCustomers == null ? 0 : expiringCustomers.size();
+            int balanceTotal = customersWithBalance == null ? 0 : customersWithBalance.size();
+
+            String deptCategory = sysDictDataVo.getDictValue() + "_LegalSupport";
+            SysDeptBo sysDeptBo = new SysDeptBo();
+            sysDeptBo.setDeptCategory(deptCategory);
+            List<SysDeptVo> sysDeptVos = deptService.selectDeptList(sysDeptBo);
+            if (CollectionUtils.isNotEmpty(sysDeptVos)) {
+                SysDeptVo deptVo = sysDeptVos.get(0);
+                JSONObject teamPerformance = getPerformanceByDept(deptVo.getDeptId());
+                count.put("teamPerformance", teamPerformance == null ? new JSONObject() : teamPerformance.get("teamPerformance"));
+                count.put("teamPerformanceList", teamPerformance == null ? new JSONArray() : teamPerformance.get("teamPerformanceList"));
+            }
+
+
+            count.put("customerTotal", customerTotal);
+            count.put("outStandingTotal", outStandingTotal);
+            count.put("intentionTotal", intentionTotal);
+            count.put("expiringTotal", expiringTotal);
+            count.put("balanceTotal", balanceTotal);
+            result.put(sysDictDataVo.getDictValue(), count);
+        }
         return result;
     }
 
@@ -626,4 +663,52 @@ public class commonService {
             return 0.0;
         }
     }
+
+    public List<Long> getDeptIdsByCity(String deptCategory) {
+        SysDeptBo sysDeptBo = new SysDeptBo();
+        sysDeptBo.setDeptCategory(deptCategory);
+        List<SysDeptVo> sysDeptVos = deptService.selectDeptList(sysDeptBo);
+        if (CollectionUtils.isEmpty(sysDeptVos)) {
+            return null;
+        }
+        SysDeptVo deptVo = sysDeptVos.get(0);
+        SysDeptBo sysDeptBo1 = new SysDeptBo();
+        sysDeptBo1.setParentId(deptVo.getDeptId());
+        List<SysDeptVo> sysDeptVos1 = deptService.selectDeptList(sysDeptBo1);
+        if (CollectionUtils.isEmpty(sysDeptVos1)) {
+            return null;
+        }
+
+        return sysDeptVos1.stream()
+            .map(SysDeptVo::getDeptId)
+            .toList();
+    }
+
+    public JSONObject getPerformanceByDept(long deptId) {
+        double teamMonthAchievedBalance = 0.0;
+        double teamYearAchievedBalance = 0.0;
+        double teamMonthPerformanceGoal = 0.0;
+        double teamMonthVisitGoal = 0.0;
+        JSONArray teamPerformanceList = new JSONArray();
+        List<SysUserVo> sysUserVos = userService.selectUserListByDept(deptId);
+        for (SysUserVo sysUserVo : sysUserVos) {
+            JSONObject performanceCount = performanceCount(sysUserVo.getUserId());
+            performanceCount.put("userName", sysUserVo.getNickName());
+            teamPerformanceList.add(performanceCount);
+            teamMonthAchievedBalance += parseDouble(performanceCount.getString("monthAchievedBalance"));
+            teamYearAchievedBalance += parseDouble(performanceCount.getString("yearAchievedBalance"));
+            teamMonthPerformanceGoal += parseDouble(performanceCount.getString("monthPerformanceGoal"));
+            teamMonthVisitGoal += parseDouble(performanceCount.getString("monthVisitGoal"));
+        }
+        JSONObject result = new JSONObject();
+        JSONObject teamPerformance = new JSONObject();
+        teamPerformance.put("teamMonthAchievedBalance", teamMonthAchievedBalance);
+        teamPerformance.put("teamYearAchievedBalance", teamYearAchievedBalance);
+        teamPerformance.put("teamMonthPerformanceGoal", teamMonthPerformanceGoal);
+        teamPerformance.put("teamMonthVisitGoal", teamMonthVisitGoal);
+        result.put("teamPerformance", teamPerformance);
+        result.put("teamPerformanceList", teamPerformanceList);
+        return result;
+    }
+
 }

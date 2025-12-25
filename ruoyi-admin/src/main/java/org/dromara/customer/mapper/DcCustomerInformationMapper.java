@@ -22,10 +22,11 @@ public interface DcCustomerInformationMapper extends BaseMapperPlus<DcCustomerIn
 
     List<Map<String, Object>> selectCustomerPackageType(@Param("lawyerId") Long lawyerId);
 
-    List<Map<String, Object>> selectExpiringCustomers(@Param("lawyerId") Long lawyerId);
+    List<Map<String, Object>> selectExpiringCustomers(@Param("lawyerId") Long lawyerId, @Param("createDepts") List<Long> createDepts);
 
-    List<Map<String, Object>> selectCustomersWithBalance(@Param("lawyerId") Long lawyerId);
+    List<Map<String, Object>> selectCustomersWithBalance(@Param("lawyerId") Long lawyerId, @Param("createDepts") List<Long> createDepts);
 
-    List<Map<String, Object>> selectOutstandingCustomer(@Param("lawyerId") Long lawyerId);
+    List<Map<String, Object>> selectOutstandingCustomer(@Param("lawyerId") Long lawyerId, @Param("createDepts") List<Long> createDepts);
+
 
 }

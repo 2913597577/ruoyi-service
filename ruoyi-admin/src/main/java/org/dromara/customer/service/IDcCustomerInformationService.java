@@ -78,4 +78,13 @@ public interface IDcCustomerInformationService {
      * @return 客户总表列表
      */
     DcCustomerInformationVo queryListByTransferId(Long transferId);
+
+    /**
+     * 根据创建部门数组查询客户总表列表
+     *
+     * @param createDepts 创建部门ID数组
+     * @return 客户总表列表
+     */
+    List<DcCustomerInformationVo> queryListByCreateDepts(List<Long> createDepts);
+
 }

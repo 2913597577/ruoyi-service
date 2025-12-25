@@ -137,4 +137,17 @@ public class DcCustomerIntentionServiceImpl implements IDcCustomerIntentionServi
         }
         return baseMapper.deleteByIds(ids) > 0;
     }
+
+    @Override
+    public List<DcCustomerIntentionVo> queryListByCreateDepts(List<Long> createDepts) {
+        if (createDepts == null || createDepts.isEmpty()) {
+            return List.of();
+        }
+
+        LambdaQueryWrapper<DcCustomerIntention> lqw = Wrappers.lambdaQuery();
+        lqw.in(DcCustomerIntention::getCreateDept, createDepts);
+        lqw.orderByDesc(DcCustomerIntention::getCreateTime);
+
+        return baseMapper.selectVoList(lqw);
+    }
 }

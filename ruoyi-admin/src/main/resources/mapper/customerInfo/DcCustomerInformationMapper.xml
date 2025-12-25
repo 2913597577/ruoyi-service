@@ -49,6 +49,12 @@
         <if test="lawyerId != null">
             AND lawyer_id = #{lawyerId}
         </if>
+        <if test="createDepts != null and createDepts.size() > 0">
+            AND create_dept IN
+            <foreach collection="createDepts" item="deptId" open="(" separator="," close=")">
+                #{deptId}
+            </foreach>
+        </if>
     </select>
 
     <select id="selectCustomersWithBalance" resultType="map">
@@ -58,6 +64,12 @@
         AND balance > 0
         <if test="lawyerId != null">
             AND lawyer_id = #{lawyerId}
+        </if>
+        <if test="createDepts != null and createDepts.size() > 0">
+            AND create_dept IN
+            <foreach collection="createDepts" item="deptId" open="(" separator="," close=")">
+                #{deptId}
+            </foreach>
         </if>
     </select>
 
@@ -119,6 +131,12 @@
         AND del_flag = 0
         <if test="lawyerId != null">
             AND lawyer_id = #{lawyerId}
+        </if>
+        <if test="createDepts != null and createDepts.size() > 0">
+            AND create_dept IN
+            <foreach collection="createDepts" item="deptId" open="(" separator="," close=")">
+                #{deptId}
+            </foreach>
         </if>
     </select>
 

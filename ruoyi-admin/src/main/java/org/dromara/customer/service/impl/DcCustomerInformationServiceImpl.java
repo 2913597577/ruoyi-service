@@ -167,4 +167,17 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         wrapper.eq("transfer_id", transferId);
         return baseMapper.selectVoOne(wrapper);
     }
+
+    @Override
+    public List<DcCustomerInformationVo> queryListByCreateDepts(List<Long> createDepts) {
+        if (createDepts == null || createDepts.isEmpty()) {
+            return List.of();
+        }
+
+        LambdaQueryWrapper<DcCustomerInformation> lqw = Wrappers.lambdaQuery();
+        lqw.in(DcCustomerInformation::getCreateDept, createDepts);
+        lqw.orderByDesc(DcCustomerInformation::getCreateTime);
+
+        return baseMapper.selectVoList(lqw);
+    }
 }

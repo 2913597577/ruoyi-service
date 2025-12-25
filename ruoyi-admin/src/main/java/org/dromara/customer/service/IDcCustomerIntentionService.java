@@ -1,9 +1,9 @@
 package org.dromara.customer.service;
 
-import org.dromara.customer.domain.vo.DcCustomerIntentionVo;
-import org.dromara.customer.domain.bo.DcCustomerIntentionBo;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.customer.domain.bo.DcCustomerIntentionBo;
+import org.dromara.customer.domain.vo.DcCustomerIntentionVo;
 
 import java.util.Collection;
 import java.util.List;
@@ -65,4 +65,13 @@ public interface IDcCustomerIntentionService {
      * @return 是否删除成功
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    /**
+     * 根据创建部门数组查询客户总表列表
+     *
+     * @param createDepts 创建部门ID数组
+     * @return 客户总表列表
+     */
+    List<DcCustomerIntentionVo> queryListByCreateDepts(List<Long> createDepts);
+
 }
