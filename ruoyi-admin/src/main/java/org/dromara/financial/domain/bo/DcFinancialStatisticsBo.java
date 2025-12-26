@@ -1,17 +1,17 @@
 package org.dromara.financial.domain.bo;
 
-import org.dromara.financial.domain.DcFinancialStatistics;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.common.core.validate.AddGroup;
-import org.dromara.common.core.validate.EditGroup;
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import jakarta.validation.constraints.*;
-import org.dromara.common.translation.annotation.Translation;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.financial.domain.DcFinancialStatistics;
+
+import java.math.BigDecimal;
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.dromara.common.translation.constant.TransConstant;
 
 /**
  * 财务统计业务对象 dc_financial_statistics
@@ -27,25 +27,25 @@ public class DcFinancialStatisticsBo extends BaseEntity {
     /**
      * id
      */
-    @NotNull(message = "id不能为空", groups = { EditGroup.class })
+    @NotNull(message = "id不能为空", groups = {EditGroup.class})
     private Long id;
 
     /**
      * 金额
      */
-    @NotNull(message = "金额不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long balance;
+    @NotNull(message = "金额不能为空", groups = {AddGroup.class, EditGroup.class})
+    private BigDecimal balance;
 
     /**
      * 财务类型
      */
-    @NotNull(message = "财务类型不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "财务类型不能为空", groups = {AddGroup.class, EditGroup.class})
     private Long financialType;
 
     /**
      * 来源类型
      */
-    @NotBlank(message = "来源类型不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "来源类型不能为空", groups = {AddGroup.class, EditGroup.class})
     private String sourceType;
 
     /**
@@ -86,7 +86,7 @@ public class DcFinancialStatisticsBo extends BaseEntity {
     /**
      * 流水时间（财务进账/支出具体时间）
      */
-    @NotNull(message = "流水时间（财务进账/支出具体时间）不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "流水时间（财务进账/支出具体时间）不能为空", groups = {AddGroup.class, EditGroup.class})
     private Date flowTime;
 
 

@@ -12,6 +12,7 @@ import org.dromara.financial.domain.DcFinancialStatistics;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -39,7 +40,7 @@ public class DcFinancialStatisticsVo implements Serializable {
      * 金额
      */
     @ExcelProperty(value = "金额")
-    private Long balance;
+    private BigDecimal balance;
 
     /**
      * 财务类型

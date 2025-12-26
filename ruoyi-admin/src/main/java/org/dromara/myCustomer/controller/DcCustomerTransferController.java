@@ -24,6 +24,8 @@ import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 import org.dromara.customer.service.impl.DcCustomerInformationServiceImpl;
+import org.dromara.financial.domain.bo.DcFinancialStatisticsBo;
+import org.dromara.financial.service.impl.DcFinancialStatisticsServiceImpl;
 import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
@@ -37,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,6 +56,7 @@ public class DcCustomerTransferController extends BaseController {
 
     private final IDcCustomerTransferService dcCustomerTransferService;
     private final DcCustomerInformationServiceImpl dcCustomerInformationService;
+    private final DcFinancialStatisticsServiceImpl dcFinancialStatisticsService;
     private final ISysOssService ossService;
 
     /**
@@ -265,6 +269,20 @@ public class DcCustomerTransferController extends BaseController {
 
         if (updateStatus) {
             updateSuccess = DataPermissionHelper.ignore(() -> dcCustomerTransferService.updatePicture(id, oss.getOssId()));
+            DcFinancialStatisticsBo dcFinancialStatisticsBo = new DcFinancialStatisticsBo();
+            dcFinancialStatisticsBo.setContractNo(dcCustomerTransferVo.getContractCode());
+            dcFinancialStatisticsBo.setBalance(new BigDecimal(dcCustomerTransferVo.getActualPayment()));
+            dcFinancialStatisticsBo.setFlowTime(dcCustomerTransferVo.getCreateTime());
+            dcFinancialStatisticsBo.setSourceType("actual_receipt");
+            dcFinancialStatisticsBo.setCity(dcCustomerTransferVo.getCustomerCity());
+            dcFinancialStatisticsBo.setFinancialType(1L);
+            dcFinancialStatisticsBo.setRemark("客户实收");
+            dcFinancialStatisticsBo.setCreateBy(LoginHelper.getUserId());
+            dcFinancialStatisticsBo.setUpdateBy(LoginHelper.getUserId());
+            dcFinancialStatisticsBo.setCreateDept(LoginHelper.getDeptId());
+            dcFinancialStatisticsBo.setCreateTime(new Date());
+            dcFinancialStatisticsBo.setUpdateTime(new Date());
+            dcFinancialStatisticsService.insertByBo(dcFinancialStatisticsBo);
         }
 
         if (updateSuccess) {

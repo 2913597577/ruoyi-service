@@ -1,15 +1,14 @@
 package org.dromara.financial.domain;
 
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.common.translation.annotation.Translation;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.dromara.common.translation.constant.TransConstant;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.io.Serial;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 财务统计对象 dc_financial_statistics
@@ -34,7 +33,7 @@ public class DcFinancialStatistics extends BaseEntity {
     /**
      * 金额
      */
-    private Long balance;
+    private BigDecimal balance;
 
     /**
      * 财务类型

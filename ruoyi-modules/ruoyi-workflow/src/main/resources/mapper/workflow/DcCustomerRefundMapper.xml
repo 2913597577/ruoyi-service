@@ -10,4 +10,40 @@
         WHERE id = #{id}
     </update>
 
+    <insert id="insertFinancialStatistics" parameterType="java.util.Map">
+        INSERT INTO dc_financial_statistics (balance,
+                                             financial_type,
+                                             source_type,
+                                             contract_no,
+                                             remark,
+                                             city,
+                                             creater_name,
+                                             remark1,
+                                             remark2,
+                                             remark3,
+                                             flow_time,
+                                             create_dept,
+                                             create_by,
+                                             create_time,
+                                             update_by,
+                                             update_time)
+        VALUES (#{balance},
+                #{financialType},
+                #{sourceType},
+                #{contractNo},
+                #{remark},
+                #{city},
+                #{createrName},
+                #{remark1},
+                #{remark2},
+                #{remark3},
+                #{flowTime},
+                #{createDept},
+                #{createBy},
+                #{createTime},
+                #{updateBy},
+                #{updateTime})
+    </insert>
+
+
 </mapper>

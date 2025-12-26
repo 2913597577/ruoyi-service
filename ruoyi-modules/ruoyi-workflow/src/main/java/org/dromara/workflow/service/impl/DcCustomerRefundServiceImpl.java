@@ -17,6 +17,10 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.customer.domain.vo.DcCustomerInformationVo;
+import org.dromara.customer.service.impl.DcCustomerInformationServiceImpl;
+import org.dromara.financial.domain.bo.DcFinancialStatisticsBo;
+import org.dromara.financial.service.impl.DcFinancialStatisticsServiceImpl;
 import org.dromara.workflow.common.ConditionalOnEnable;
 import org.dromara.workflow.domain.DcCustomerChurnApprove;
 import org.dromara.workflow.domain.DcCustomerRefund;
@@ -29,6 +33,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +49,8 @@ public class DcCustomerRefundServiceImpl implements IDcCustomerRefundService {
     private final DcCustomerRefundMapper baseMapper;
     private final DcCustomerChurnApproveMapper dcCustomerChurnApproveMapper;
     private final WorkflowService workflowService;
+    private final DcFinancialStatisticsServiceImpl dcFinancialStatisticsService;
+    private final DcCustomerInformationServiceImpl dcCustomerInformationService;
 
     @Override
     public DcCustomerRefundVo queryById(Long id) {
@@ -124,6 +131,23 @@ public class DcCustomerRefundServiceImpl implements IDcCustomerRefundService {
             dcCustomerChurnApprove.setRemark("客户退费审批通过自动转为流失客户");
             dcCustomerChurnApproveMapper.insert(dcCustomerChurnApprove);
             dcCustomerChurnApproveMapper.updateCustomerTypeById(dcCustomerChurnApprove.getCustomerId(), 3);
+
+            DcCustomerInformationVo dcCustomerInformationVo = dcCustomerInformationService.queryById(entity.getCustomerId());
+            DcFinancialStatisticsBo dcFinancialStatisticsBo = new DcFinancialStatisticsBo();
+            dcFinancialStatisticsBo.setContractNo(entity.getContractNo());
+            dcFinancialStatisticsBo.setBalance(entity.getRefundAmount());
+            dcFinancialStatisticsBo.setFlowTime(entity.getUpdateTime());
+            dcFinancialStatisticsBo.setSourceType("refund");
+            dcFinancialStatisticsBo.setCity(dcCustomerInformationVo == null ? "" : dcCustomerInformationVo.getCustomerCity());
+            dcFinancialStatisticsBo.setFinancialType(2L);
+            dcFinancialStatisticsBo.setRemark("客户退费");
+            dcFinancialStatisticsBo.setCreateBy(entity.getCreateBy());
+            dcFinancialStatisticsBo.setUpdateBy(entity.getCreateBy());
+            dcFinancialStatisticsBo.setCreateDept(entity.getCreateDept());
+            dcFinancialStatisticsBo.setCreateTime(new Date());
+            dcFinancialStatisticsBo.setUpdateTime(entity.getUpdateTime());
+            dcFinancialStatisticsService.insertByBo(dcFinancialStatisticsBo);
+
         }
     }
 

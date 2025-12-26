@@ -17,6 +17,10 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.financial.domain.bo.DcFinancialStatisticsBo;
+import org.dromara.financial.service.impl.DcFinancialStatisticsServiceImpl;
+import org.dromara.system.domain.vo.SysDeptVo;
+import org.dromara.system.service.impl.SysDeptServiceImpl;
 import org.dromara.workflow.common.ConditionalOnEnable;
 import org.dromara.workflow.domain.DcExpenseReimbursement;
 import org.dromara.workflow.domain.bo.DcExpenseReimbursementBo;
@@ -27,6 +31,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +46,9 @@ public class DcExpenseReimbursementServiceImpl implements IDcExpenseReimbursemen
 
     private final DcExpenseReimbursementMapper baseMapper;
     private final WorkflowService workflowService;
+
+    private final DcFinancialStatisticsServiceImpl dcFinancialStatisticsService;
+    private final SysDeptServiceImpl sysDeptService;
 
     /**
      * 查询报销申请
@@ -139,6 +147,29 @@ public class DcExpenseReimbursementServiceImpl implements IDcExpenseReimbursemen
             dcExpenseReimbursement.setStatus(BusinessStatusEnum.WAITING.getStatus());
         }
         baseMapper.updateById(dcExpenseReimbursement);
+        if (BusinessStatusEnum.FINISH.getStatus().equals(processEvent.getStatus())) {
+            SysDeptVo deptVo = sysDeptService.selectDeptById(dcExpenseReimbursement.getCreateDept());
+            String deptCategory = deptVo.getDeptCategory();
+            String city = "";
+            if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+                city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            }
+            DcFinancialStatisticsBo dcFinancialStatisticsBo = new DcFinancialStatisticsBo();
+            dcFinancialStatisticsBo.setContractNo("");
+            dcFinancialStatisticsBo.setBalance(dcExpenseReimbursement.getReimbursementAmount());
+            dcFinancialStatisticsBo.setFlowTime(dcExpenseReimbursement.getUpdateTime());
+            dcFinancialStatisticsBo.setSourceType("reimbursement");
+            dcFinancialStatisticsBo.setCity(city);
+            dcFinancialStatisticsBo.setFinancialType(2L);
+            dcFinancialStatisticsBo.setRemark("员工报销");
+            dcFinancialStatisticsBo.setCreateBy(dcExpenseReimbursement.getCreateBy());
+            dcFinancialStatisticsBo.setUpdateBy(dcExpenseReimbursement.getCreateBy());
+            dcFinancialStatisticsBo.setCreateDept(dcExpenseReimbursement.getCreateDept());
+            dcFinancialStatisticsBo.setCreateTime(new Date());
+            dcFinancialStatisticsBo.setUpdateTime(dcExpenseReimbursement.getUpdateTime());
+            dcFinancialStatisticsService.insertByBo(dcFinancialStatisticsBo);
+        }
+
     }
 
     /**
