@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.financial.mapper.DcFinancialStatisticsMapper">
+
+    <select id="selectCityStatistics" parameterType="FinancialStatisticsQuery" resultType="map">
+        SELECT
+        city AS cityName,
+        SUM(CASE WHEN financial_type = 1 THEN balance ELSE 0 END) AS incomeTotal,
+        SUM(CASE WHEN financial_type = 2 THEN balance ELSE 0 END) AS expenseTotal,
+        SUM(balance) AS totalAmount
+        FROM dc_financial_statistics
+        <where>
+            <if test="financialType != null and financialType != ''">
+                AND financial_type = #{financialType}
+            </if>
+            <if test="city != null and city != ''">
+                AND city = #{city}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                AND source_type = #{sourceType}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND DATE(flow_time) >= DATE(#{startTime})
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND DATE(flow_time) &lt;= DATE(#{endTime})
+            </if>
+            <if test="createrName != null and createrName != ''">
+                AND creater_name LIKE CONCAT('%', #{createrName}, '%')
+            </if>
+        </where>
+        GROUP BY city
+        ORDER BY totalAmount DESC
+    </select>
+
+    <!-- 按来源类型统计 -->
+    <select id="selectSourceTypeStatistics" parameterType="FinancialStatisticsQuery" resultType="map">
+        SELECT
+        source_type AS sourceType,
+        SUM(balance) AS total,
+        COUNT(*) AS count
+        FROM dc_financial_statistics
+        <where>
+            <if test="financialType != null and financialType != ''">
+                AND financial_type = #{financialType}
+            </if>
+            <if test="city != null and city != ''">
+                AND city = #{city}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                AND source_type = #{sourceType}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND DATE(flow_time) >= DATE(#{startTime})
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND DATE(flow_time) &lt;= DATE(#{endTime})
+            </if>
+            <if test="createrName != null and createrName != ''">
+                AND creater_name LIKE CONCAT('%', #{createrName}, '%')
+            </if>
+        </where>
+        GROUP BY source_type
+        ORDER BY total DESC
+    </select>
+
+    <!-- 按财务类型统计 -->
+    <select id="selectFinancialTypeStatistics" parameterType="FinancialStatisticsQuery" resultType="map">
+        SELECT
+        financial_type AS financialType,
+        SUM(balance) AS total,
+        COUNT(*) AS count
+        FROM dc_financial_statistics
+        <where>
+            <if test="financialType != null and financialType != ''">
+                AND financial_type = #{financialType}
+            </if>
+            <if test="city != null and city != ''">
+                AND city = #{city}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                AND source_type = #{sourceType}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND DATE(flow_time) >= DATE(#{startTime})
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND DATE(flow_time) &lt;= DATE(#{endTime})
+            </if>
+            <if test="createrName != null and createrName != ''">
+                AND creater_name LIKE CONCAT('%', #{createrName}, '%')
+            </if>
+        </where>
+        GROUP BY financial_type
+        ORDER BY total DESC
+    </select>
+
+</mapper>
