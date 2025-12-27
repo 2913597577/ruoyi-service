@@ -1,4 +1,4 @@
-package org.dromara.workflow.controller;
+package org.dromara.common.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package org.dromara.workflow.service.impl;
+package org.dromara.common.service.impl;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.map.MapUtil;
