@@ -116,7 +116,13 @@ public class commonService {
 
         List<RoleDTO> roles = loginUser.getRoles();
         // 法务支持员工
-        boolean isLegalSupport = roles != null && roles.get(0).getRoleId() == 1980464458593992706L;
+        boolean isLegalSupport = false;
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+                isLegalSupport = true;
+            }
+        }
 
         List<DcCustomerInformationVo> list = informationMapper.selectVoList();
 

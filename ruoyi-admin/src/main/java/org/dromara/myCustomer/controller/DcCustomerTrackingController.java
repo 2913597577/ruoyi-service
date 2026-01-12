@@ -51,9 +51,11 @@ public class DcCustomerTrackingController extends BaseController {
             return null;
         }
         List<RoleDTO> roles = loginUser.getRoles();
-        // 法务支持
-        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
-            bo.setLegalSupportId(loginUser.getUserId());
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+                bo.setLegalSupportId(loginUser.getUserId());
+            }
         }
         return dcCustomerTrackingService.queryPageList(bo, pageQuery);
     }
@@ -70,9 +72,11 @@ public class DcCustomerTrackingController extends BaseController {
             return;
         }
         List<RoleDTO> roles = loginUser.getRoles();
-        // 法务支持
-        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
-            bo.setLegalSupportId(loginUser.getUserId());
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+                bo.setLegalSupportId(loginUser.getUserId());
+            }
         }
         List<DcCustomerTrackingVo> list = dcCustomerTrackingService.queryList(bo);
         ExcelUtil.exportExcel(list, "客户跟踪", DcCustomerTrackingVo.class, response);

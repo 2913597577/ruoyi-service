@@ -74,12 +74,41 @@ public class SysUserController extends BaseController {
         List<RoleDTO> roles = loginUser.getRoles();
         // 法务支持
         SysUserBo user = new SysUserBo();
-        if ("1969581806504747009".equals(deptId) && roles != null
-            && roles.get(0).getRoleId() == 1980464458593992706L) {
-            user.setUserId(loginUser.getUserId());
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().contains("Employee")) {
+                user.setUserId(loginUser.getUserId());
+            }
         }
         user.setDeptId(Long.valueOf(deptId));
         return userService.selectPageUserList(user, pageQuery);
+    }
+
+    @GetMapping("/listDeptCode")
+    public TableDataInfo<SysUserVo> listDeptCode(@RequestParam String deptCode) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        SysUserBo user = new SysUserBo();
+        String deptCategory = loginUser.getDeptCategory();
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            String code = city + "_" + deptCode;
+            SysDeptVo deptVo = deptService.selectDeptByCode(code);
+            if (ObjectUtil.isNull(deptVo)) {
+                return null;
+            }
+            user.setDeptId(deptVo.getDeptId());
+            List<RoleDTO> roles = loginUser.getRoles();
+            if (roles != null && !roles.isEmpty()) {
+                RoleDTO role = roles.get(0);
+                if (role.getRoleKey().contains("Employee")) {
+                    user.setUserId(loginUser.getUserId());
+                }
+            }
+        }
+        return TableDataInfo.build(userService.selectByDeptCode(user));
     }
 
     @GetMapping("/selectAll")

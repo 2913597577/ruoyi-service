@@ -25,6 +25,8 @@ public interface ISysUserService {
      */
     TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user, PageQuery pageQuery);
 
+    List<SysUserVo> selectByDeptCode(SysUserBo user);
+
 
     List<SysUserVo> selectAll(SysUserBo user);
 

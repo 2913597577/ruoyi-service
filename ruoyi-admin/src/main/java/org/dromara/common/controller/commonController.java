@@ -123,9 +123,11 @@ public class commonController {
             return R.warn("用户未登录");
         }
         List<RoleDTO> roles = loginUser.getRoles();
-        // 法务支持
-        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
-            legalSupportId = loginUser.getUserId() + "";
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+                legalSupportId = loginUser.getUserId() + "";
+            }
         }
         return R.ok(commonService.getAllTrackingRecords(customerId, legalSupportId, trackingType, trackingTime, nextTrackingTime, pageNum, pageSize));
     }
@@ -158,8 +160,11 @@ public class commonController {
         List<RoleDTO> roles = loginUser.getRoles();
         Long legalSupportId = null;
         // 法务支持
-        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
-            legalSupportId = loginUser.getUserId();
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+                legalSupportId = loginUser.getUserId();
+            }
         }
         return R.ok(commonService.getLegalSupportPerformance(legalSupportId));
     }

@@ -56,9 +56,11 @@ public class DcCustomerJobOrderController extends BaseController {
             return null;
         }
         List<RoleDTO> roles = loginUser.getRoles();
-        // 法务支持
-        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
-            bo.setLegalSupportId(loginUser.getUserId());
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+                bo.setLegalSupportId(loginUser.getUserId());
+            }
         }
         return dcCustomerJobOrderService.queryPageList(bo, pageQuery);
     }
@@ -75,9 +77,11 @@ public class DcCustomerJobOrderController extends BaseController {
             return;
         }
         List<RoleDTO> roles = loginUser.getRoles();
-        // 法务支持
-        if (roles != null && roles.get(0).getRoleId() == 1980464458593992706L) {
-            bo.setLegalSupportId(loginUser.getUserId());
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+                bo.setLegalSupportId(loginUser.getUserId());
+            }
         }
         List<DcCustomerJobOrderVo> list = dcCustomerJobOrderService.queryList(bo);
         ExcelUtil.exportExcel(list, "工单管理", DcCustomerJobOrderVo.class, response);

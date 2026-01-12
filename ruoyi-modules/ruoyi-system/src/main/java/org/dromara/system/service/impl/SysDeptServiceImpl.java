@@ -415,4 +415,32 @@ public class SysDeptServiceImpl implements ISysDeptService, DeptService {
         return baseMapper.deleteById(deptId);
     }
 
+    /**
+     * 根据部门编码查询信息
+     *
+     * @param deptCode 部门编码
+     * @return 部门信息
+     */
+    @Override
+    public SysDeptVo selectDeptByCode(String deptCode) {
+        if (StringUtils.isBlank(deptCode)) {
+            return null;
+        }
+
+        SysDeptVo dept = baseMapper.selectVoOne(new LambdaQueryWrapper<SysDept>()
+            .eq(SysDept::getDeptCategory, deptCode)
+            .eq(SysDept::getDelFlag, SystemConstants.NORMAL));
+
+        if (ObjectUtil.isNull(dept)) {
+            return null;
+        }
+
+        // 设置父部门名称
+        SysDeptVo parentDept = baseMapper.selectVoOne(new LambdaQueryWrapper<SysDept>()
+            .select(SysDept::getDeptName).eq(SysDept::getDeptId, dept.getParentId()));
+        dept.setParentName(ObjectUtils.notNullGetter(parentDept, SysDeptVo::getDeptName));
+
+        return dept;
+    }
+
 }

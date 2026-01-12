@@ -802,4 +802,13 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
             .collect(Collectors.toMap(SysPost::getPostId, SysPost::getPostName));
     }
 
+    @Override
+    public List<SysUserVo> selectByDeptCode(SysUserBo user) {
+        LambdaQueryWrapper<SysUser> lqw = Wrappers.lambdaQuery();
+        lqw.eq(user.getDeptId() != null, SysUser::getDeptId, user.getDeptId());
+        lqw.eq(user.getUserId() != null, SysUser::getUserId, user.getUserId());
+        lqw.orderByAsc(SysUser::getUserId);
+        return baseMapper.selectVoList(lqw);
+    }
+
 }

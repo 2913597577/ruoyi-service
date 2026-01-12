@@ -65,6 +65,14 @@ public interface ISysDeptService {
     SysDeptVo selectDeptById(Long deptId);
 
     /**
+     * 根据部门编码查询信息
+     *
+     * @param deptCode 部门编码
+     * @return 部门信息
+     */
+    SysDeptVo selectDeptByCode(String deptCode);
+
+    /**
      * 通过部门ID串查询部门
      *
      * @param deptIds 部门id串

@@ -105,7 +105,7 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         lqw.eq(bo.getCustomerType() != null, DcCustomerInformation::getCustomerType, bo.getCustomerType());
         lqw.lt(bo.getIsExpire() != null && bo.getIsExpire() == 1, DcCustomerInformation::getExpireDate, DateUtils.getDate());
         lqw.ge(bo.getIsExpire() != null && bo.getIsExpire() == 0, DcCustomerInformation::getExpireDate, DateUtils.getDate());
-
+        lqw.eq(bo.getCustomerCity() != null, DcCustomerInformation::getCustomerCity, bo.getCustomerCity());
         return lqw;
     }
 
