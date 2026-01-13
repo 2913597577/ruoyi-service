@@ -202,7 +202,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
                 dcCustomerPerformanceBo.setCity(dcCustomerPerformanceBo.getCity());
                 dcCustomerPerformanceBo.setCreateBy(LoginHelper.getUserId());
                 dcCustomerPerformanceBo.setCreaterId(LoginHelper.getUserId());
-                dcCustomerPerformanceBo.setCreaterName(LoginHelper.getUsername());
+                dcCustomerPerformanceBo.setCreaterName(LoginHelper.getLoginUser() == null ? LoginHelper.getUsername() : LoginHelper.getLoginUser().getNickname());
                 dcCustomerPerformanceService.insertByBo(dcCustomerPerformanceBo);
             }
         }
@@ -228,6 +228,10 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerPerformanceBo.setUserName(dcCustomerPerformanceBo.getUserName());
             dcCustomerPerformanceBo.setBalance(dcCustomerPerformanceBo.getBalance());
             dcCustomerPerformanceBo.setCity(dcCustomerPerformanceBo.getCity());
+            dcCustomerPerformanceBo.setCreateBy(dcCustomerPerformanceBo.getCreateBy());
+            dcCustomerPerformanceBo.setCreaterId(dcCustomerPerformanceBo.getCreaterId());
+            dcCustomerPerformanceBo.setUpdateBy(LoginHelper.getUserId());
+            dcCustomerPerformanceBo.setCreaterName(LoginHelper.getLoginUser() == null ? LoginHelper.getUsername() : LoginHelper.getLoginUser().getNickname());
             if (dcCustomerPerformanceBo.getId() == null) {
                 dcCustomerPerformanceService.insertByBo(dcCustomerPerformanceBo);
                 continue;

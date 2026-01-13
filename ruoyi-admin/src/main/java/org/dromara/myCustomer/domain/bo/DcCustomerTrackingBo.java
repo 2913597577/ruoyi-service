@@ -11,6 +11,7 @@ import org.dromara.myCustomer.domain.DcCustomerTracking;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 客户跟踪业务对象 dc_customer_tracking
@@ -103,5 +104,7 @@ public class DcCustomerTrackingBo extends BaseEntity {
      * 法务支持姓名
      */
     private String legalSupportName;
+
+    private List<Long> customerIds;
 
 }

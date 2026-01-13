@@ -12,6 +12,7 @@ import org.dromara.legalSupport.domain.DcCustomerJobOrder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 工单管理业务对象 dc_customer_job_order
@@ -117,5 +118,7 @@ public class DcCustomerJobOrderBo extends BaseEntity {
      */
     private String customerName;
 
+
+    private List<Long> customerIds;
 
 }

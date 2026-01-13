@@ -11,6 +11,7 @@ import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 案件进展表业务对象 dc_case_tracking
@@ -76,5 +77,6 @@ public class DcCaseTrackingBo extends BaseEntity {
      */
     private String legalSupportName;
 
+    private List<Long> customerIds;
 
 }

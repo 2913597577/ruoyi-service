@@ -25,7 +25,9 @@ import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 import org.dromara.customer.service.IDcCustomerInformationService;
 import org.dromara.legalSupport.domain.bo.DcLegalSupportChangeRecordBo;
 import org.dromara.legalSupport.service.IDcLegalSupportChangeRecordService;
+import org.dromara.system.domain.vo.SysDeptVo;
 import org.dromara.system.domain.vo.SysUserVo;
+import org.dromara.system.service.ISysDeptService;
 import org.dromara.system.service.ISysUserService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,7 @@ public class DcCustomerInformationController extends BaseController {
 
     private final IDcCustomerInformationService dcCustomerInformationService;
     private final ISysUserService sysUserService;
+    private final ISysDeptService sysDeptService;
     private final IDcLegalSupportChangeRecordService dcLegalSupportChangeRecordService;
 
     /**
@@ -169,8 +172,8 @@ public class DcCustomerInformationController extends BaseController {
         if (sysUserVo == null) {
             return R.warn("请选择法务支持");
         }
-        // 1969581806504747009L 法务支持部门id
-        if (sysUserVo.getDeptId() != 1969581806504747009L) {
+        SysDeptVo deptVo = sysDeptService.selectDeptById(sysUserVo.getDeptId());
+        if (deptVo == null || !deptVo.getDeptCategory().contains("LegalSupport")) {
             return R.warn("该员工不是法务支持员工");
         }
         dcCustomerInformationVo.setLawyerId(Long.parseLong(userId));

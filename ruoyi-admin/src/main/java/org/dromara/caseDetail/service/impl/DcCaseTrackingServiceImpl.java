@@ -81,6 +81,7 @@ public class DcCaseTrackingServiceImpl implements IDcCaseTrackingService {
         lqw.eq(bo.getLegalSupportId() != null, DcCaseTracking::getLegalSupportId, bo.getLegalSupportId());
         lqw.like(bo.getLegalSupportName() != null, DcCaseTracking::getLegalSupportName, bo.getLegalSupportName());
         lqw.eq(StringUtils.isNotBlank(bo.getCaseProgress()), DcCaseTracking::getCaseProgress, bo.getCaseProgress());
+        lqw.in(bo.getCustomerIds() != null && !bo.getCustomerIds().isEmpty(), DcCaseTracking::getCustomerId, bo.getCustomerIds());
         return lqw;
     }
 

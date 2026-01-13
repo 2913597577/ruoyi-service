@@ -11,6 +11,7 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 保险记录表业务对象 dc_insurance_case
@@ -90,6 +91,8 @@ public class DcInsuranceCaseBo extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    private List<Long> customerIds;
 
 
 }

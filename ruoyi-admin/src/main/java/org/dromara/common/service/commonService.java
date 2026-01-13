@@ -70,6 +70,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -264,14 +265,26 @@ public class commonService {
         return json;
     }
 
-    public JSONObject getAllTrackingRecords(String customerId, String legalSupportId, Integer trackingType, String trackingTime,
+    public JSONObject getAllTrackingRecords(String customerId, String city, String legalSupportId, Integer trackingType, String trackingTime,
                                             String nextTrackingTime, int pageNum, int pageSize) {
         JSONArray json = new JSONArray();
+        DcCustomerInformationBo customerInfo = new DcCustomerInformationBo();
         DcCustomerTrackingBo trackingBo = new DcCustomerTrackingBo();
         DcCustomerOutVisitBo outVisitBo = new DcCustomerOutVisitBo();
         DcInsuranceCaseBo insuranceCaseBo = new DcInsuranceCaseBo();
         DcCustomerJobOrderBo jobOrderBo = new DcCustomerJobOrderBo();
         DcCaseTrackingBo caseTrackingBo = new DcCaseTrackingBo();
+        if (StringUtils.isNotBlank(city)) {
+            customerInfo.setCustomerCity(city);
+            List<DcCustomerInformationVo> informationVoList = dcCustomerInformationService.queryList(customerInfo);
+            List<Long> customerIds = informationVoList.stream().map(DcCustomerInformationVo::getId).collect(Collectors.toList());
+            trackingBo.setCustomerIds(customerIds);
+            outVisitBo.setCustomerIds(customerIds);
+            insuranceCaseBo.setCustomerIds(customerIds);
+            jobOrderBo.setCustomerIds(customerIds);
+            caseTrackingBo.setCustomerIds(customerIds);
+        }
+
         if (StringUtils.isNotBlank(customerId)) {
             trackingBo.setCustomerId(Long.valueOf(customerId));
             outVisitBo.setCustomerId(Long.valueOf(customerId));

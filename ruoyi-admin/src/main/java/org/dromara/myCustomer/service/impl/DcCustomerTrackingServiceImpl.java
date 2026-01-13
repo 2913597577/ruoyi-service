@@ -93,6 +93,8 @@ public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService
         lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCustomerTracking::getRemark1, bo.getRemark1());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcCustomerTracking::getRemark2, bo.getRemark2());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcCustomerTracking::getRemark3, bo.getRemark3());
+        lqw.in(bo.getCustomerIds() != null && !bo.getCustomerIds().isEmpty(), DcCustomerTracking::getCustomerId, bo.getCustomerIds());
+
         return lqw;
     }
 

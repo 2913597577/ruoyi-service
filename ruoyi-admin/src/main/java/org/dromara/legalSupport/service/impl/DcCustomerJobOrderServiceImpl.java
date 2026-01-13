@@ -91,6 +91,7 @@ public class DcCustomerJobOrderServiceImpl implements IDcCustomerJobOrderService
         lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCustomerJobOrder::getRemark1, bo.getRemark1());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcCustomerJobOrder::getRemark2, bo.getRemark2());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcCustomerJobOrder::getRemark3, bo.getRemark3());
+        lqw.in(bo.getCustomerIds() != null && !bo.getCustomerIds().isEmpty(), DcCustomerJobOrder::getCustomerId, bo.getCustomerIds());
         return lqw;
     }
 

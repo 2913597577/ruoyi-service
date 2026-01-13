@@ -11,6 +11,7 @@ import org.dromara.legalSupport.domain.DcCustomerOutVisit;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 客户出访记录业务对象 dc_customer_out_visit
@@ -105,6 +106,8 @@ public class DcCustomerOutVisitBo extends BaseEntity {
      * 面访地点
      */
     private String visitAddress;
+
+    private List<Long> customerIds;
 
 
 }

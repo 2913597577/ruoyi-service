@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.service.commonService;
 import org.springframework.validation.annotation.Validated;
@@ -122,6 +123,11 @@ public class commonController {
         if (loginUser == null) {
             return R.warn("用户未登录");
         }
+        String deptCategory = loginUser.getDeptCategory();
+        String city = null;
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            city = deptCategory.substring(0, deptCategory.indexOf('_'));
+        }
         List<RoleDTO> roles = loginUser.getRoles();
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
@@ -129,7 +135,7 @@ public class commonController {
                 legalSupportId = loginUser.getUserId() + "";
             }
         }
-        return R.ok(commonService.getAllTrackingRecords(customerId, legalSupportId, trackingType, trackingTime, nextTrackingTime, pageNum, pageSize));
+        return R.ok(commonService.getAllTrackingRecords(customerId, city, legalSupportId, trackingType, trackingTime, nextTrackingTime, pageNum, pageSize));
     }
 
     /**
