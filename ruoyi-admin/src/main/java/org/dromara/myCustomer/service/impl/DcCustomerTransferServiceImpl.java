@@ -175,6 +175,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
 
         lqw.eq(bo.getCreateBy() != null, DcCustomerTransfer::getCreateBy, bo.getCreateBy());
         lqw.eq(bo.getCreateDept() != null, DcCustomerTransfer::getCreateDept, bo.getCreateDept());
+        lqw.in(bo.getDeptIds() != null && !bo.getDeptIds().isEmpty(), DcCustomerTransfer::getCreateDept, bo.getDeptIds());
         return lqw;
     }
 

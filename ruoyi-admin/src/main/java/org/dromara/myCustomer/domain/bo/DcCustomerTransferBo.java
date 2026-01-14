@@ -333,6 +333,8 @@ public class DcCustomerTransferBo extends BaseEntity {
      */
     private Long customerId;
 
+    private List<Long> deptIds;
+
 
     private List<DcCustomerPerformanceBo> performanceInfo;
 

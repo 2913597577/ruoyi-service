@@ -30,7 +30,9 @@ import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
 import org.dromara.performance.domain.bo.DcCustomerPerformanceBo;
+import org.dromara.system.domain.vo.SysDeptVo;
 import org.dromara.system.domain.vo.SysOssVo;
+import org.dromara.system.service.ISysDeptService;
 import org.dromara.system.service.ISysOssService;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -38,6 +40,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +60,7 @@ public class DcCustomerTransferController extends BaseController {
     private final IDcCustomerTransferService dcCustomerTransferService;
     private final DcCustomerInformationServiceImpl dcCustomerInformationService;
     private final DcFinancialStatisticsServiceImpl dcFinancialStatisticsService;
+    private final ISysDeptService sysDeptService;
     private final ISysOssService ossService;
 
     /**
@@ -70,8 +74,9 @@ public class DcCustomerTransferController extends BaseController {
             return null;
         }
         String deptCategory = loginUser.getDeptCategory();
+        String city = null;
         if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
-            String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            city = deptCategory.substring(0, deptCategory.indexOf('_'));
             bo.setCustomerCity(city);
         }
         List<RoleDTO> roles = loginUser.getRoles();
@@ -80,9 +85,34 @@ public class DcCustomerTransferController extends BaseController {
             if (role.getRoleKey() != null && !role.getRoleKey().contains("FinanceCenter")) {
                 if (role.getRoleKey().contains("Employee")) {
                     bo.setCreateBy(loginUser.getUserId());
+                    bo.setCustomerCity(null);
                 }
                 if (role.getRoleKey().contains("Manager")) {
                     bo.setCreateDept(loginUser.getDeptId());
+                    bo.setCustomerCity(null);
+                }
+            }
+            if (role.getRoleKey() != null && role.getRoleKey().contains("FinanceCenter")) {
+                SysDeptVo dept1 = sysDeptService.selectDeptByCode(city + "_LegalSupport");
+                SysDeptVo dept2 = sysDeptService.selectDeptByCode(city + "_SalesCenter");
+                SysDeptVo dept3 = sysDeptService.selectDeptByCode(city + "_FinanceCenter");
+                SysDeptVo dept4 = sysDeptService.selectDeptByCode(city + "_PersonnelCenter");
+                List<Long> deptIds = new ArrayList<>();
+                if (dept1 != null) {
+                    deptIds.add(dept1.getDeptId());
+                }
+                if (dept2 != null) {
+                    deptIds.add(dept2.getDeptId());
+                }
+                if (dept3 != null) {
+                    deptIds.add(dept3.getDeptId());
+                }
+                if (dept4 != null) {
+                    deptIds.add(dept4.getDeptId());
+                }
+                if (!deptIds.isEmpty()) {
+                    bo.setDeptIds(deptIds);
+                    bo.setCustomerCity(null);
                 }
             }
         }
@@ -102,16 +132,47 @@ public class DcCustomerTransferController extends BaseController {
             return;
         }
         String deptCategory = loginUser.getDeptCategory();
-        if (StringUtils.isNotBlank(deptCategory)) {
-            String city = deptCategory.substring(0, deptCategory.indexOf('_'));
-            bo.setCity(city);
+        String city = null;
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            bo.setCustomerCity(city);
         }
-        bo.setCreateDept(loginUser.getDeptId());
         List<RoleDTO> roles = loginUser.getRoles();
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
-            if (role.getRoleKey() != null && role.getRoleKey().contains("employee")) {
-                bo.setCreateBy(loginUser.getUserId());
+            if (role.getRoleKey() != null && !role.getRoleKey().contains("FinanceCenter")) {
+                if (role.getRoleKey().contains("Employee")) {
+                    bo.setCreateBy(loginUser.getUserId());
+                    bo.setCustomerCity(null);
+                }
+                if (role.getRoleKey().contains("Manager")) {
+                    bo.setCreateDept(loginUser.getDeptId());
+                    bo.setCustomerCity(null);
+                }
+            }
+            if (role.getRoleKey() != null && role.getRoleKey().contains("FinanceCenter")) {
+                SysDeptVo dept1 = sysDeptService.selectDeptByCode(city + "_LegalSupport");
+                SysDeptVo dept2 = sysDeptService.selectDeptByCode(city + "_SalesCenter");
+                SysDeptVo dept3 = sysDeptService.selectDeptByCode(city + "_FinanceCenter");
+                SysDeptVo dept4 = sysDeptService.selectDeptByCode(city + "_PersonnelCenter");
+                List<Long> deptIds = new ArrayList<>();
+                if (dept1 != null) {
+                    deptIds.add(dept1.getDeptId());
+                }
+                if (dept2 != null) {
+                    deptIds.add(dept2.getDeptId());
+                }
+                if (dept3 != null) {
+                    deptIds.add(dept3.getDeptId());
+                }
+                if (dept4 != null) {
+                    deptIds.add(dept4.getDeptId());
+                }
+                if (!deptIds.isEmpty()) {
+                    bo.setDeptIds(deptIds);
+                    bo.setCustomerCity(null);
+                }
+
             }
         }
 
