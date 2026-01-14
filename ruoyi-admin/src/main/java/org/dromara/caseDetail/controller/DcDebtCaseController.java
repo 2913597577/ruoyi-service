@@ -56,6 +56,9 @@ public class DcDebtCaseController extends BaseController {
             if (role.getRoleKey().equals("LegalSupport_Employee")) {
                 bo.setLegalSupportId(loginUser.getUserId());
             }
+            if (role.getRoleKey().equals("LegalSupport_Manager")) {
+                bo.setCreateDept(loginUser.getDeptId());
+            }
         }
         return dcDebtCaseService.queryPageList(bo, pageQuery);
     }

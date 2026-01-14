@@ -10,7 +10,7 @@ import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
-import org.dromara.common.service.commonService;
+import org.dromara.common.service.CommonService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +23,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/common")
-public class commonController {
+public class CommonController {
 
     @Resource
-    private commonService commonService;
+    private CommonService commonService;
 
 
     /**

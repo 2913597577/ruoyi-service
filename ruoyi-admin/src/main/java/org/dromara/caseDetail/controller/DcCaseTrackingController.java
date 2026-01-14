@@ -13,6 +13,7 @@ import org.dromara.caseDetail.service.IDcDebtCaseService;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -22,6 +23,7 @@ import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.service.CommonService;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
@@ -45,6 +47,7 @@ public class DcCaseTrackingController extends BaseController {
     private final IDcCaseTrackingService dcCaseTrackingService;
     private final IDcDebtCaseService dcDebtCaseService;
     private final IDcCustomerTransferService dcCustomerTransferService;
+    private final CommonService commonService;
 
     /**
      * 查询案件进展表列表
@@ -56,11 +59,21 @@ public class DcCaseTrackingController extends BaseController {
         if (loginUser == null) {
             return null;
         }
+        String deptCategory = loginUser.getDeptCategory();
+        String city = null;
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            List<Long> customerIds = commonService.getCustomerIdsByCity(city);
+            bo.setCustomerIds(customerIds);
+        }
         List<RoleDTO> roles = loginUser.getRoles();
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
             if (role.getRoleKey().equals("LegalSupport_Employee")) {
                 bo.setLegalSupportId(loginUser.getUserId());
+            }
+            if (role.getRoleKey().equals("LegalSupport_Manager")) {
+                bo.setCreateDept(loginUser.getDeptId());
             }
         }
         return dcCaseTrackingService.queryPageList(bo, pageQuery);

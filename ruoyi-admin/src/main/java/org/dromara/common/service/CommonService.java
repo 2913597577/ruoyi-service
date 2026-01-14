@@ -75,7 +75,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class commonService {
+public class CommonService {
 
     private final DcCustomerInformationMapper informationMapper;
     private final DcCustomerIntentionMapper intentionMapper;
@@ -268,16 +268,13 @@ public class commonService {
     public JSONObject getAllTrackingRecords(String customerId, String city, String legalSupportId, Integer trackingType, String trackingTime,
                                             String nextTrackingTime, int pageNum, int pageSize) {
         JSONArray json = new JSONArray();
-        DcCustomerInformationBo customerInfo = new DcCustomerInformationBo();
         DcCustomerTrackingBo trackingBo = new DcCustomerTrackingBo();
         DcCustomerOutVisitBo outVisitBo = new DcCustomerOutVisitBo();
         DcInsuranceCaseBo insuranceCaseBo = new DcInsuranceCaseBo();
         DcCustomerJobOrderBo jobOrderBo = new DcCustomerJobOrderBo();
         DcCaseTrackingBo caseTrackingBo = new DcCaseTrackingBo();
         if (StringUtils.isNotBlank(city)) {
-            customerInfo.setCustomerCity(city);
-            List<DcCustomerInformationVo> informationVoList = dcCustomerInformationService.queryList(customerInfo);
-            List<Long> customerIds = informationVoList.stream().map(DcCustomerInformationVo::getId).collect(Collectors.toList());
+            List<Long> customerIds = getCustomerIdsByCity(city);
             trackingBo.setCustomerIds(customerIds);
             outVisitBo.setCustomerIds(customerIds);
             insuranceCaseBo.setCustomerIds(customerIds);
@@ -728,6 +725,13 @@ public class commonService {
         result.put("teamPerformance", teamPerformance);
         result.put("teamPerformanceList", teamPerformanceList);
         return result;
+    }
+
+    public List<Long> getCustomerIdsByCity(String city) {
+        DcCustomerInformationBo customerInfo = new DcCustomerInformationBo();
+        customerInfo.setCustomerCity(city);
+        List<DcCustomerInformationVo> informationVoList = dcCustomerInformationService.queryList(customerInfo);
+        return informationVoList.stream().map(DcCustomerInformationVo::getId).collect(Collectors.toList());
     }
 
 }

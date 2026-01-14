@@ -11,6 +11,7 @@ import org.dromara.caseDetail.service.IDcInsuranceCaseService;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -20,6 +21,7 @@ import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.service.CommonService;
 import org.dromara.common.web.core.BaseController;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +41,7 @@ import java.util.List;
 public class DcInsuranceCaseController extends BaseController {
 
     private final IDcInsuranceCaseService dcInsuranceCaseService;
+    private final CommonService commonService;
 
     /**
      * 查询保险记录表列表
@@ -50,11 +53,21 @@ public class DcInsuranceCaseController extends BaseController {
         if (loginUser == null) {
             return null;
         }
+        String deptCategory = loginUser.getDeptCategory();
+        String city = null;
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            List<Long> customerIds = commonService.getCustomerIdsByCity(city);
+            bo.setCustomerIds(customerIds);
+        }
         List<RoleDTO> roles = loginUser.getRoles();
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
             if (role.getRoleKey().equals("LegalSupport_Employee")) {
                 bo.setLegalSupportId(loginUser.getUserId());
+            }
+            if (role.getRoleKey().equals("LegalSupport_Manager")) {
+                bo.setCreateDept(loginUser.getDeptId());
             }
         }
         return dcInsuranceCaseService.queryPageList(bo, pageQuery);
