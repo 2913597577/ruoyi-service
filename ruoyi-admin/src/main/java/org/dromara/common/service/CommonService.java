@@ -24,6 +24,7 @@ import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.customer.domain.DcCustomerInformation;
 import org.dromara.customer.domain.DcCustomerIntention;
 import org.dromara.customer.domain.DcCustomerRiskRefund;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
@@ -419,8 +420,8 @@ public class CommonService {
 
         JSONArray json = new JSONArray();
         for (DcDebtCaseVo dcDebtCaseVo : list) {
-            DcCustomerTransfer dcCustomerTransfer = transferMapper.selectById(dcDebtCaseVo.getCustomerId());
-            String companyName = dcCustomerTransfer == null ? "" : dcCustomerTransfer.getCompanyName();
+            DcCustomerInformation dcCustomerInformation = informationMapper.selectById(dcDebtCaseVo.getCustomerId());
+            String companyName = dcCustomerInformation == null ? "" : dcCustomerInformation.getCustomerName();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("case_id", dcDebtCaseVo.getId());
             jsonObject.put("case_detail", "客户【" + companyName + "】--债务人【" + dcDebtCaseVo.getDebtorName() + "】");
