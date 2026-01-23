@@ -7,7 +7,9 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -53,6 +55,10 @@ public class DcCustomerPerformanceController extends BaseController {
 
     @PostMapping("/selectListByPage")
     public R<JSONObject> list(@RequestBody Map<String, Object> params) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
         List<Long> userId = convertToList(params.get("userId"), Long.class);
         List<Long> transferId = convertToList(params.get("transferId"), Long.class);
         List<String> city = convertToList(params.get("city"), String.class);
@@ -64,6 +70,19 @@ public class DcCustomerPerformanceController extends BaseController {
         Integer pageNum = params.get("pageNum") != null ? Integer.valueOf(params.get("pageNum").toString()) : 0;
         Integer pageSize = params.get("pageSize") != null ? Integer.valueOf(params.get("pageSize").toString()) : 10;
 
+        String deptCategory = loginUser.getDeptCategory();
+        String cityCode = null;
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            cityCode = deptCategory.substring(0, deptCategory.indexOf('_'));
+            serviceCity.add(cityCode);
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().contains("Employee")) {
+                userId.add(loginUser.getUserId());
+            }
+        }
 
         int count = dcCustomerPerformanceService.countListByPage(
             userId, transferId, city, serviceCity, inviterId, serviceType,
