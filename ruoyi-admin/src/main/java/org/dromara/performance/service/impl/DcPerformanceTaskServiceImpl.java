@@ -1,24 +1,24 @@
 package org.dromara.performance.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.performance.domain.DcPerformanceTask;
 import org.dromara.performance.domain.bo.DcPerformanceTaskBo;
 import org.dromara.performance.domain.vo.DcPerformanceTaskVo;
-import org.dromara.performance.domain.DcPerformanceTask;
 import org.dromara.performance.mapper.DcPerformanceTaskMapper;
 import org.dromara.performance.service.IDcPerformanceTaskService;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 业绩任务Service业务层处理
@@ -40,7 +40,7 @@ public class DcPerformanceTaskServiceImpl implements IDcPerformanceTaskService {
      * @return 业绩任务
      */
     @Override
-    public DcPerformanceTaskVo queryById(Long id){
+    public DcPerformanceTaskVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -81,6 +81,7 @@ public class DcPerformanceTaskServiceImpl implements IDcPerformanceTaskService {
         lqw.eq(bo.getVisitGoal() != null, DcPerformanceTask::getVisitGoal, bo.getVisitGoal());
         lqw.eq(bo.getAchievedPerformanceGoal() != null, DcPerformanceTask::getAchievedPerformanceGoal, bo.getAchievedPerformanceGoal());
         lqw.eq(bo.getAchievedVisitGoal() != null, DcPerformanceTask::getAchievedVisitGoal, bo.getAchievedVisitGoal());
+        lqw.in(bo.getLegalSupportIds() != null && !bo.getLegalSupportIds().isEmpty(), DcPerformanceTask::getLegalSupportId, bo.getLegalSupportIds());
         return lqw;
     }
 
@@ -117,7 +118,7 @@ public class DcPerformanceTaskServiceImpl implements IDcPerformanceTaskService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcPerformanceTask entity){
+    private void validEntityBeforeSave(DcPerformanceTask entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -130,7 +131,7 @@ public class DcPerformanceTaskServiceImpl implements IDcPerformanceTaskService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;

@@ -1,24 +1,24 @@
 package org.dromara.legalSupport.service.impl;
 
-import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.legalSupport.domain.DcLegalSupportChangeRecord;
 import org.dromara.legalSupport.domain.bo.DcLegalSupportChangeRecordBo;
 import org.dromara.legalSupport.domain.vo.DcLegalSupportChangeRecordVo;
-import org.dromara.legalSupport.domain.DcLegalSupportChangeRecord;
 import org.dromara.legalSupport.mapper.DcLegalSupportChangeRecordMapper;
 import org.dromara.legalSupport.service.IDcLegalSupportChangeRecordService;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 法务支持变更Service业务层处理
@@ -40,7 +40,7 @@ public class DcLegalSupportChangeRecordServiceImpl implements IDcLegalSupportCha
      * @return 法务支持变更
      */
     @Override
-    public DcLegalSupportChangeRecordVo queryById(Long id){
+    public DcLegalSupportChangeRecordVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -80,6 +80,7 @@ public class DcLegalSupportChangeRecordServiceImpl implements IDcLegalSupportCha
         lqw.eq(bo.getLegalSupportId() != null, DcLegalSupportChangeRecord::getLegalSupportId, bo.getLegalSupportId());
         lqw.eq(bo.getCreateTime() != null, DcLegalSupportChangeRecord::getCreateTime, bo.getCreateTime());
         lqw.eq(bo.getCreateBy() != null, DcLegalSupportChangeRecord::getCreateBy, bo.getCreateBy());
+        lqw.in(bo.getLegalSupportIds() != null && !bo.getLegalSupportIds().isEmpty(), DcLegalSupportChangeRecord::getLegalSupportId, bo.getLegalSupportIds());
         return lqw;
     }
 
@@ -116,7 +117,7 @@ public class DcLegalSupportChangeRecordServiceImpl implements IDcLegalSupportCha
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(DcLegalSupportChangeRecord entity){
+    private void validEntityBeforeSave(DcLegalSupportChangeRecord entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -129,7 +130,7 @@ public class DcLegalSupportChangeRecordServiceImpl implements IDcLegalSupportCha
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;

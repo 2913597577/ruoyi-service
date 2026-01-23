@@ -53,10 +53,10 @@ public class DcDebtCaseController extends BaseController {
         List<RoleDTO> roles = loginUser.getRoles();
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
-            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+            if (role.getRoleKey().contains("Employee")) {
                 bo.setLegalSupportId(loginUser.getUserId());
             }
-            if (role.getRoleKey().equals("LegalSupport_Manager")) {
+            if (role.getRoleKey().contains("Manager")) {
                 bo.setCreateDept(loginUser.getDeptId());
             }
         }

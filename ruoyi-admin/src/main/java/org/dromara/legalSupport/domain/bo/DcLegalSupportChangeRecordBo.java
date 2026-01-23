@@ -14,6 +14,7 @@ import org.dromara.legalSupport.domain.DcLegalSupportChangeRecord;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 法务支持变更业务对象 dc_legal_support_change_record
@@ -58,5 +59,7 @@ public class DcLegalSupportChangeRecordBo extends BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
+
+    private List<Long> legalSupportIds;
 
 }

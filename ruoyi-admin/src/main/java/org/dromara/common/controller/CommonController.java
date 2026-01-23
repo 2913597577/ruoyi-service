@@ -165,14 +165,21 @@ public class CommonController {
         }
         List<RoleDTO> roles = loginUser.getRoles();
         Long legalSupportId = null;
+        Long deptId = null;
         // 法务支持
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
             if (role.getRoleKey().equals("LegalSupport_Employee")) {
                 legalSupportId = loginUser.getUserId();
+                deptId = loginUser.getDeptId();
             }
         }
-        return R.ok(commonService.getLegalSupportPerformance(legalSupportId));
+        String deptCategory = loginUser.getDeptCategory();
+        String city = null;
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            city = deptCategory.substring(0, deptCategory.indexOf('_'));
+        }
+        return R.ok(commonService.getLegalSupportPerformance(legalSupportId, city, deptId));
     }
 
     /**

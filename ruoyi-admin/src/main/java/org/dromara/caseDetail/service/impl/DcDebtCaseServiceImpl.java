@@ -89,6 +89,7 @@ public class DcDebtCaseServiceImpl implements IDcDebtCaseService {
         lqw.eq(bo.getCaseStatus() != null, DcDebtCase::getCaseStatus, bo.getCaseStatus());
         lqw.eq(bo.getLegalSupportId() != null, DcDebtCase::getLegalSupportId, bo.getLegalSupportId());
         lqw.like(StringUtils.isNotBlank(bo.getLegalSupportName()), DcDebtCase::getLegalSupportName, bo.getLegalSupportName());
+        lqw.eq(bo.getCreateDept() != null, DcDebtCase::getCreateDept, bo.getCreateDept());
         return lqw;
     }
 

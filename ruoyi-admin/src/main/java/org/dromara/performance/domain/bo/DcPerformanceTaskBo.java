@@ -1,14 +1,17 @@
 package org.dromara.performance.domain.bo;
 
-import org.dromara.performance.domain.DcPerformanceTask;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.common.core.validate.AddGroup;
-import org.dromara.common.core.validate.EditGroup;
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import jakarta.validation.constraints.*;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.performance.domain.DcPerformanceTask;
+
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 业绩任务业务对象 dc_performance_task
@@ -24,13 +27,13 @@ public class DcPerformanceTaskBo extends BaseEntity {
     /**
      * 主键ID
      */
-    @NotNull(message = "主键ID不能为空", groups = { EditGroup.class })
+    @NotNull(message = "主键ID不能为空", groups = {EditGroup.class})
     private Long id;
 
     /**
      * 法务支持id
      */
-    @NotNull(message = "法务支持id不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "法务支持id不能为空", groups = {AddGroup.class, EditGroup.class})
     private Long legalSupportId;
 
     /**
@@ -41,7 +44,7 @@ public class DcPerformanceTaskBo extends BaseEntity {
     /**
      * 任务月份（格式：YYYYMM，如202310）
      */
-    @NotBlank(message = "任务月份（格式：YYYYMM，如202310）不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "任务月份（格式：YYYYMM，如202310）不能为空", groups = {AddGroup.class, EditGroup.class})
     private String taskMonth;
 
     /**
@@ -63,6 +66,8 @@ public class DcPerformanceTaskBo extends BaseEntity {
      * 已完成的月度出访目标
      */
     private Long achievedVisitGoal;
+
+    private List<Long> legalSupportIds;
 
 
 }
