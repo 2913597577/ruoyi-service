@@ -96,6 +96,9 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
                 continue;
             }
             SysUserVo sysUserVo = sysUserService.selectUserById(dcCustomerInformationVo.getLawyerId());
+            if (sysUserVo == null) {
+                continue;
+            }
             vo.setLegalSupport(sysUserVo.getNickName());
         }
         return TableDataInfo.build(result);
