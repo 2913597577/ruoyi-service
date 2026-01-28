@@ -430,7 +430,7 @@ public class CommonService {
         return json;
     }
 
-    public JSONObject getLegalSupportPerformance(Long userId, String city, long deptId) {
+    public JSONObject getLegalSupportPerformance(Long userId, String city, Long deptId) {
 
         JSONObject result = new JSONObject();
 

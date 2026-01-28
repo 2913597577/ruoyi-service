@@ -14,6 +14,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
 import org.dromara.customer.domain.bo.DcCustomerInformationLogBo;
+import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 import org.dromara.customer.service.impl.DcCustomerInformationLogServiceImpl;
 import org.dromara.customer.service.impl.DcCustomerInformationServiceImpl;
 import org.dromara.myCustomer.domain.DcCustomerTransfer;
@@ -90,6 +91,12 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerPerformanceBo.setTransferId(vo.getId());
             List<DcCustomerPerformanceVo> dcCustomerPerformanceVos = dcCustomerPerformanceService.queryList(dcCustomerPerformanceBo);
             vo.setPerformanceInfo(dcCustomerPerformanceVos);
+            DcCustomerInformationVo dcCustomerInformationVo = dcCustomerInformationService.queryListByTransferId(vo.getId());
+            if (dcCustomerInformationVo == null) {
+                continue;
+            }
+            SysUserVo sysUserVo = sysUserService.selectUserById(dcCustomerInformationVo.getLawyerId());
+            vo.setLegalSupport(sysUserVo.getNickName());
         }
         return TableDataInfo.build(result);
     }

@@ -404,4 +404,9 @@ public class DcCustomerTransferVo implements Serializable {
      */
     private List<DcCustomerPerformanceVo> performanceInfo;
 
+    /**
+     * 法务支持
+     */
+    private String legalSupport;
+
 }
