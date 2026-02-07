@@ -141,9 +141,11 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(bo.getEmployeeCount() != null, DcCustomerTransfer::getEmployeeCount, bo.getEmployeeCount());
         lqw.eq(bo.getAccountingCompany() != null, DcCustomerTransfer::getAccountingCompany, bo.getAccountingCompany());
         lqw.eq(StringUtils.isNotBlank(bo.getCustomerDescription()), DcCustomerTransfer::getCustomerDescription, bo.getCustomerDescription());
-        lqw.eq(bo.getActualPayment() != null, DcCustomerTransfer::getActualPayment, bo.getActualPayment());
-        lqw.eq(bo.getBalanceStatus() != null, DcCustomerTransfer::getBalanceStatus, bo.getBalanceStatus());
+        lqw.ge(bo.getActualPayment() != null, DcCustomerTransfer::getActualPayment, bo.getActualPayment());
+        lqw.ge(bo.getBalanceStatus() != null, DcCustomerTransfer::getBalanceStatus, bo.getBalanceStatus());
+        lqw.ge(bo.getContractAmount() != null, DcCustomerTransfer::getContractAmount, bo.getContractAmount());
         lqw.eq(bo.getContractType() != null, DcCustomerTransfer::getContractType, bo.getContractType());
+        lqw.eq(StringUtils.isNotBlank(bo.getContractCode()), DcCustomerTransfer::getContractCode, bo.getContractCode());
         lqw.eq(bo.getServiceType() != null, DcCustomerTransfer::getServiceType, bo.getServiceType());
         lqw.ge(bo.getServiceStart() != null, DcCustomerTransfer::getServiceStart, bo.getServiceStart());
         lqw.le(bo.getServiceEnd() != null, DcCustomerTransfer::getServiceEnd, bo.getServiceEnd());
@@ -159,7 +161,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.like(StringUtils.isNotBlank(bo.getAuditUserName()), DcCustomerTransfer::getAuditUserName, bo.getAuditUserName());
         // 决策人信息
         lqw.like(StringUtils.isNotBlank(bo.getDecisionMaker()), DcCustomerTransfer::getDecisionMaker, bo.getDecisionMaker());
-        lqw.eq(StringUtils.isNotBlank(bo.getDecisionMakerContact()), DcCustomerTransfer::getDecisionMakerContact, bo.getDecisionMakerContact());
+        lqw.like(StringUtils.isNotBlank(bo.getDecisionMakerContact()), DcCustomerTransfer::getDecisionMakerContact, bo.getDecisionMakerContact());
         lqw.eq(StringUtils.isNotBlank(bo.getDecisionMakerPosition()), DcCustomerTransfer::getDecisionMakerPosition, bo.getDecisionMakerPosition());
         lqw.eq(bo.getDecisionMakerAge() != null, DcCustomerTransfer::getDecisionMakerAge, bo.getDecisionMakerAge());
 
@@ -181,7 +183,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         // 省市区地址
         lqw.eq(StringUtils.isNotBlank(bo.getProvince()), DcCustomerTransfer::getProvince, bo.getProvince());
         lqw.eq(StringUtils.isNotBlank(bo.getCity()), DcCustomerTransfer::getCity, bo.getCity());
-        lqw.eq(StringUtils.isNotBlank(bo.getDistrict()), DcCustomerTransfer::getDistrict, bo.getDistrict());
+        lqw.like(StringUtils.isNotBlank(bo.getDistrict()), DcCustomerTransfer::getDistrict, bo.getDistrict());
 
         lqw.eq(bo.getCreateBy() != null, DcCustomerTransfer::getCreateBy, bo.getCreateBy());
         lqw.eq(bo.getCreateDept() != null, DcCustomerTransfer::getCreateDept, bo.getCreateDept());

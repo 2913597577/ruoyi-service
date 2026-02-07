@@ -73,7 +73,7 @@ public class DcLegalSupportChangeRecordServiceImpl implements IDcLegalSupportCha
     private LambdaQueryWrapper<DcLegalSupportChangeRecord> buildQueryWrapper(DcLegalSupportChangeRecordBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcLegalSupportChangeRecord> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcLegalSupportChangeRecord::getId);
+        lqw.orderByDesc(DcLegalSupportChangeRecord::getId);
         lqw.like(StringUtils.isNotBlank(bo.getCustomerName()), DcLegalSupportChangeRecord::getCustomerName, bo.getCustomerName());
         lqw.eq(bo.getCustomerId() != null, DcLegalSupportChangeRecord::getCustomerId, bo.getCustomerId());
         lqw.like(StringUtils.isNotBlank(bo.getLegalSupportName()), DcLegalSupportChangeRecord::getLegalSupportName, bo.getLegalSupportName());

@@ -78,7 +78,7 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
     private LambdaQueryWrapper<DcCustomerPerformance> buildQueryWrapper(DcCustomerPerformanceBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerPerformance> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCustomerPerformance::getId);
+        lqw.orderByDesc(DcCustomerPerformance::getId);
         lqw.eq(bo.getTransferId() != null, DcCustomerPerformance::getTransferId, bo.getTransferId());
         lqw.eq(bo.getUserId() != null, DcCustomerPerformance::getUserId, bo.getUserId());
         lqw.like(bo.getUserName() != null, DcCustomerPerformance::getUserName, bo.getUserName());
