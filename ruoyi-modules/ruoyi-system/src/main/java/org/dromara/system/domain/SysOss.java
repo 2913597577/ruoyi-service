@@ -52,4 +52,5 @@ public class SysOss extends TenantEntity {
      */
     private String service;
 
+
 }

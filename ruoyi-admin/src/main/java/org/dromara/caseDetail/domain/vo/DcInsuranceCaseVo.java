@@ -103,5 +103,22 @@ public class DcInsuranceCaseVo implements Serializable {
     @ExcelProperty(value = "备注")
     private String remark;
 
+    /**
+     * 备注1
+     */
+    @ExcelProperty(value = "备注1")
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    @ExcelProperty(value = "备注2")
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    @ExcelProperty(value = "备注3")
+    private String remark3;
 
 }

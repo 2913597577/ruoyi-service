@@ -109,5 +109,21 @@ public class DcCustomerOutVisitBo extends BaseEntity {
 
     private List<Long> customerIds;
 
+    /**
+     * 备注1
+     */
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    private String remark3;
+
+
 
 }

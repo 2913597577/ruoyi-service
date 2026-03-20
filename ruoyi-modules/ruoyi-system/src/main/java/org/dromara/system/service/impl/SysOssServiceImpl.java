@@ -146,7 +146,10 @@ public class SysOssServiceImpl implements ISysOssService, OssService {
             SysOss::getCreateTime, params.get("beginCreateTime"), params.get("endCreateTime"));
         lqw.eq(ObjectUtil.isNotNull(bo.getCreateBy()), SysOss::getCreateBy, bo.getCreateBy());
         lqw.eq(StringUtils.isNotBlank(bo.getService()), SysOss::getService, bo.getService());
-        lqw.orderByAsc(SysOss::getOssId);
+        lqw.like(ObjectUtil.isNotNull(bo.getOssId()), SysOss::getOssId, bo.getOssId());
+        lqw.inSql(StringUtils.isNotBlank(bo.getCreateByName()), SysOss::getCreateBy,
+            "select user_id from sys_user where user_name like concat('%', '" + bo.getCreateByName() + "', '%')");
+        lqw.orderByDesc(SysOss::getCreateTime);
         return lqw;
     }
 

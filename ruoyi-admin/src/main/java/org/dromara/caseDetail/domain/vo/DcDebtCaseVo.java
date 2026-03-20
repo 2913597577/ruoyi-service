@@ -142,5 +142,23 @@ public class DcDebtCaseVo implements Serializable {
     @ExcelProperty(value = "法务支持姓名")
     private String legalSupportName;
 
+    /**
+     * 备注1
+     */
+    @ExcelProperty(value = "备注1")
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    @ExcelProperty(value = "备注2")
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    @ExcelProperty(value = "备注3")
+    private String remark3;
+
 
 }

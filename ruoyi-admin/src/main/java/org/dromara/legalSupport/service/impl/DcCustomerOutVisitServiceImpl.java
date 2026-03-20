@@ -83,6 +83,7 @@ public class DcCustomerOutVisitServiceImpl implements IDcCustomerOutVisitService
         lqw.eq(bo.getIsFirstVisit() != null, DcCustomerOutVisit::getIsFirstVisit, bo.getIsFirstVisit());
         lqw.eq(bo.getIsOutCount() != null, DcCustomerOutVisit::getIsOutCount, bo.getIsOutCount());
         lqw.eq(StringUtils.isNotBlank(bo.getVisitAddress()), DcCustomerOutVisit::getVisitAddress, bo.getVisitAddress());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCustomerOutVisit::getRemark1, bo.getRemark1());
         lqw.in(bo.getCustomerIds() != null && !bo.getCustomerIds().isEmpty(), DcCustomerOutVisit::getCustomerId, bo.getCustomerIds());
         return lqw;
     }

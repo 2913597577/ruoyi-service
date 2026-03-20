@@ -73,7 +73,7 @@ public class DcDebtCaseServiceImpl implements IDcDebtCaseService {
     private LambdaQueryWrapper<DcDebtCase> buildQueryWrapper(DcDebtCaseBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcDebtCase> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcDebtCase::getId);
+        lqw.orderByDesc(DcDebtCase::getCreateTime);
         lqw.eq(bo.getCustomerId() != null, DcDebtCase::getCustomerId, bo.getCustomerId());
         lqw.like(StringUtils.isNotBlank(bo.getDebtorName()), DcDebtCase::getDebtorName, bo.getDebtorName());
         lqw.eq(bo.getDebtAmount() != null, DcDebtCase::getDebtAmount, bo.getDebtAmount());
@@ -90,6 +90,10 @@ public class DcDebtCaseServiceImpl implements IDcDebtCaseService {
         lqw.eq(bo.getLegalSupportId() != null, DcDebtCase::getLegalSupportId, bo.getLegalSupportId());
         lqw.like(StringUtils.isNotBlank(bo.getLegalSupportName()), DcDebtCase::getLegalSupportName, bo.getLegalSupportName());
         lqw.eq(bo.getCreateDept() != null, DcDebtCase::getCreateDept, bo.getCreateDept());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark()), DcDebtCase::getRemark, bo.getRemark());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcDebtCase::getRemark1, bo.getRemark1());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcDebtCase::getRemark2, bo.getRemark2());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcDebtCase::getRemark3, bo.getRemark3());
         return lqw;
     }
 
@@ -105,7 +109,9 @@ public class DcDebtCaseServiceImpl implements IDcDebtCaseService {
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
-            bo.setId(add.getId());
+            if (add != null) {
+                bo.setId(add.getId());
+            }
         }
         return flag;
     }

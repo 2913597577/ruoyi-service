@@ -85,6 +85,10 @@ public class DcInsuranceCaseServiceImpl implements IDcInsuranceCaseService {
         lqw.eq(StringUtils.isNotBlank(bo.getCaseReason()), DcInsuranceCase::getCaseReason, bo.getCaseReason());
         lqw.eq(StringUtils.isNotBlank(bo.getJurisdictionCourt()), DcInsuranceCase::getJurisdictionCourt, bo.getJurisdictionCourt());
         lqw.eq(bo.getPremium() != null, DcInsuranceCase::getPremium, bo.getPremium());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark()), DcInsuranceCase::getRemark, bo.getRemark());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcInsuranceCase::getRemark1, bo.getRemark1());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcInsuranceCase::getRemark2, bo.getRemark2());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcInsuranceCase::getRemark3, bo.getRemark3());
         lqw.in(bo.getCustomerIds() != null && !bo.getCustomerIds().isEmpty(), DcInsuranceCase::getCustomerId, bo.getCustomerIds());
         return lqw;
     }

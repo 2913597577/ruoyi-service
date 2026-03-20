@@ -125,5 +125,20 @@ public class DcDebtCaseBo extends BaseEntity {
      */
     private String legalSupportName;
 
+    /**
+     * 备注1
+     */
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    private String remark3;
+
 
 }
