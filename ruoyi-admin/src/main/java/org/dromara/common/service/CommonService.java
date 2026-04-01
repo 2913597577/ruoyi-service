@@ -109,7 +109,7 @@ public class CommonService {
     private final ISysDictTypeService dictTypeService;
     private final ISysDictDataService dictDataService;
 
-    public JSONArray getCustomerByUserId(long userId) {
+/*    public JSONArray getCustomerByUserId(long userId) {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return null;
@@ -154,7 +154,102 @@ public class CommonService {
             json.add(jsonObject);
         }
         return json;
+    }*/
+
+    // 重写getCustomerByUserId这个方法（changk666）
+    public JSONArray getCustomerByUserId(long userId) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+
+        boolean superAdmin = LoginHelper.isSuperAdmin(userId);
+        List<RoleDTO> roles = loginUser.getRoles();
+
+        // 法务支持员工
+        boolean isLegalSupportEmployee = false;
+        // 法务主管 (城市级别)
+        boolean isLegalSupportManager = false;
+        // 法务支持经理 (全国级别)
+        boolean isLegalSupportLeader = false;
+
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            String roleKey = role.getRoleKey();
+            if ("LegalSupport_Employee".equals(roleKey)) {
+                isLegalSupportEmployee = true;
+            } else if ("LegalSupport_Manager".equals(roleKey)) {
+                isLegalSupportManager = true;
+            } else if ("LegalSupport_Leader".equals(roleKey)) {
+                isLegalSupportLeader = true;
+            }
+        }
+
+        JSONArray json = new JSONArray();
+        if (isLegalSupportEmployee) {
+            Map<String, Object> queryMap = new HashMap<>();
+            queryMap.put("lawyer_id", userId);
+            List<DcCustomerInformationVo> list1 = informationMapper.selectVoByMap(queryMap);
+            for (DcCustomerInformationVo recordVo : list1) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("transfer_id", recordVo.getTransferId());
+                jsonObject.put("customer_id", recordVo.getId());
+                jsonObject.put("customer_name", recordVo.getCustomerName());
+                jsonObject.put("customer_realName", recordVo.getCustomerName());
+                json.add(jsonObject);
+            }
+            return json;
+        }
+
+        if (superAdmin || isLegalSupportLeader) {
+            List<DcCustomerInformationVo> list = informationMapper.selectVoList();
+            for (DcCustomerInformationVo customerInformationVo : list) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("transfer_id", customerInformationVo.getTransferId());
+                jsonObject.put("customer_id", customerInformationVo.getId());
+                jsonObject.put("customer_name", customerInformationVo.getCustomerName());
+                jsonObject.put("customer_realName", customerInformationVo.getCustomerName());
+                json.add(jsonObject);
+            }
+        } else if (isLegalSupportManager) {
+            String deptCategory = loginUser.getDeptCategory();
+            String city = null;
+            if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            }
+            //List<Long> deptIds = getDeptIdsByCity(city);
+            DcCustomerInformationBo bo = new DcCustomerInformationBo();
+            if (city != null) {
+                bo.setCustomerCity(city);
+                List<DcCustomerInformationVo> list = dcCustomerInformationService.queryList(bo);
+                for (DcCustomerInformationVo customerInformationVo : list) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("transfer_id", customerInformationVo.getTransferId());
+                    jsonObject.put("customer_id", customerInformationVo.getId());
+                    jsonObject.put("customer_name", customerInformationVo.getCustomerName());
+                    jsonObject.put("customer_realName", customerInformationVo.getCustomerName());
+                    json.add(jsonObject);
+                }
+            }
+
+        } else {
+            Map<String, Object> queryMap = new HashMap<>();
+            queryMap.put("lawyer_id", userId);
+            List<DcCustomerInformationVo> list = informationMapper.selectVoByMap(queryMap);
+            for (DcCustomerInformationVo customerInformationVo : list) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("transfer_id", customerInformationVo.getTransferId());
+                jsonObject.put("customer_id", customerInformationVo.getId());
+                jsonObject.put("customer_name", customerInformationVo.getCustomerName());
+                jsonObject.put("customer_realName", customerInformationVo.getCustomerName());
+                json.add(jsonObject);
+            }
+        }
+        return json;
     }
+
+
+
 
     public JSONArray getIntentionCustomerByUserId(long userId) {
         boolean superAdmin = LoginHelper.isSuperAdmin(userId);

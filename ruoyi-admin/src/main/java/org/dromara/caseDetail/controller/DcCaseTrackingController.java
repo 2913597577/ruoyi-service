@@ -132,6 +132,7 @@ public class DcCaseTrackingController extends BaseController {
         if (dcCustomerTransferVo == null) {
             return R.warn("案件客户信息不存在");
         }
+        // customerId用的是客户流转单的id,是否其他地方也是统一都用流转单id?
         bo.setCustomerId(dcCustomerTransferVo.getId());
         bo.setCustomerName(dcCustomerTransferVo.getCompanyName());
         return toAjax(dcCaseTrackingService.insertByBo(bo));
