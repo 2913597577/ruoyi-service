@@ -8,6 +8,7 @@ import org.dromara.caseDetail.domain.DcInsuranceCase;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -77,7 +78,7 @@ public class DcInsuranceCaseVo implements Serializable {
      * 标的额
      */
     @ExcelProperty(value = "标的额")
-    private Long subjectAmount;
+    private BigDecimal subjectAmount;
 
     /**
      * 案由
@@ -95,7 +96,7 @@ public class DcInsuranceCaseVo implements Serializable {
      * 保费
      */
     @ExcelProperty(value = "保费")
-    private Long premium;
+    private BigDecimal premium;
 
     /**
      * 备注

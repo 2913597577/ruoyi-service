@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -43,12 +44,12 @@ public class DcDebtCase extends TenantEntity {
     /**
      * 欠款金额
      */
-    private Long debtAmount;
+    private BigDecimal debtAmount;
 
     /**
      * 剩余欠款
      */
-    private Long remainingAmount;
+    private BigDecimal remainingAmount;
 
     /**
      * 联系电话

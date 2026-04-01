@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -68,7 +69,7 @@ public class DcInsuranceCase extends TenantEntity {
     /**
      * 标的额
      */
-    private Long subjectAmount;
+    private BigDecimal subjectAmount;
 
     /**
      * 案由
@@ -83,7 +84,7 @@ public class DcInsuranceCase extends TenantEntity {
     /**
      * 保费
      */
-    private Long premium;
+    private BigDecimal premium;
 
     /**
      * 备注

@@ -10,6 +10,7 @@ import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -43,12 +44,12 @@ public class DcDebtCaseBo extends BaseEntity {
     /**
      * 欠款金额
      */
-    private Long debtAmount;
+    private BigDecimal debtAmount;
 
     /**
      * 剩余欠款
      */
-    private Long remainingAmount;
+    private BigDecimal remainingAmount;
 
     /**
      * 联系电话

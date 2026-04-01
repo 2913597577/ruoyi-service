@@ -10,6 +10,7 @@ import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class DcInsuranceCaseBo extends BaseEntity {
     /**
      * 标的额
      */
-    private Long subjectAmount;
+    private BigDecimal subjectAmount;
 
     /**
      * 案由
@@ -85,7 +86,7 @@ public class DcInsuranceCaseBo extends BaseEntity {
     /**
      * 保费
      */
-    private Long premium;
+    private BigDecimal premium;
 
     /**
      * 备注

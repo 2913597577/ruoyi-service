@@ -10,6 +10,7 @@ import org.dromara.common.excel.convert.ExcelDictConvert;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -49,13 +50,13 @@ public class DcDebtCaseVo implements Serializable {
      * 欠款金额
      */
     @ExcelProperty(value = "欠款金额")
-    private Long debtAmount;
+    private BigDecimal debtAmount;
 
     /**
      * 剩余欠款
      */
     @ExcelProperty(value = "剩余欠款")
-    private Long remainingAmount;
+    private BigDecimal remainingAmount;
 
     /**
      * 联系电话
