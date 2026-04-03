@@ -86,5 +86,22 @@ public class DcCaseTrackingVo implements Serializable {
     @ExcelProperty(value = "法务支持姓名")
     private String legalSupportName;
 
+    /**
+         * 备注 1
+        */
+    @ExcelProperty(value = "备注 1")
+    private String remark1;
+
+    /**
+     * 备注 2
+     */
+    @ExcelProperty(value = "备注 2")
+    private String remark2;
+
+    /**
+     * 备注 3
+     */
+    @ExcelProperty(value = "备注 3")
+    private String remark3;
 
 }

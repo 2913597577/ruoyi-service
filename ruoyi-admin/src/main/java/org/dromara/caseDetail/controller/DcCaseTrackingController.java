@@ -25,6 +25,9 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.service.CommonService;
 import org.dromara.common.web.core.BaseController;
+import org.dromara.customer.domain.bo.DcCustomerInformationBo;
+import org.dromara.customer.domain.vo.DcCustomerInformationVo;
+import org.dromara.customer.service.IDcCustomerInformationService;
 import org.dromara.myCustomer.domain.vo.DcCustomerTransferVo;
 import org.dromara.myCustomer.service.IDcCustomerTransferService;
 import org.springframework.validation.annotation.Validated;
@@ -47,6 +50,7 @@ public class DcCaseTrackingController extends BaseController {
     private final IDcCaseTrackingService dcCaseTrackingService;
     private final IDcDebtCaseService dcDebtCaseService;
     private final IDcCustomerTransferService dcCustomerTransferService;
+    private final IDcCustomerInformationService dcCustomerInformationService;
     private final CommonService commonService;
 
     /**
@@ -124,17 +128,28 @@ public class DcCaseTrackingController extends BaseController {
     public R<Void> add(@Validated(AddGroup.class) @RequestBody DcCaseTrackingBo bo) {
         DcDebtCaseVo dcDebtCaseVo = dcDebtCaseService.queryById(bo.getCaseId());
         if (dcDebtCaseVo == null) {
-            return R.warn("案件不存在");
+            return R.warn("案件记录表信息不存在");
         }
         bo.setLegalSupportId(dcDebtCaseVo.getLegalSupportId());
         bo.setLegalSupportName(dcDebtCaseVo.getLegalSupportName());
+        bo.setRemark1(dcDebtCaseVo.getRemark1());
+        /*// 从客户流转表获取 customerId（流转单 id）
         DcCustomerTransferVo dcCustomerTransferVo = dcCustomerTransferService.queryById(dcDebtCaseVo.getCustomerId());
         if (dcCustomerTransferVo == null) {
-            return R.warn("案件客户信息不存在");
+            return R.warn("案件客户流转单信息不存在");
         }
         // customerId用的是客户流转单的id,是否其他地方也是统一都用流转单id?
         bo.setCustomerId(dcCustomerTransferVo.getId());
-        bo.setCustomerName(dcCustomerTransferVo.getCompanyName());
+        bo.setCustomerName(dcCustomerTransferVo.getCompanyName());*/
+        // 这里改为使用客户总表的主键id,作为customerId
+        DcCustomerInformationVo dcCustomerInformationVo = dcCustomerInformationService.queryById(dcDebtCaseVo.getCustomerId());
+        if (dcCustomerInformationVo == null) {
+            return R.warn("案件客户总表信息不存在");
+        }
+        // 使用客户总表的主键 ID 作为 customerId
+        bo.setCustomerId(dcCustomerInformationVo.getId());
+        bo.setCustomerName(dcCustomerInformationVo.getCustomerName());
+
         return toAjax(dcCaseTrackingService.insertByBo(bo));
     }
 
