@@ -80,9 +80,32 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             return TableDataInfo.build();
         }
 
-        if (loginUser.getRolePermission() != null && loginUser.getRolePermission().contains("SalesCenter")) {
+/*        if (loginUser.getRolePermission() != null && loginUser.getRolePermission().contains("SalesCenter")) {
             bo.setInviterId(loginUser.getUserId());
+        }*/
+        Set<String> rolePermission = loginUser.getRolePermission();
+        String deptCategory = loginUser.getDeptCategory();
+
+        if (rolePermission != null) {
+            if (rolePermission.contains("SalesCenter_Employee")) {
+                bo.setInviterId(loginUser.getUserId());
+            } else if (rolePermission.contains("SalesCenter_Manager") || rolePermission.contains("SalesCenter_Leader")) {
+                String city = deptCategory != null && deptCategory.contains("_") ? deptCategory.substring(0, deptCategory.indexOf('_')) : null;
+                if (city != null) {
+                    bo.setCustomerCity(city);
+                }
+            } else if (rolePermission.contains("LegalSupport_Manager") || rolePermission.contains("LegalSupport_Leader")) {
+                String city = deptCategory != null && deptCategory.contains("_") ? deptCategory.substring(0, deptCategory.indexOf('_')) : null;
+                if (city != null) {
+                    bo.setCustomerCity(city);
+                }
+            } else if (rolePermission.contains("LegalSupport_Employee")) {
+                bo.setAccountManagerId(loginUser.getUserId());
+                bo.setInviterId(loginUser.getUserId());
+            }
         }
+
+
 
         LambdaQueryWrapper<DcCustomerTransfer> lqw = buildQueryWrapper(bo);
         Page<DcCustomerTransferVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
@@ -91,7 +114,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerPerformanceBo.setTransferId(vo.getId());
             List<DcCustomerPerformanceVo> dcCustomerPerformanceVos = dcCustomerPerformanceService.queryList(dcCustomerPerformanceBo);
             vo.setPerformanceInfo(dcCustomerPerformanceVos);
-            DcCustomerInformationVo dcCustomerInformationVo = dcCustomerInformationService.queryListByTransferId(vo.getId());
+           /* DcCustomerInformationVo dcCustomerInformationVo = dcCustomerInformationService.queryListByTransferId(vo.getId());
             if (dcCustomerInformationVo == null) {
                 continue;
             }
@@ -99,9 +122,10 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             if (sysUserVo == null) {
                 continue;
             }
-            vo.setLegalSupport(sysUserVo.getNickName());
+            vo.setLegalSupport(sysUserVo.getNickName());*/
         }
         return TableDataInfo.build(result);
+
     }
 
     /**
@@ -154,7 +178,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(bo.getFinanceConfirmed() != null, DcCustomerTransfer::getFinanceConfirmed, bo.getFinanceConfirmed());
         lqw.eq(bo.getCustomerCity() != null, DcCustomerTransfer::getCustomerCity, bo.getCustomerCity());
         lqw.eq(bo.getAuditUserId() != null, DcCustomerTransfer::getAuditUserId, bo.getAuditUserId());
-        lqw.eq(bo.getInviterId() != null, DcCustomerTransfer::getInviterId, bo.getInviterId());
+        //lqw.eq(bo.getInviterId() != null, DcCustomerTransfer::getInviterId, bo.getInviterId());
         lqw.eq(bo.getInvoiceStatus() != null, DcCustomerTransfer::getInvoiceStatus, bo.getInvoiceStatus());
         lqw.eq(StringUtils.isNotBlank(bo.getInvoiceRequirements()), DcCustomerTransfer::getInvoiceRequirements, bo.getInvoiceRequirements());
         lqw.eq(StringUtils.isNotBlank(bo.getInvoiceContent()), DcCustomerTransfer::getInvoiceContent, bo.getInvoiceContent());
@@ -185,9 +209,23 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         lqw.eq(StringUtils.isNotBlank(bo.getCity()), DcCustomerTransfer::getCity, bo.getCity());
         lqw.like(StringUtils.isNotBlank(bo.getDistrict()), DcCustomerTransfer::getDistrict, bo.getDistrict());
 
-        lqw.eq(bo.getCreateBy() != null, DcCustomerTransfer::getCreateBy, bo.getCreateBy());
-        lqw.eq(bo.getCreateDept() != null, DcCustomerTransfer::getCreateDept, bo.getCreateDept());
+        //lqw.eq(bo.getCreateBy() != null, DcCustomerTransfer::getCreateBy, bo.getCreateBy());
+        //lqw.eq(bo.getCreateDept() != null, DcCustomerTransfer::getCreateDept, bo.getCreateDept());
         lqw.in(bo.getDeptIds() != null && !bo.getDeptIds().isEmpty(), DcCustomerTransfer::getCreateDept, bo.getDeptIds());
+
+        // 当 accountManagerId 和 inviterId 都存在(法务员工),生成 OR 查询,法务员工看到:自己创建的 或 分配给自己的
+        if (bo.getAccountManagerId() != null && bo.getInviterId() != null) {
+            lqw.and(wrapper -> wrapper
+                .eq(DcCustomerTransfer::getAccountManagerId, bo.getAccountManagerId())
+                .or()
+                .eq(DcCustomerTransfer::getInviterId, bo.getInviterId())
+            );
+        } else if (bo.getAccountManagerId() != null) {
+            lqw.eq(DcCustomerTransfer::getAccountManagerId, bo.getAccountManagerId());
+        } else if (bo.getInviterId() != null) {
+            lqw.eq(DcCustomerTransfer::getInviterId, bo.getInviterId());
+        }
+
         return lqw;
     }
 
@@ -232,6 +270,8 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
     public Boolean updateByBo(DcCustomerTransferBo bo) {
         DcCustomerTransfer update = MapstructUtils.convert(bo, DcCustomerTransfer.class);
         validEntityBeforeSave(update);
+        // 避免bo.getPerformanceInfo()为null时，空指针问题
+        if (bo.getPerformanceInfo() != null && !bo.getPerformanceInfo().isEmpty()) {
         for (DcCustomerPerformanceBo dcCustomerPerformanceBo : bo.getPerformanceInfo()) {
             if (dcCustomerPerformanceBo.getUserId() == null) {
                 continue;
@@ -250,6 +290,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
                 continue;
             }
             dcCustomerPerformanceService.updateByBo(dcCustomerPerformanceBo);
+        }
         }
         return baseMapper.updateById(update) > 0;
     }
@@ -323,6 +364,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setCloser(closer == null ? "" : closer.getNickName());
             long customerId = dcCustomerInformationService.insertByBo(dcCustomerInformation);
             dcCustomerTransfer.setCustomerId(customerId);
+            //dcCustomerTransfer.setAccountManagerId();
             baseMapper.updateById(dcCustomerTransfer);
             flag = customerId > 0;
         }

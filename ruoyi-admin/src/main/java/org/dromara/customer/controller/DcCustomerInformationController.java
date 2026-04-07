@@ -25,6 +25,8 @@ import org.dromara.customer.domain.vo.DcCustomerInformationVo;
 import org.dromara.customer.service.IDcCustomerInformationService;
 import org.dromara.legalSupport.domain.bo.DcLegalSupportChangeRecordBo;
 import org.dromara.legalSupport.service.IDcLegalSupportChangeRecordService;
+import org.dromara.myCustomer.domain.bo.DcCustomerTransferBo;
+import org.dromara.myCustomer.service.IDcCustomerTransferService;
 import org.dromara.system.domain.vo.SysDeptVo;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.service.ISysDeptService;
@@ -50,7 +52,7 @@ public class DcCustomerInformationController extends BaseController {
     private final ISysUserService sysUserService;
     private final ISysDeptService sysDeptService;
     private final IDcLegalSupportChangeRecordService dcLegalSupportChangeRecordService;
-
+    private final IDcCustomerTransferService dcCustomerTransferService;
     /**
      * 查询客户总表列表
      */
@@ -181,6 +183,12 @@ public class DcCustomerInformationController extends BaseController {
         DcCustomerInformationBo update = new DcCustomerInformationBo();
         MapstructUtils.convert(dcCustomerInformationVo, update);
         if (dcCustomerInformationService.updateByBo(update)) {
+            if (dcCustomerInformationVo.getTransferId() != null) {
+                DcCustomerTransferBo transferBo = new DcCustomerTransferBo();
+                transferBo.setId(dcCustomerInformationVo.getTransferId());
+                transferBo.setAccountManagerId(sysUserVo.getUserId());
+                dcCustomerTransferService.updateByBo(transferBo);
+            }
             DcLegalSupportChangeRecordBo bo = new DcLegalSupportChangeRecordBo();
             bo.setCustomerId(dcCustomerInformationVo.getId());
             bo.setCustomerName(dcCustomerInformationVo.getCustomerName());

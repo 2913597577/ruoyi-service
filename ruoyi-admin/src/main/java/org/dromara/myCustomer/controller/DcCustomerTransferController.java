@@ -71,7 +71,7 @@ public class DcCustomerTransferController extends BaseController {
     public TableDataInfo<DcCustomerTransferVo> list(DcCustomerTransferBo bo, PageQuery pageQuery) {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
-            return null;
+            return TableDataInfo.build();
         }
         String deptCategory = loginUser.getDeptCategory();
         String city = null;

@@ -103,7 +103,7 @@ public class SysUserController extends BaseController {
             List<RoleDTO> roles = loginUser.getRoles();
             if (roles != null && !roles.isEmpty()) {
                 RoleDTO role = roles.get(0);
-                if (role.getRoleKey().contains("Employee")) {
+                if (role.getRoleKey().contains("LegalSupport_Employee")) {
                     user.setUserId(loginUser.getUserId());
                 }
             }
