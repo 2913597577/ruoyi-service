@@ -30,7 +30,8 @@
             AND create_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
         </if>
         GROUP BY
-        user_id
+        user_id,
+        user_name
         ) ranked_data
         <if test="userId != null">
             WHERE userId = #{userId}
