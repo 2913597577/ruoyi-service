@@ -123,7 +123,10 @@ public class DcCustomerIntentionController extends BaseController {
         if (customerId == null) {
             return R.warn("介绍人不能为空");
         }
-        DcCustomerInformationVo customerInformation = dcCustomerInformationService.queryListByTransferId(customerId);
+        //DcCustomerInformationVo customerInformation = dcCustomerInformationService.queryListByTransferId(customerId);
+        DcCustomerInformationVo customerInformation = dcCustomerInformationService.queryListByCustomerId(customerId);
+        bo.setRemark1(customerInformation.getCustomerCity());
+
         if (customerInformation == null) {
             return R.warn("介绍人信息不存在");
         }

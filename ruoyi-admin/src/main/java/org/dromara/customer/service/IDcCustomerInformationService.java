@@ -79,6 +79,8 @@ public interface IDcCustomerInformationService {
      */
     DcCustomerInformationVo queryListByTransferId(Long transferId);
 
+    DcCustomerInformationVo queryListByCustomerId(Long customerId);
+
     /**
      * 根据创建部门数组查询客户总表列表
      *

@@ -112,10 +112,12 @@ public class DcCustomerRiskRefundController extends BaseController {
         if (customerId == null) {
             return R.warn("客户ID不能为空");
         }
-        DcCustomerInformationVo customerInformation = dcCustomerInformationService.queryListByTransferId(customerId);
+        //DcCustomerInformationVo customerInformation = dcCustomerInformationService.queryListByTransferId(customerId);
+        DcCustomerInformationVo customerInformation = dcCustomerInformationService.queryListByCustomerId(customerId);
         if (customerInformation == null) {
             return R.warn("客户信息不存在");
         }
+        bo.setRemark2(customerInformation.getCustomerCity());
         if (bo.getCustomerType() == 1) {
             if (customerInformation.getIsRisk() == 1) {
                 return R.warn("该客户信息已录入风险客户表");

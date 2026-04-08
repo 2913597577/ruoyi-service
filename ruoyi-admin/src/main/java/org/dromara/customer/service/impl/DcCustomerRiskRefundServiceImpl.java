@@ -73,7 +73,7 @@ public class DcCustomerRiskRefundServiceImpl implements IDcCustomerRiskRefundSer
     private LambdaQueryWrapper<DcCustomerRiskRefund> buildQueryWrapper(DcCustomerRiskRefundBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerRiskRefund> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCustomerRiskRefund::getId);
+        lqw.orderByDesc(DcCustomerRiskRefund::getId);
         lqw.eq(bo.getLawyerId() != null, DcCustomerRiskRefund::getLawyerId, bo.getLawyerId());
         lqw.eq(bo.getCustomerId() != null, DcCustomerRiskRefund::getCustomerId, bo.getCustomerId());
         lqw.like(StringUtils.isNotBlank(bo.getCustomerName()), DcCustomerRiskRefund::getCustomerName, bo.getCustomerName());

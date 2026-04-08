@@ -73,7 +73,7 @@ public class DcCustomerIntentionServiceImpl implements IDcCustomerIntentionServi
     private LambdaQueryWrapper<DcCustomerIntention> buildQueryWrapper(DcCustomerIntentionBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerIntention> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCustomerIntention::getId);
+        lqw.orderByDesc(DcCustomerIntention::getId);
         lqw.eq(bo.getSubmissionDate() != null, DcCustomerIntention::getSubmissionDate, bo.getSubmissionDate());
         lqw.like(StringUtils.isNotBlank(bo.getLegalSupport()), DcCustomerIntention::getLegalSupport, bo.getLegalSupport());
         lqw.eq(bo.getLegalSupportId() != null, DcCustomerIntention::getLegalSupportId, bo.getLegalSupportId());

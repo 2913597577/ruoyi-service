@@ -79,5 +79,20 @@ public class DcCustomerIntentionBo extends BaseEntity {
      */
     private Integer followUpResult;
 
+    /**
+     * 备注1
+     */
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    private String remark3;
+
 
 }

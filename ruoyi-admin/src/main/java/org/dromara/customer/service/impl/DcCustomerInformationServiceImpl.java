@@ -170,6 +170,13 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
     }
 
     @Override
+    public DcCustomerInformationVo queryListByCustomerId(Long customerId) {
+        QueryWrapper<DcCustomerInformation> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", customerId);
+        return baseMapper.selectVoOne(wrapper);
+    }
+
+    @Override
     public List<DcCustomerInformationVo> queryListByCreateDepts(List<Long> createDepts) {
         if (createDepts == null || createDepts.isEmpty()) {
             return List.of();
