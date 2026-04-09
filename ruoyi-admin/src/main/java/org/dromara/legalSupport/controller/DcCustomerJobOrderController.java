@@ -62,8 +62,9 @@ public class DcCustomerJobOrderController extends BaseController {
         String city = null;
         if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
             city = deptCategory.substring(0, deptCategory.indexOf('_'));
-            List<Long> customerIds = commonService.getCustomerIdsByCity(city);
-            bo.setCustomerIds(customerIds);
+            //List<Long> customerIds = commonService.getCustomerIdsByCity(city);
+            //bo.setCustomerIds(customerIds);
+            bo.setRemark2(city);
         }
         List<RoleDTO> roles = loginUser.getRoles();
         if (roles != null && !roles.isEmpty()) {

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.caseDetail.domain.DcCaseTracking;
+import org.dromara.caseDetail.domain.DcDebtCase;
 import org.dromara.caseDetail.domain.bo.DcCaseTrackingBo;
 import org.dromara.caseDetail.domain.vo.DcCaseTrackingVo;
 import org.dromara.caseDetail.mapper.DcCaseTrackingMapper;
@@ -82,6 +83,9 @@ public class DcCaseTrackingServiceImpl implements IDcCaseTrackingService {
         lqw.like(bo.getLegalSupportName() != null, DcCaseTracking::getLegalSupportName, bo.getLegalSupportName());
         lqw.eq(StringUtils.isNotBlank(bo.getCaseProgress()), DcCaseTracking::getCaseProgress, bo.getCaseProgress());
         lqw.in(bo.getCustomerIds() != null && !bo.getCustomerIds().isEmpty(), DcCaseTracking::getCustomerId, bo.getCustomerIds());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCaseTracking::getRemark1, bo.getRemark1());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcCaseTracking::getRemark2, bo.getRemark2());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcCaseTracking::getRemark3, bo.getRemark3());
         return lqw;
     }
 

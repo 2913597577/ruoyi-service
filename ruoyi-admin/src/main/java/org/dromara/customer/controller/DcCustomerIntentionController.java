@@ -9,6 +9,7 @@ import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -55,6 +56,11 @@ public class DcCustomerIntentionController extends BaseController {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return null;
+        }
+        String deptCategory = loginUser.getDeptCategory();
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            bo.setRemark1(city);
         }
         List<RoleDTO> roles = loginUser.getRoles();
         if (roles != null && !roles.isEmpty()) {

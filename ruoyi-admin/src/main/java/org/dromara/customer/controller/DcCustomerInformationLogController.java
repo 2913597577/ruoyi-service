@@ -6,6 +6,10 @@ import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import org.dromara.common.core.domain.dto.RoleDTO;
+import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
@@ -42,6 +46,23 @@ public class DcCustomerInformationLogController extends BaseController {
     @SaCheckPermission("customerInformationLog:customerInformationLog:list")
     @GetMapping("/list")
     public TableDataInfo<DcCustomerInformationLogVo> list(DcCustomerInformationLogBo bo, PageQuery pageQuery) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+        String deptCategory = loginUser.getDeptCategory();
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            bo.setCustomerCity(city);
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+                bo.setLawyerId(loginUser.getUserId());
+            }
+        }
+
         return dcCustomerInformationLogService.queryPageList(bo, pageQuery);
     }
 

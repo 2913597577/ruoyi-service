@@ -10,6 +10,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.customer.domain.DcCustomerIntention;
+import org.dromara.customer.domain.DcCustomerRiskRefund;
 import org.dromara.customer.domain.bo.DcCustomerIntentionBo;
 import org.dromara.customer.domain.vo.DcCustomerIntentionVo;
 import org.dromara.customer.mapper.DcCustomerIntentionMapper;
@@ -83,6 +84,9 @@ public class DcCustomerIntentionServiceImpl implements IDcCustomerIntentionServi
         lqw.like(StringUtils.isNotBlank(bo.getSource()), DcCustomerIntention::getSource, bo.getSource());
         lqw.eq(StringUtils.isNotBlank(bo.getIntroducer()), DcCustomerIntention::getIntroducer, bo.getIntroducer());
         lqw.like(bo.getFollowUpResult() != null, DcCustomerIntention::getFollowUpResult, bo.getFollowUpResult());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCustomerIntention::getRemark1, bo.getRemark1());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcCustomerIntention::getRemark2, bo.getRemark2());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcCustomerIntention::getRemark3, bo.getRemark3());
         return lqw;
     }
 

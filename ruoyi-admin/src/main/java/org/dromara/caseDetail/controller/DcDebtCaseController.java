@@ -11,6 +11,7 @@ import org.dromara.caseDetail.service.IDcDebtCaseService;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -50,13 +51,19 @@ public class DcDebtCaseController extends BaseController {
         if (loginUser == null) {
             return null;
         }
+        String deptCategory = loginUser.getDeptCategory();
+        String city = null;
+        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+            city = deptCategory.substring(0, deptCategory.indexOf('_'));
+            bo.setRemark1(city);
+        }
         List<RoleDTO> roles = loginUser.getRoles();
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
-            if (role.getRoleKey().contains("Employee")) {
+            if (role.getRoleKey().contains("LegalSupport_Employee")) {
                 bo.setLegalSupportId(loginUser.getUserId());
             }
-            if (role.getRoleKey().contains("Manager")) {
+            if (role.getRoleKey().contains("LegalSupport_Manager")) {
                 bo.setCreateDept(loginUser.getDeptId());
             }
         }
