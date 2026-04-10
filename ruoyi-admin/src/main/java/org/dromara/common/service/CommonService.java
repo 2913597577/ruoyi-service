@@ -172,6 +172,10 @@ public class CommonService {
         boolean isLegalSupportManager = false;
         // 法务支持经理 (全国级别)
         boolean isLegalSupportLeader = false;
+        // 法务中心员工
+        boolean  isLegalCenterEmployee = false;
+        // 法务中心主管
+        boolean  isLegalCenterManager = false;
 
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
@@ -182,7 +186,12 @@ public class CommonService {
                 isLegalSupportManager = true;
             } else if ("LegalSupport_Leader".equals(roleKey)) {
                 isLegalSupportLeader = true;
+            } else if ("LegalCenter_Employee".equals(roleKey)) {
+                isLegalCenterEmployee = true;
+            } else if ("LegalCenter_Manager".equals(roleKey)) {
+                isLegalCenterManager = true;
             }
+
         }
 
         JSONArray json = new JSONArray();
@@ -201,7 +210,7 @@ public class CommonService {
             return json;
         }
 
-        if (superAdmin || isLegalSupportLeader) {
+        if (superAdmin || isLegalSupportLeader || isLegalCenterEmployee || isLegalCenterManager) {
             List<DcCustomerInformationVo> list = informationMapper.selectVoList();
             for (DcCustomerInformationVo customerInformationVo : list) {
                 JSONObject jsonObject = new JSONObject();
@@ -247,8 +256,6 @@ public class CommonService {
         }
         return json;
     }
-
-
 
 
     public JSONArray getIntentionCustomerByUserId(long userId) {

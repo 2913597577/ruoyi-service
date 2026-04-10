@@ -172,7 +172,7 @@ public class DcCustomerJobOrderController extends BaseController {
             return R.warn("工单已处理");
         }
         vo.setContractHandler(loginUser.getUserId());
-        vo.setContractHandlerName(loginUser.getUsername());
+        vo.setContractHandlerName(loginUser.getNickname());
         vo.setProcessingStatus(1);
         DcCustomerJobOrderBo update = new DcCustomerJobOrderBo();
         MapstructUtils.convert(vo, update);
