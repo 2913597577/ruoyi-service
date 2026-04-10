@@ -9,6 +9,7 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.customer.domain.DcCustomerInformationLog;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -195,5 +196,30 @@ public class DcCustomerInformationLogBo extends BaseEntity {
     @NotNull(message = "是否分配法务支持 0-未分配 1-已分配不能为空", groups = {AddGroup.class, EditGroup.class})
     private Integer isAssigned;
 
+    /**
+     * 是否高风险客户 0-否 1-是
+     */
+    private Integer isHighRisk;
+
+    /**
+     * 备注1
+     */
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    private String remark3;
+
+    /**
+     * 服务开始时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date startDate;
 
 }

@@ -140,5 +140,22 @@
         </if>
     </select>
 
+    <select id="selectCustomerByLawyerId" resultType="org.dromara.customer.domain.vo.DcCustomerInformationVo">
+        SELECT id, transfer_id, customer_name
+        FROM dc_customer_information
+        WHERE lawyer_id = #{lawyerId} AND del_flag = 0
+    </select>
+
+    <select id="selectAllCustomerBasicInfo" resultType="org.dromara.customer.domain.vo.DcCustomerInformationVo">
+        SELECT id, transfer_id, customer_name
+        FROM dc_customer_information
+        WHERE del_flag = 0
+    </select>
+
+    <select id="selectCustomerByCity" resultType="org.dromara.customer.domain.vo.DcCustomerInformationVo">
+        SELECT id, transfer_id, customer_name
+        FROM dc_customer_information
+        WHERE customer_city = #{city} AND del_flag = 0
+    </select>
 
 </mapper>

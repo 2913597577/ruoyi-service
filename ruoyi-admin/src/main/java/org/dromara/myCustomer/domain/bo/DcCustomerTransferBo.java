@@ -333,10 +333,18 @@ public class DcCustomerTransferBo extends BaseEntity {
      */
     private Long customerId;
 
+    /**
+     * 签单日期
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date signDate;
+
     private List<Long> deptIds;
 
 
     private List<DcCustomerPerformanceBo> performanceInfo;
+
+
 
 
 }

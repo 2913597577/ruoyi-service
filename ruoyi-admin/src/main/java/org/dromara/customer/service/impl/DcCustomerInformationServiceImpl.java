@@ -82,7 +82,7 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerInformation> lqw = Wrappers.lambdaQuery();
         lqw.orderByDesc(DcCustomerInformation::getCreateTime);
-        lqw.ge(bo.getSignDate() != null, DcCustomerInformation::getSignDate, bo.getSignDate());
+        lqw.eq(bo.getSignDate() != null, DcCustomerInformation::getSignDate, bo.getSignDate());
         lqw.eq(StringUtils.isNotBlank(bo.getContractNo()), DcCustomerInformation::getContractNo, bo.getContractNo());
         lqw.like(StringUtils.isNotBlank(bo.getCustomerName()), DcCustomerInformation::getCustomerName, bo.getCustomerName());
         lqw.like(StringUtils.isNotBlank(bo.getPrincipal()), DcCustomerInformation::getPrincipal, bo.getPrincipal());
@@ -95,6 +95,7 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         lqw.ge(bo.getContractAmount() != null, DcCustomerInformation::getContractAmount, bo.getContractAmount());
         lqw.ge(bo.getActualReceipt() != null, DcCustomerInformation::getActualReceipt, bo.getActualReceipt());
         lqw.ge(bo.getBalance() != null, DcCustomerInformation::getBalance, bo.getBalance());
+        lqw.ge(bo.getStartDate() != null, DcCustomerInformation::getStartDate, bo.getStartDate());
         lqw.le(bo.getExpireDate() != null, DcCustomerInformation::getExpireDate, bo.getExpireDate());
         lqw.eq(StringUtils.isNotBlank(bo.getContractCode()), DcCustomerInformation::getContractCode, bo.getContractCode());
         lqw.eq(StringUtils.isNotBlank(bo.getRemarks()), DcCustomerInformation::getRemarks, bo.getRemarks());

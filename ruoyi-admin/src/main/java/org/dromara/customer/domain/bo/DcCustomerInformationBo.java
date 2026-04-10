@@ -191,4 +191,25 @@ public class DcCustomerInformationBo extends BaseEntity {
      */
     private Integer isExpire;
 
+    /**
+     * 备注1
+     */
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    private String remark3;
+
+    /**
+     * 服务开始时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date startDate;
+
 }

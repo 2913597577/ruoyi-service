@@ -340,7 +340,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         boolean flag = baseMapper.updateById(dcCustomerTransfer) > 0;
         if (flag && auditStatus == 1) {
             DcCustomerInformationBo dcCustomerInformation = new DcCustomerInformationBo();
-            dcCustomerInformation.setSignDate(dcCustomerTransfer.getCreateTime());
+            dcCustomerInformation.setSignDate(dcCustomerTransfer.getSignDate());
             dcCustomerInformation.setContractNo(dcCustomerTransfer.getContractOssId());
             dcCustomerInformation.setCustomerName(dcCustomerTransfer.getCompanyName());
             dcCustomerInformation.setPrincipal(dcCustomerTransfer.getContactPerson());
@@ -349,6 +349,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setPackageType(dcCustomerTransfer.getServiceType());
             dcCustomerInformation.setActualReceipt(dcCustomerTransfer.getActualPayment());
             dcCustomerInformation.setBalance(dcCustomerTransfer.getBalanceStatus());
+            dcCustomerInformation.setStartDate(dcCustomerTransfer.getServiceStart());
             dcCustomerInformation.setExpireDate(dcCustomerTransfer.getServiceEnd());
             dcCustomerInformation.setTransferId(dcCustomerTransfer.getId());
             dcCustomerInformation.setAccountManagerId(dcCustomerTransfer.getAccountManagerId());
@@ -383,7 +384,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
         boolean flag = baseMapper.updateById(dcCustomerTransfer) > 0;
         if (flag && auditStatus == 1) {
             DcCustomerInformationLogBo dcCustomerInformation = new DcCustomerInformationLogBo();
-            dcCustomerInformation.setSignDate(dcCustomerTransfer.getCreateTime());
+            dcCustomerInformation.setSignDate(dcCustomerTransfer.getSignDate());
             dcCustomerInformation.setContractNo(dcCustomerTransfer.getContractOssId());
             dcCustomerInformation.setCustomerName(dcCustomerTransfer.getCompanyName());
             dcCustomerInformation.setPrincipal(dcCustomerTransfer.getContactPerson());
@@ -392,6 +393,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setPackageType(dcCustomerTransfer.getServiceType());
             dcCustomerInformation.setActualReceipt(dcCustomerTransfer.getActualPayment());
             dcCustomerInformation.setBalance(dcCustomerTransfer.getBalanceStatus());
+            dcCustomerInformation.setStartDate(dcCustomerTransfer.getServiceStart());
             dcCustomerInformation.setExpireDate(dcCustomerTransfer.getServiceEnd());
             dcCustomerInformation.setTransferId(dcCustomerTransfer.getId());
             dcCustomerInformation.setAccountManagerId(dcCustomerTransfer.getAccountManagerId());

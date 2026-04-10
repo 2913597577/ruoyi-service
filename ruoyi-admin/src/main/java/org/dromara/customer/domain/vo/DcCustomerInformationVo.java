@@ -205,5 +205,28 @@ public class DcCustomerInformationVo implements Serializable {
      */
     private Integer isHighRisk;
 
+    /**
+     * 备注1
+     */
+    @ExcelProperty(value = "备注1")
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    @ExcelProperty(value = "备注2")
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    @ExcelProperty(value = "备注3")
+    private String remark3;
+
+    /**
+     * 服务开始时间
+     */
+    @ExcelProperty(value = "服务开始时间")
+    private Date startDate;
 
 }

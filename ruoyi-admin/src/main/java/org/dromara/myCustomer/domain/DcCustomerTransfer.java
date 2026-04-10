@@ -333,6 +333,10 @@ public class DcCustomerTransfer extends TenantEntity {
      * 客户id
      */
     private Long customerId;
-
+    /**
+     * 签单时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date signDate;
 
 }

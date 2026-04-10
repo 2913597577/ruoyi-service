@@ -28,5 +28,11 @@ public interface DcCustomerInformationMapper extends BaseMapperPlus<DcCustomerIn
 
     List<Map<String, Object>> selectOutstandingCustomer(@Param("lawyerId") Long lawyerId, @Param("createDepts") List<Long> createDepts);
 
+    // 优化selectCustomerByLawyerId方法 (changk666)
+    List<DcCustomerInformationVo> selectCustomerByLawyerId(@Param("lawyerId") Long lawyerId);
+
+    List<DcCustomerInformationVo> selectAllCustomerBasicInfo();
+
+    List<DcCustomerInformationVo> selectCustomerByCity(@Param("city") String city);
 
 }

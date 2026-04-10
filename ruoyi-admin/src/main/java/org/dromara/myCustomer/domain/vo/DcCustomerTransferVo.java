@@ -409,4 +409,10 @@ public class DcCustomerTransferVo implements Serializable {
      */
     private String legalSupport;
 
+    /**
+     * 签单时间
+     */
+    @ExcelProperty(value = "签单时间")
+    private Date signDate;
+
 }

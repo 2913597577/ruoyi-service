@@ -157,7 +157,7 @@ public class CommonService {
     }*/
 
     // 重写getCustomerByUserId这个方法（changk666）
-    public JSONArray getCustomerByUserId(long userId) {
+    /*public JSONArray getCustomerByUserId(long userId) {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return null;
@@ -254,6 +254,49 @@ public class CommonService {
                 json.add(jsonObject);
             }
         }
+        return json;
+    }*/
+    // 优化getCustomerByUserId方法 (changk666)
+    public JSONArray getCustomerByUserId(long userId) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+
+        boolean superAdmin = LoginHelper.isSuperAdmin(userId);
+        List<RoleDTO> roles = loginUser.getRoles();
+
+        String roleKey = (roles != null && !roles.isEmpty()) ? roles.get(0).getRoleKey() : null;
+
+        JSONArray json = new JSONArray();
+        List<DcCustomerInformationVo> customerList = null;
+
+        if ("LegalSupport_Employee".equals(roleKey)) {
+            customerList = informationMapper.selectCustomerByLawyerId(userId);
+        } else if (superAdmin || "LegalSupport_Leader".equals(roleKey)
+            || "LegalCenter_Employee".equals(roleKey) || "LegalCenter_Manager".equals(roleKey)) {
+            customerList = informationMapper.selectAllCustomerBasicInfo();
+        } else if ("LegalSupport_Manager".equals(roleKey)) {
+            String deptCategory = loginUser.getDeptCategory();
+            if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                customerList = informationMapper.selectCustomerByCity(city);
+            }
+        } else {
+            customerList = informationMapper.selectCustomerByLawyerId(userId);
+        }
+
+        if (customerList != null && !customerList.isEmpty()) {
+            for (DcCustomerInformationVo vo : customerList) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("transfer_id", vo.getTransferId());
+                jsonObject.put("customer_id", vo.getId());
+                jsonObject.put("customer_name", vo.getCustomerName());
+                //jsonObject.put("customer_realName", vo.getCustomerName());
+                json.add(jsonObject);
+            }
+        }
+
         return json;
     }
 
