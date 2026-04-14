@@ -183,7 +183,7 @@ public class CommonController {
     }
 
     /**
-     * 获取客户基本信息
+     * 获取流转单客户基本信息
      */
     @GetMapping("/getTransferList")
     public R<JSONArray> getTransferList() {
@@ -192,6 +192,17 @@ public class CommonController {
             return R.warn("用户未登录");
         }
         return R.ok(commonService.getTransferList());
+    }
+    /**
+     * 获取流转单、二次收费流转单、客户总表 客户基本信息
+     */
+    @GetMapping("/getCustomerWithTransferInfo")
+    public R<JSONArray> getCustomerWithTransferInfo() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getCustomerWithTransferInfo());
     }
 
     /**

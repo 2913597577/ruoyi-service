@@ -690,12 +690,110 @@ public class CommonService {
         return result;
     }
 
+    // 获取流转单数据
     public JSONArray getTransferList() {
         DcCustomerTransferBo bo = new DcCustomerTransferBo();
         bo.setIsSecondaryCharge(0);
         bo.setFinanceConfirmed(1);
         List<DcCustomerTransferVo> list = dcCustomerTransferService.queryList(bo);
         return JSONArray.parseArray(JSON.toJSONString(list));
+    }
+    // 根据流转单Id获取流转单数据 查询太慢，优化掉
+    /*public JSONObject getTransferListById(Long transferId) {
+        //查询一次收费流转单
+        DcCustomerTransferBo bo = new DcCustomerTransferBo();
+        bo.setId(transferId);
+        bo.setIsSecondaryCharge(0);
+        bo.setFinanceConfirmed(1);
+        List<DcCustomerTransferVo> list = dcCustomerTransferService.queryList(bo);
+        if (list != null && !list.isEmpty()) {
+            return JSONObject.parseObject(JSON.toJSONString(list.get(0)));
+        }
+        //查询二次收费流转单
+        bo.setIsSecondaryCharge(1);
+        list = dcCustomerTransferService.queryList(bo);
+        if (list != null && !list.isEmpty()) {
+            return JSONObject.parseObject(JSON.toJSONString(list.get(0)));
+        }
+        return null;
+    }*/
+    public JSONObject getTransferListById(Long transferId) {
+        DcCustomerTransferVo transferVo = dcCustomerTransferService.queryById(transferId);
+        if (transferVo != null && Integer.valueOf(1).equals(transferVo.getFinanceConfirmed())) {
+            return JSONObject.parseObject(JSON.toJSONString(transferVo));
+        }
+        return null;
+    }
+
+    // 接口查询太慢，需优化
+    /*public JSONArray getCustomerWithTransferInfo() {
+       try {
+           DcCustomerInformationBo customerBo = new DcCustomerInformationBo();
+           List<DcCustomerInformationVo> customerList = dcCustomerInformationService.queryList(customerBo);
+
+        JSONArray result = new JSONArray();
+
+        for (DcCustomerInformationVo customerVo : customerList) {
+            JSONObject customerData;
+
+            if (customerVo.getTransferId() != null) {
+
+                JSONObject transferData = getTransferListById(customerVo.getTransferId());
+
+                if (transferData != null) {
+                    customerData = transferData;
+                } else {
+                    customerData = JSONObject.parseObject(JSON.toJSONString(customerVo));
+                }
+            } else {
+                customerData = JSONObject.parseObject(JSON.toJSONString(customerVo));
+            }
+
+            result.add(customerData);
+        }
+        log.info("getCustomerWithTransferInfo 返回数据量: {}", result.size());
+        return result;
+    } catch (Exception e) {
+           log.error("getCustomerWithTransferInfo 异常", e);
+           return new JSONArray();
+       }
+
+    }*/
+    public JSONArray getCustomerWithTransferInfo() {
+        try {
+            DcCustomerInformationBo customerBo = new DcCustomerInformationBo();
+            List<DcCustomerInformationVo> customerList = dcCustomerInformationService.queryList(customerBo);
+
+            if (customerList == null || customerList.isEmpty()) {
+                return new JSONArray();
+            }
+
+            JSONArray result = new JSONArray();
+
+            for (DcCustomerInformationVo customerVo : customerList) {
+                JSONObject customerData;
+
+                if (customerVo.getTransferId() != null) {
+                    JSONObject transferData = getTransferListById(customerVo.getTransferId());
+
+                    if (transferData != null) {
+                        customerData = transferData;
+                    } else {
+                        customerData = JSONObject.parseObject(JSON.toJSONString(customerVo));
+                    }
+                } else {
+                    customerData = JSONObject.parseObject(JSON.toJSONString(customerVo));
+                }
+
+                result.add(customerData);
+            }
+
+            log.info("getCustomerWithTransferInfo 返回数据量: {}", result.size());
+            return result;
+        } catch (Exception e) {
+            log.error("getCustomerWithTransferInfo 异常", e);
+            return new JSONArray();
+        }
     }
 
     public JSONObject getPerformance(LoginUser loginUser) {

@@ -390,7 +390,7 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setPrincipal(dcCustomerTransfer.getContactPerson());
             dcCustomerInformation.setPrincipalPhone(dcCustomerTransfer.getContactInfo());
             dcCustomerInformation.setContractType(0);
-            dcCustomerInformation.setPackageType(dcCustomerTransfer.getServiceType());
+            dcCustomerInformation.setPackageType(dcCustomerTransfer.getSecondDevelopmentType());
             dcCustomerInformation.setActualReceipt(dcCustomerTransfer.getActualPayment());
             dcCustomerInformation.setBalance(dcCustomerTransfer.getBalanceStatus());
             dcCustomerInformation.setStartDate(dcCustomerTransfer.getServiceStart());
@@ -402,12 +402,14 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerInformation.setContractAmount(dcCustomerTransfer.getContractAmount());
             dcCustomerInformation.setContractCode(dcCustomerTransfer.getContractCode());
             dcCustomerInformation.setCustomerCity(dcCustomerTransfer.getCustomerCity());
+            // 设置客户二次收费表customerId
             dcCustomerInformation.setCustomerInfoId(dcCustomerTransfer.getCustomerId());
             dcCustomerInformation.setCustomerType(1);
             SysUserVo inviter = sysUserService.selectUserById(dcCustomerTransfer.getInviterId());
             SysUserVo closer = sysUserService.selectUserById(dcCustomerTransfer.getAccountManagerId());
             dcCustomerInformation.setTransferPerson(inviter == null ? "" : inviter.getNickName());
             dcCustomerInformation.setCloser(closer == null ? "" : closer.getNickName());
+
             flag = dcCustomerInformationLogService.insertByBo(dcCustomerInformation);
         }
         return flag;

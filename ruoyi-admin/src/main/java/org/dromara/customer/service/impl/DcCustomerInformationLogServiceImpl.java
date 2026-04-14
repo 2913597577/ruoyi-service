@@ -14,6 +14,7 @@ import org.dromara.customer.domain.bo.DcCustomerInformationLogBo;
 import org.dromara.customer.domain.vo.DcCustomerInformationLogVo;
 import org.dromara.customer.mapper.DcCustomerInformationLogMapper;
 import org.dromara.customer.service.IDcCustomerInformationLogService;
+import org.dromara.myCustomer.domain.DcCustomerTransfer;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -73,7 +74,7 @@ public class DcCustomerInformationLogServiceImpl implements IDcCustomerInformati
     private LambdaQueryWrapper<DcCustomerInformationLog> buildQueryWrapper(DcCustomerInformationLogBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerInformationLog> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCustomerInformationLog::getId);
+        lqw.orderByDesc(DcCustomerInformationLog::getCreateTime);
         lqw.eq(StringUtils.isNotBlank(bo.getPrincipal()), DcCustomerInformationLog::getPrincipal, bo.getPrincipal());
         lqw.eq(bo.getLawyerId() != null, DcCustomerInformationLog::getLawyerId, bo.getLawyerId());
         lqw.eq(bo.getContractType() != null, DcCustomerInformationLog::getContractType, bo.getContractType());
