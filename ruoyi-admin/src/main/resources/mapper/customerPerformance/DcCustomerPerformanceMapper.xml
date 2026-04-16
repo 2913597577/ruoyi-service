@@ -44,6 +44,7 @@
         t.customer_city as serviceCity,
         t.inviter_id as inviterId,
         t.service_type as serviceType,
+        t.second_development_type as secondDevelopmentType,
         t.service_start as serviceStart,
         t.service_end as serviceEnd
         FROM dc_customer_performance p
@@ -83,6 +84,12 @@
         <if test="serviceType != null and serviceType.size() > 0">
             AND t.service_type IN
             <foreach collection="serviceType" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="secondDevelopmentType != null and secondDevelopmentType.size() > 0">
+            AND p.second_development_type IN
+            <foreach collection="secondDevelopmentType" item="id" open="(" separator="," close=")">
                 #{id}
             </foreach>
         </if>
@@ -137,6 +144,12 @@
         <if test="serviceType != null and serviceType.size() > 0">
             AND t.service_type IN
             <foreach collection="serviceType" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="secondDevelopmentType != null and secondDevelopmentType.size() > 0">
+            AND p.second_development_type IN
+            <foreach collection="secondDevelopmentType" item="id" open="(" separator="," close=")">
                 #{id}
             </foreach>
         </if>

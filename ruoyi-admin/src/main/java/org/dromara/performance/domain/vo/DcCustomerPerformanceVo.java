@@ -68,5 +68,19 @@ public class DcCustomerPerformanceVo implements Serializable {
     @ExcelProperty(value = "分配人")
     private String createrName;
 
+    @ExcelProperty(value = "签约类型(1-常法 2-单项 3-律师费 4-其他)")
+    private Integer transferServiceType;
+
+    @ExcelProperty(value = "二开类型(0-续费、1-尾款、2-咨询费、3-升级常法、4-律师函、5-合同定审、6-立案、7-诉讼文书、8-法务其他、9-财税代账、10-财税其他)")
+    private Integer secondServiceType;
+
+    @ExcelProperty(value = "备注1")
+    private String remark1;
+
+    @ExcelProperty(value = "备注2")
+    private String remark2;
+
+    @ExcelProperty(value = "备注3")
+    private String remark3;
 
 }

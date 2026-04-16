@@ -65,5 +65,15 @@ public class DcCustomerPerformanceBo extends BaseEntity {
 
     private String createrName;
 
+    private Integer transferServiceType;
+
+    private Integer secondServiceType;
+
+    private String remark1;
+
+    private String remark2;
+
+    private String remark3;
+
 
 }

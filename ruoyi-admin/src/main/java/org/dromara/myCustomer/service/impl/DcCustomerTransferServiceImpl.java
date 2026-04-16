@@ -254,6 +254,8 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
                 dcCustomerPerformanceBo.setCreateBy(LoginHelper.getUserId());
                 dcCustomerPerformanceBo.setCreaterId(LoginHelper.getUserId());
                 dcCustomerPerformanceBo.setCreaterName(LoginHelper.getLoginUser() == null ? LoginHelper.getUsername() : LoginHelper.getLoginUser().getNickname());
+                dcCustomerPerformanceBo.setTransferServiceType(bo.getServiceType());
+                dcCustomerPerformanceBo.setSecondServiceType(bo.getSecondDevelopmentType());
                 dcCustomerPerformanceService.insertByBo(dcCustomerPerformanceBo);
             }
         }
@@ -285,6 +287,8 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             dcCustomerPerformanceBo.setCreaterId(dcCustomerPerformanceBo.getCreaterId());
             dcCustomerPerformanceBo.setUpdateBy(LoginHelper.getUserId());
             dcCustomerPerformanceBo.setCreaterName(LoginHelper.getLoginUser() == null ? LoginHelper.getUsername() : LoginHelper.getLoginUser().getNickname());
+            dcCustomerPerformanceBo.setTransferServiceType(bo.getServiceType());
+            dcCustomerPerformanceBo.setSecondServiceType(bo.getSecondDevelopmentType());
             if (dcCustomerPerformanceBo.getId() == null) {
                 dcCustomerPerformanceService.insertByBo(dcCustomerPerformanceBo);
                 continue;

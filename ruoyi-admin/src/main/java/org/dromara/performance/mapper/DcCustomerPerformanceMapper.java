@@ -29,6 +29,7 @@ public interface DcCustomerPerformanceMapper extends BaseMapperPlus<DcCustomerPe
                                                @Param("serviceCity") List<String> serviceCity,
                                                @Param("inviterId") List<Long> inviterId,
                                                @Param("serviceType") List<Integer> serviceType,
+                                               @Param("secondDevelopmentType") List<Integer> secondDevelopmentType,
                                                @Param("serviceStart") Date serviceStart,
                                                @Param("serviceEnd") Date serviceEnd,
                                                @Param("page") Integer page,
@@ -43,6 +44,7 @@ public interface DcCustomerPerformanceMapper extends BaseMapperPlus<DcCustomerPe
                               @Param("serviceCity") List<String> serviceCity,
                               @Param("inviterId") List<Long> inviterId,
                               @Param("serviceType") List<Integer> serviceType,
+                              @Param("secondDevelopmentType") List<Integer> secondDevelopmentType,
                               @Param("serviceStart") Date serviceStart,
                               @Param("serviceEnd") Date serviceEnd);
 

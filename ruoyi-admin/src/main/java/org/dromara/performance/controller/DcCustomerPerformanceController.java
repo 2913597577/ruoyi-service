@@ -65,6 +65,7 @@ public class DcCustomerPerformanceController extends BaseController {
         List<String> serviceCity = convertToList(params.get("serviceCity"), String.class);
         List<Long> inviterId = convertToList(params.get("inviterId"), Long.class);
         List<Integer> serviceType = convertToList(params.get("serviceType"), Integer.class);
+        List<Integer> secondDevelopmentType = convertToList(params.get("secondDevelopmentType"), Integer.class);
         Date serviceStart = parseDate(params.get("serviceStart"));
         Date serviceEnd = parseDate(params.get("serviceEnd"));
         Integer pageNum = params.get("pageNum") != null ? Integer.valueOf(params.get("pageNum").toString()) : 0;
@@ -85,13 +86,13 @@ public class DcCustomerPerformanceController extends BaseController {
         }
 
         int count = dcCustomerPerformanceService.countListByPage(
-            userId, transferId, city, serviceCity, inviterId, serviceType,
+            userId, transferId, city, serviceCity, inviterId, serviceType, secondDevelopmentType,
             serviceStart, serviceEnd);
         if (count == 0) {
             return R.ok();
         }
         List<Map<String, Object>> list = dcCustomerPerformanceService.selectListByPage(
-            userId, transferId, city, serviceCity, inviterId, serviceType,
+            userId, transferId, city, serviceCity, inviterId, serviceType, secondDevelopmentType,
             serviceStart, serviceEnd, pageNum, pageSize);
         JSONObject data = new JSONObject();
         data.put("count", count);
