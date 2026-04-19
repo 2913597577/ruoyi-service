@@ -90,6 +90,7 @@ public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService
         lqw.eq(bo.getNextTime() != null, DcCustomerTracking::getNextTime, bo.getNextTime());
         lqw.eq(bo.getLegalSupportId() != null, DcCustomerTracking::getLegalSupportId, bo.getLegalSupportId());
         lqw.eq(bo.getLegalSupportName() != null, DcCustomerTracking::getLegalSupportName, bo.getLegalSupportName());
+        lqw.ge(bo.getInterCount() != null, DcCustomerTracking::getInterCount, bo.getInterCount());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCustomerTracking::getRemark1, bo.getRemark1());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcCustomerTracking::getRemark2, bo.getRemark2());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcCustomerTracking::getRemark3, bo.getRemark3());
