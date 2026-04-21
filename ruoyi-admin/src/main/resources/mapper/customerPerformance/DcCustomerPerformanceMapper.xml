@@ -88,7 +88,7 @@
             </foreach>
         </if>
         <if test="secondDevelopmentType != null and secondDevelopmentType.size() > 0">
-            AND p.second_development_type IN
+            AND p.second_service_type IN
             <foreach collection="secondDevelopmentType" item="id" open="(" separator="," close=")">
                 #{id}
             </foreach>
@@ -98,6 +98,12 @@
         </if>
         <if test="serviceEnd != null">
             AND DATE(t.service_end) = #{serviceEnd}
+        </if>
+        <if test="companyName != null and companyName.size() > 0">
+            AND t.company_name IN
+            <foreach collection="companyName" item="name" open="(" separator="," close=")">
+                #{name}
+            </foreach>
         </if>
         order by p.create_time desc
         <if test="page != null and pageSize != null">
@@ -148,7 +154,7 @@
             </foreach>
         </if>
         <if test="secondDevelopmentType != null and secondDevelopmentType.size() > 0">
-            AND p.second_development_type IN
+            AND p.second_service_type IN
             <foreach collection="secondDevelopmentType" item="id" open="(" separator="," close=")">
                 #{id}
             </foreach>
@@ -158,6 +164,12 @@
         </if>
         <if test="serviceEnd != null">
             AND DATE(t.service_end) <![CDATA[ <= ]]> #{serviceEnd}
+        </if>
+        <if test="companyName != null and companyName.size() > 0">
+            AND t.company_name IN
+            <foreach collection="companyName" item="name" open="(" separator="," close=")">
+                #{name}
+            </foreach>
         </if>
     </select>
 

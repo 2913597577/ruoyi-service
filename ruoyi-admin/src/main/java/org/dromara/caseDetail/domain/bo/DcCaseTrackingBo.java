@@ -9,6 +9,7 @@ import org.dromara.caseDetail.domain.DcCaseTracking;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -61,10 +62,13 @@ public class DcCaseTrackingBo extends BaseEntity {
     /**
      * 跟进时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date trackingTime;
+
     /**
      * 下次跟进时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date nextTrackingTime;
 
     /**

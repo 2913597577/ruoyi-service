@@ -32,6 +32,7 @@ public interface DcCustomerPerformanceMapper extends BaseMapperPlus<DcCustomerPe
                                                @Param("secondDevelopmentType") List<Integer> secondDevelopmentType,
                                                @Param("serviceStart") Date serviceStart,
                                                @Param("serviceEnd") Date serviceEnd,
+                                               @Param("companyName") List<String> companyName,
                                                @Param("page") Integer page,
                                                @Param("pageSize") Integer pageSize);
 
@@ -46,7 +47,8 @@ public interface DcCustomerPerformanceMapper extends BaseMapperPlus<DcCustomerPe
                               @Param("serviceType") List<Integer> serviceType,
                               @Param("secondDevelopmentType") List<Integer> secondDevelopmentType,
                               @Param("serviceStart") Date serviceStart,
-                              @Param("serviceEnd") Date serviceEnd);
+                              @Param("serviceEnd") Date serviceEnd,
+                              @Param("companyName") List<String> companyName);
 
 
 }

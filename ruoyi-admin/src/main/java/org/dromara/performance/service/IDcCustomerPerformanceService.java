@@ -70,10 +70,10 @@ public interface IDcCustomerPerformanceService {
 
     List<Map<String, Object>> selectListByPage(List<Long> userId, List<Long> transferId, List<String> city,
                                                List<String> serviceCity, List<Long> inviterId, List<Integer> serviceType,
-                                               List<Integer> secondDevelopmentType, Date serviceStart, Date serviceEnd, Integer page, Integer pageSize);
+                                               List<Integer> secondDevelopmentType, Date serviceStart, Date serviceEnd, List<String> companyName, Integer page, Integer pageSize);
 
     int countListByPage(List<Long> userId, List<Long> transferId, List<String> city,
                         List<String> serviceCity, List<Long> inviterId, List<Integer> serviceType, List<Integer> secondDevelopmentType,
-                        Date serviceStart, Date serviceEnd);
+                        Date serviceStart, Date serviceEnd, List<String> companyName);
 
 }

@@ -86,6 +86,7 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
         lqw.eq(StringUtils.isNotBlank(bo.getCity()), DcCustomerPerformance::getCity, bo.getCity());
         lqw.eq(bo.getCreaterId() != null, DcCustomerPerformance::getCreaterId, bo.getCreaterId());
         lqw.eq(StringUtils.isNotBlank(bo.getCreaterName()), DcCustomerPerformance::getCreaterName, bo.getCreaterName());
+
         return lqw;
     }
 
@@ -144,12 +145,12 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
     @Override
     public List<Map<String, Object>> selectListByPage(List<Long> userId, List<Long> transferId, List<String> city,
                                                       List<String> serviceCity, List<Long> inviterId, List<Integer> serviceType,
-                                                      List<Integer> secondDevelopmentType, Date serviceStart, Date serviceEnd, Integer page, Integer pageSize) {
+                                                      List<Integer> secondDevelopmentType, Date serviceStart, Date serviceEnd, List<String> companyName, Integer page, Integer pageSize) {
         // 计算偏移量
         Integer offset = (page != null && pageSize != null) ? (page - 1) * pageSize : null;
 
         return baseMapper.selectListByPage(userId, transferId, city, serviceCity,
-            inviterId, serviceType, secondDevelopmentType, serviceStart, serviceEnd,
+            inviterId, serviceType, secondDevelopmentType, serviceStart, serviceEnd, companyName,
             offset, pageSize);
     }
 
@@ -157,9 +158,9 @@ public class DcCustomerPerformanceServiceImpl implements IDcCustomerPerformanceS
     public int countListByPage(List<Long> userId, List<Long> transferId, List<String> city,
                                List<String> serviceCity, List<Long> inviterId, List<Integer> serviceType,
                                List<Integer> secondDevelopmentType,
-                               Date serviceStart, Date serviceEnd) {
+                               Date serviceStart, Date serviceEnd, List<String> companyName) {
         return baseMapper.selectListByPageCount(userId, transferId, city, serviceCity,
-            inviterId, serviceType, secondDevelopmentType, serviceStart, serviceEnd);
+            inviterId, serviceType, secondDevelopmentType, serviceStart, serviceEnd, companyName);
     }
 
 

@@ -35,6 +35,7 @@ public class DcCustomerInformationLogBo extends BaseEntity {
      * 签约日期
      */
     @NotNull(message = "签约日期不能为空", groups = {AddGroup.class, EditGroup.class})
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date signDate;
 
     /**
@@ -98,6 +99,7 @@ public class DcCustomerInformationLogBo extends BaseEntity {
     /**
      * 到期时间
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expireDate;
 
     /**

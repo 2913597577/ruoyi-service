@@ -9,6 +9,7 @@ import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.customer.domain.DcCustomerInformation;
 import org.dromara.customer.domain.DcCustomerInformationLog;
 import org.dromara.customer.domain.bo.DcCustomerInformationLogBo;
 import org.dromara.customer.domain.vo.DcCustomerInformationLogVo;
@@ -84,8 +85,17 @@ public class DcCustomerInformationLogServiceImpl implements IDcCustomerInformati
         lqw.eq(bo.getIsRefund() != null, DcCustomerInformationLog::getIsRefund, bo.getIsRefund());
         lqw.eq(bo.getCustomerType() != null, DcCustomerInformationLog::getCustomerType, bo.getCustomerType());
         lqw.eq(StringUtils.isNotBlank(bo.getCustomerCity()), DcCustomerInformationLog::getCustomerCity, bo.getCustomerCity());
+        lqw.eq(StringUtils.isNotBlank(bo.getTransferPerson()), DcCustomerInformationLog::getTransferPerson, bo.getTransferPerson());
         lqw.eq(bo.getIsAssigned() != null, DcCustomerInformationLog::getIsAssigned, bo.getIsAssigned());
         lqw.eq(bo.getCustomerInfoId() != null, DcCustomerInformationLog::getCustomerInfoId, bo.getCustomerInfoId());
+        lqw.eq(bo.getTransferId() != null, DcCustomerInformationLog::getTransferId, bo.getTransferId());
+        lqw.eq(bo.getSignDate() != null, DcCustomerInformationLog::getSignDate, bo.getSignDate());
+        lqw.ge(bo.getContractAmount() != null, DcCustomerInformationLog::getContractAmount, bo.getContractAmount());
+        lqw.ge(bo.getActualReceipt() != null, DcCustomerInformationLog::getActualReceipt, bo.getActualReceipt());
+        lqw.ge(bo.getBalance() != null, DcCustomerInformationLog::getBalance, bo.getBalance());
+        lqw.ge(bo.getStartDate() != null, DcCustomerInformationLog::getStartDate, bo.getStartDate());
+        lqw.le(bo.getExpireDate() != null, DcCustomerInformationLog::getExpireDate, bo.getExpireDate());
+
         return lqw;
     }
 

@@ -61,11 +61,14 @@ public class DcCustomerPerformanceController extends BaseController {
         }
         List<Long> userId = convertToList(params.get("userId"), Long.class);
         List<Long> transferId = convertToList(params.get("transferId"), Long.class);
+        System.out.println("transferId 实际类型: " + (transferId.isEmpty() ? "empty" : transferId.get(0).getClass().getName()));
+        System.out.println("transferId 值: " + transferId);
         List<String> city = convertToList(params.get("city"), String.class);
         List<String> serviceCity = convertToList(params.get("serviceCity"), String.class);
         List<Long> inviterId = convertToList(params.get("inviterId"), Long.class);
         List<Integer> serviceType = convertToList(params.get("serviceType"), Integer.class);
         List<Integer> secondDevelopmentType = convertToList(params.get("secondDevelopmentType"), Integer.class);
+        List<String> companyName = convertToList(params.get("companyName"), String.class);
         Date serviceStart = parseDate(params.get("serviceStart"));
         Date serviceEnd = parseDate(params.get("serviceEnd"));
         Integer pageNum = params.get("pageNum") != null ? Integer.valueOf(params.get("pageNum").toString()) : 0;
@@ -87,13 +90,13 @@ public class DcCustomerPerformanceController extends BaseController {
 
         int count = dcCustomerPerformanceService.countListByPage(
             userId, transferId, city, serviceCity, inviterId, serviceType, secondDevelopmentType,
-            serviceStart, serviceEnd);
+            serviceStart, serviceEnd, companyName);
         if (count == 0) {
             return R.ok();
         }
         List<Map<String, Object>> list = dcCustomerPerformanceService.selectListByPage(
             userId, transferId, city, serviceCity, inviterId, serviceType, secondDevelopmentType,
-            serviceStart, serviceEnd, pageNum, pageSize);
+            serviceStart, serviceEnd, companyName, pageNum, pageSize);
         JSONObject data = new JSONObject();
         data.put("count", count);
         data.put("list", list);
