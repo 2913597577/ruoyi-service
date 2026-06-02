@@ -141,5 +141,10 @@ public class DcDebtCaseBo extends BaseEntity {
      */
     private String remark3;
 
+    /**
+     * 需求接收月份(格式: yyyy-MM)
+     */
+    private String requestReceiveMonth;
+
 
 }

@@ -61,8 +61,8 @@ public class DcCustomerPerformanceController extends BaseController {
         }
         List<Long> userId = convertToList(params.get("userId"), Long.class);
         List<Long> transferId = convertToList(params.get("transferId"), Long.class);
-        System.out.println("transferId 实际类型: " + (transferId.isEmpty() ? "empty" : transferId.get(0).getClass().getName()));
-        System.out.println("transferId 值: " + transferId);
+        //System.out.println("transferId 实际类型: " + (transferId.isEmpty() ? "empty" : transferId.get(0).getClass().getName()));
+        //System.out.println("transferId 值: " + transferId);
         List<String> city = convertToList(params.get("city"), String.class);
         List<String> serviceCity = convertToList(params.get("serviceCity"), String.class);
         List<Long> inviterId = convertToList(params.get("inviterId"), Long.class);

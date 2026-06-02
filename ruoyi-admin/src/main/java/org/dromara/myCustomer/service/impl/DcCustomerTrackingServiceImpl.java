@@ -86,6 +86,10 @@ public class DcCustomerTrackingServiceImpl implements IDcCustomerTrackingService
         lqw.eq(bo.getTrackingType() != null, DcCustomerTracking::getTrackingType, bo.getTrackingType());
         lqw.eq(bo.getCumtomerStatus() != null, DcCustomerTracking::getCumtomerStatus, bo.getCumtomerStatus());
         lqw.eq(bo.getTrackingTime() != null, DcCustomerTracking::getTrackingTime, bo.getTrackingTime());
+        lqw.apply(StringUtils.isNotBlank(bo.getTrackingMonth()),
+            "DATE_FORMAT(tracking_time, '%Y-%m') = {0}",
+            bo.getTrackingMonth());
+
         lqw.eq(bo.getSubmitStatus() != null, DcCustomerTracking::getSubmitStatus, bo.getSubmitStatus());
         lqw.eq(bo.getNextTime() != null, DcCustomerTracking::getNextTime, bo.getNextTime());
         lqw.eq(bo.getLegalSupportId() != null, DcCustomerTracking::getLegalSupportId, bo.getLegalSupportId());

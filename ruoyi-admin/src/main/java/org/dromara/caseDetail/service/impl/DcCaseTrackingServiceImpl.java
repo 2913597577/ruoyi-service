@@ -83,6 +83,10 @@ public class DcCaseTrackingServiceImpl implements IDcCaseTrackingService {
         lqw.like(bo.getLegalSupportName() != null, DcCaseTracking::getLegalSupportName, bo.getLegalSupportName());
         lqw.eq(StringUtils.isNotBlank(bo.getCaseProgress()), DcCaseTracking::getCaseProgress, bo.getCaseProgress());
         lqw.eq(bo.getTrackingTime() != null, DcCaseTracking::getTrackingTime, bo.getTrackingTime());
+        lqw.apply(StringUtils.isNotBlank(bo.getTrackingMonth()),
+            "DATE_FORMAT(tracking_time, '%Y-%m') = {0}",
+            bo.getTrackingMonth());
+
         lqw.eq(bo.getNextTrackingTime() != null, DcCaseTracking::getNextTrackingTime, bo.getNextTrackingTime());
         lqw.in(bo.getCustomerIds() != null && !bo.getCustomerIds().isEmpty(), DcCaseTracking::getCustomerId, bo.getCustomerIds());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCaseTracking::getRemark1, bo.getRemark1());

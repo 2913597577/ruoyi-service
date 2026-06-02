@@ -121,4 +121,10 @@ public class DcCustomerJobOrderBo extends BaseEntity {
 
     private List<Long> customerIds;
 
+    /**
+     * 交付月份(格式: yyyy-MM)
+     */
+    private String deliveryMonth;
+
+
 }

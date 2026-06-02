@@ -107,4 +107,9 @@ public class DcCustomerTrackingBo extends BaseEntity {
 
     private List<Long> customerIds;
 
+    /**
+     * 跟踪月份(格式: yyyy-MM)
+     */
+    private String trackingMonth;
+
 }

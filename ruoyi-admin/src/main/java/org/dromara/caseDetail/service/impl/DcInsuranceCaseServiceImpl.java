@@ -76,6 +76,10 @@ public class DcInsuranceCaseServiceImpl implements IDcInsuranceCaseService {
         lqw.orderByDesc(DcInsuranceCase::getCreateTime);
         lqw.eq(bo.getCustomerId() != null, DcInsuranceCase::getCustomerId, bo.getCustomerId());
         lqw.eq(bo.getOrderDate() != null, DcInsuranceCase::getOrderDate, bo.getOrderDate());
+        lqw.apply(StringUtils.isNotBlank(bo.getOrderMonth()),
+            "DATE_FORMAT(order_date, '%Y-%m') = {0}",
+            bo.getOrderMonth());
+
         lqw.like(StringUtils.isNotBlank(bo.getInsuranceNumber()), DcInsuranceCase::getInsuranceNumber, bo.getInsuranceNumber());
         lqw.eq(bo.getLegalSupportId() != null, DcInsuranceCase::getLegalSupportId, bo.getLegalSupportId());
         lqw.like(StringUtils.isNotBlank(bo.getLegalSupportName()), DcInsuranceCase::getLegalSupportName, bo.getLegalSupportName());

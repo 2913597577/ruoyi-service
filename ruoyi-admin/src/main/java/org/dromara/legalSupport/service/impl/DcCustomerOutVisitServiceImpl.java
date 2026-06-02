@@ -79,6 +79,10 @@ public class DcCustomerOutVisitServiceImpl implements IDcCustomerOutVisitService
         lqw.eq(bo.getCustomerId() != null, DcCustomerOutVisit::getCustomerId, bo.getCustomerId());
         lqw.eq(bo.getLegalSupportId() != null, DcCustomerOutVisit::getLegalSupportId, bo.getLegalSupportId());
         lqw.eq(bo.getVisitTime() != null, DcCustomerOutVisit::getVisitTime, bo.getVisitTime());
+        lqw.apply(StringUtils.isNotBlank(bo.getVisitMonth()),
+            "DATE_FORMAT(visit_time, '%Y-%m') = {0}",
+            bo.getVisitMonth());
+
         lqw.eq(bo.getNextVisitTime() != null, DcCustomerOutVisit::getNextVisitTime, bo.getNextVisitTime());
         lqw.eq(bo.getIsFirstVisit() != null, DcCustomerOutVisit::getIsFirstVisit, bo.getIsFirstVisit());
         lqw.eq(bo.getIsOutCount() != null, DcCustomerOutVisit::getIsOutCount, bo.getIsOutCount());

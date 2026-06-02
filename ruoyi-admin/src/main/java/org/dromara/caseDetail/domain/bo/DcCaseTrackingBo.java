@@ -84,6 +84,11 @@ public class DcCaseTrackingBo extends BaseEntity {
     private List<Long> customerIds;
 
     /**
+     * 跟进月份(格式: yyyy-MM)
+     */
+    private String trackingMonth;
+
+    /**
      * 备注1
      */
     private String remark1;

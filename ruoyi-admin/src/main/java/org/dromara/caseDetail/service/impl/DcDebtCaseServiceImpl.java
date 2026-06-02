@@ -81,6 +81,10 @@ public class DcDebtCaseServiceImpl implements IDcDebtCaseService {
         lqw.like(StringUtils.isNotBlank(bo.getContactPhone()), DcDebtCase::getContactPhone, bo.getContactPhone());
         lqw.like(StringUtils.isNotBlank(bo.getIdCard()), DcDebtCase::getIdCard, bo.getIdCard());
         lqw.eq(bo.getRequestReceiveTime() != null, DcDebtCase::getRequestReceiveTime, bo.getRequestReceiveTime());
+        lqw.apply(StringUtils.isNotBlank(bo.getRequestReceiveMonth()),
+            "DATE_FORMAT(request_receive_time, '%Y-%m') = {0}",
+            bo.getRequestReceiveMonth());
+
         lqw.eq(StringUtils.isNotBlank(bo.getEvidenceNotes()), DcDebtCase::getEvidenceNotes, bo.getEvidenceNotes());
         lqw.like(StringUtils.isNotBlank(bo.getFilingSystemAccount()), DcDebtCase::getFilingSystemAccount, bo.getFilingSystemAccount());
         lqw.like(StringUtils.isNotBlank(bo.getFilingPassword()), DcDebtCase::getFilingPassword, bo.getFilingPassword());

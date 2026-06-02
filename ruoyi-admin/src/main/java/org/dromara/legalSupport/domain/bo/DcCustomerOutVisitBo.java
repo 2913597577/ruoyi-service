@@ -110,6 +110,12 @@ public class DcCustomerOutVisitBo extends BaseEntity {
     private List<Long> customerIds;
 
     /**
+     * 出访月份(格式: yyyy-MM)
+     */
+    private String visitMonth;
+
+
+    /**
      * 备注1
      */
     private String remark1;

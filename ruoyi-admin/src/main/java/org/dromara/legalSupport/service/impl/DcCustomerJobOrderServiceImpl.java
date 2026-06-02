@@ -82,6 +82,10 @@ public class DcCustomerJobOrderServiceImpl implements IDcCustomerJobOrderService
         lqw.like(StringUtils.isNotBlank(bo.getNewContractName()), DcCustomerJobOrder::getNewContractName, bo.getNewContractName());
         lqw.eq(StringUtils.isNotBlank(bo.getCustomerRequirements()), DcCustomerJobOrder::getCustomerRequirements, bo.getCustomerRequirements());
         lqw.eq(bo.getDeliveryTime() != null, DcCustomerJobOrder::getDeliveryTime, bo.getDeliveryTime());
+        lqw.apply(StringUtils.isNotBlank(bo.getDeliveryMonth()),
+            "DATE_FORMAT(delivery_time, '%Y-%m') = {0}",
+            bo.getDeliveryMonth());
+
         lqw.eq(bo.getTrackingId() != null, DcCustomerJobOrder::getTrackingId, bo.getTrackingId());
         lqw.eq(bo.getContractHandler() != null, DcCustomerJobOrder::getContractHandler, bo.getContractHandler());
         lqw.like(StringUtils.isNotBlank(bo.getContractHandlerName()), DcCustomerJobOrder::getContractHandlerName, bo.getContractHandlerName());

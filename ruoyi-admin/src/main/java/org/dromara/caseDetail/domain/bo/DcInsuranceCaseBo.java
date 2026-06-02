@@ -96,6 +96,11 @@ public class DcInsuranceCaseBo extends BaseEntity {
     private List<Long> customerIds;
 
     /**
+     * 下单月份(格式: yyyy-MM)
+     */
+    private String orderMonth;
+
+    /**
      * 备注1
      */
     private String remark1;
