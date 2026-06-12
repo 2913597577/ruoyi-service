@@ -96,6 +96,16 @@ public class DcCustomerInformationLogServiceImpl implements IDcCustomerInformati
         lqw.ge(bo.getStartDate() != null, DcCustomerInformationLog::getStartDate, bo.getStartDate());
         lqw.le(bo.getExpireDate() != null, DcCustomerInformationLog::getExpireDate, bo.getExpireDate());
 
+        // 获取前端传入的到期时间范围参数
+        if (params != null) {
+            lqw.ge(params.get("beginExpireDate") != null,
+                DcCustomerInformationLog::getExpireDate,
+                params.get("beginExpireDate"));
+            lqw.le(params.get("endExpireDate") != null,
+                DcCustomerInformationLog::getExpireDate,
+                params.get("endExpireDate"));
+        }
+
         return lqw;
     }
 

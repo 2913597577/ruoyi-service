@@ -12,6 +12,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.customer.domain.DcCustomerInformationLog;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
 import org.dromara.customer.domain.bo.DcCustomerInformationLogBo;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
@@ -224,6 +225,16 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
             lqw.eq(DcCustomerTransfer::getAccountManagerId, bo.getAccountManagerId());
         } else if (bo.getInviterId() != null) {
             lqw.eq(DcCustomerTransfer::getInviterId, bo.getInviterId());
+        }
+
+        // 获取前端传入的到期时间范围参数
+        if (params != null) {
+            lqw.ge(params.get("beginExpireDate") != null,
+                DcCustomerTransfer::getServiceEnd,
+                params.get("beginExpireDate"));
+            lqw.le(params.get("endExpireDate") != null,
+                DcCustomerTransfer::getServiceEnd,
+                params.get("endExpireDate"));
         }
 
         return lqw;

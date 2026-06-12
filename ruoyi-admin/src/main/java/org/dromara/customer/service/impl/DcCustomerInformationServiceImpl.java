@@ -109,6 +109,16 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         lqw.le(bo.getIsExpire() != null && bo.getIsExpire() == 1, DcCustomerInformation::getExpireDate, DateUtils.getDate());
         lqw.ge(bo.getIsExpire() != null && bo.getIsExpire() == 0, DcCustomerInformation::getExpireDate, DateUtils.getDate());
         lqw.eq(bo.getCustomerCity() != null, DcCustomerInformation::getCustomerCity, bo.getCustomerCity());
+        // 获取前端传入的到期时间范围参数
+        if (params != null) {
+            lqw.ge(params.get("beginExpireDate") != null,
+                DcCustomerInformation::getExpireDate,
+                params.get("beginExpireDate"));
+            lqw.le(params.get("endExpireDate") != null,
+                DcCustomerInformation::getExpireDate,
+                params.get("endExpireDate"));
+        }
+
         return lqw;
     }
 
