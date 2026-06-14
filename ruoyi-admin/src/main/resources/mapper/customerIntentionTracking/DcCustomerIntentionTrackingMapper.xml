@@ -16,7 +16,9 @@
         <if test="legalSupportId != null">
             AND i.legal_support_id = #{legalSupportId}
         </if>
+        <if test="city != null and city != ''">
+            AND i.remark1 = #{city}
+        </if>
     </select>
-
 
 </mapper>

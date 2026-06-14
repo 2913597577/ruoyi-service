@@ -16,17 +16,17 @@ import java.util.Map;
  */
 public interface DcCustomerInformationMapper extends BaseMapperPlus<DcCustomerInformation, DcCustomerInformationVo> {
 
-    List<Map<String, Object>> selectCustomerCountByType();
+    List<Map<String, Object>> selectCustomerCountByType(@Param("lawyerId") Long lawyerId, @Param("city") String city);
 
     List<Map<String, Object>> selectByYearMonth(Integer year, Integer month, Integer day, Long userId);
 
-    List<Map<String, Object>> selectCustomerPackageType(@Param("lawyerId") Long lawyerId);
+    List<Map<String, Object>> selectCustomerPackageType(@Param("lawyerId") Long lawyerId, @Param("city") String city);
 
-    List<Map<String, Object>> selectExpiringCustomers(@Param("lawyerId") Long lawyerId, @Param("createDepts") List<Long> createDepts);
+    List<Map<String, Object>> selectExpiringCustomers(@Param("lawyerId") Long lawyerId, @Param("city") String city);
 
-    List<Map<String, Object>> selectCustomersWithBalance(@Param("lawyerId") Long lawyerId, @Param("createDepts") List<Long> createDepts);
+    List<Map<String, Object>> selectCustomersWithBalance(@Param("lawyerId") Long lawyerId, @Param("city") String city);
 
-    List<Map<String, Object>> selectOutstandingCustomer(@Param("lawyerId") Long lawyerId, @Param("createDepts") List<Long> createDepts);
+    List<Map<String, Object>> selectOutstandingCustomer(@Param("lawyerId") Long lawyerId, @Param("city") String city);
 
     // 优化selectCustomerByLawyerId方法 (changk666)
     List<DcCustomerInformationVo> selectCustomerByLawyerId(@Param("lawyerId") Long lawyerId);

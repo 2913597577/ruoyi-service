@@ -13,6 +13,9 @@
         <if test="legalSupportId != null">
             AND legal_support_id = #{legalSupportId}
         </if>
+        <if test="city != null and city != ''">
+            AND remark1 = #{city}
+        </if>
     </select>
 
     <select id="selectTodayFollowUpByLegalSupport" resultType="map">
@@ -23,6 +26,9 @@
         AND next_visit_time &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)
         <if test="legalSupportId != null">
             AND legal_support_id = #{legalSupportId}
+        </if>
+        <if test="city != null and city != ''">
+            AND remark1 = #{city}
         </if>
     </select>
 

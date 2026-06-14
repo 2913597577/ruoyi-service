@@ -16,6 +16,6 @@ import java.util.Map;
  */
 public interface DcDebtCaseMapper extends BaseMapperPlus<DcDebtCase, DcDebtCaseVo> {
 
-    List<Map<String, Object>> selectMonthlyDebtCase(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectMonthlyDebtCase(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
 }

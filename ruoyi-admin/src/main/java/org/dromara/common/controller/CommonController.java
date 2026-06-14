@@ -64,7 +64,26 @@ public class CommonController {
         if (loginUser == null) {
             return R.warn("用户未登录");
         }
-        return R.ok(commonService.getCustomerType());
+
+        List<RoleDTO> roles = loginUser.getRoles();
+        Long lawyerId = null;
+        String city = null;
+
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            String roleKey = role.getRoleKey();
+
+            if ("LegalSupport_Employee".equals(roleKey)) {
+                lawyerId = loginUser.getUserId();
+            } else if ("LegalSupport_Manager".equals(roleKey)) {
+                String deptCategory = loginUser.getDeptCategory();
+                if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                    city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                }
+            }
+        }
+
+        return R.ok(commonService.getCustomerType(lawyerId, city));
     }
 
     /**
@@ -165,22 +184,26 @@ public class CommonController {
         }
         List<RoleDTO> roles = loginUser.getRoles();
         Long legalSupportId = null;
-        Long deptId = null;
-        // 法务支持
+        String city = null;
+
         if (roles != null && !roles.isEmpty()) {
             RoleDTO role = roles.get(0);
-            if (role.getRoleKey().equals("LegalSupport_Employee")) {
+            String roleKey = role.getRoleKey();
+
+            if ("LegalSupport_Employee".equals(roleKey)) {
                 legalSupportId = loginUser.getUserId();
-                deptId = loginUser.getDeptId();
+            } else if ("LegalSupport_Manager".equals(roleKey)) {
+                String deptCategory = loginUser.getDeptCategory();
+                if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                    city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                }
             }
         }
-        String deptCategory = loginUser.getDeptCategory();
-        String city = null;
-        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
-            city = deptCategory.substring(0, deptCategory.indexOf('_'));
-        }
-        return R.ok(commonService.getLegalSupportPerformance(legalSupportId, city, deptId));
+
+        return R.ok(commonService.getLegalSupportPerformance(legalSupportId, city));
     }
+
+
 
     /**
      * 获取流转单客户基本信息

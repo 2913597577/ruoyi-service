@@ -16,6 +16,6 @@ import java.util.Map;
  */
 public interface DcCustomerIntentionTrackingMapper extends BaseMapperPlus<DcCustomerIntentionTracking, DcCustomerIntentionTrackingVo> {
 
-    List<Map<String, Object>> selectTodayFollowUpByLegalSupport(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectTodayFollowUpByLegalSupport(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
 }

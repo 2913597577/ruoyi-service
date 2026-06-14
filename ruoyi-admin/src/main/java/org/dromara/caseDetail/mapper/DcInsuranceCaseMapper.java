@@ -18,6 +18,6 @@ public interface DcInsuranceCaseMapper extends BaseMapperPlus<DcInsuranceCase, D
 
     List<Map<String, Object>> selectByYearMonth(Integer year, Integer month, Integer day, Long userId);
 
-    List<Map<String, Object>> selectMonthlyInsuranceCase(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectMonthlyInsuranceCase(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
 }

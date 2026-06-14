@@ -16,6 +16,6 @@ import java.util.Map;
  */
 public interface DcCustomerJobOrderMapper extends BaseMapperPlus<DcCustomerJobOrder, DcCustomerJobOrderVo> {
 
-    List<Map<String, Object>> selectMonthlyJobOrder(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectMonthlyJobOrder(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
 }

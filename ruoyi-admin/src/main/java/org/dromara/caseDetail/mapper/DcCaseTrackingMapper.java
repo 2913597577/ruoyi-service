@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public interface DcCaseTrackingMapper extends BaseMapperPlus<DcCaseTracking, DcCaseTrackingVo> {
 
-    List<Map<String, Object>> selectMonthlyCaseTracking(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectMonthlyCaseTracking(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
-    List<Map<String, Object>> selectTodayFollowUpByLegalSupport(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectTodayFollowUpByLegalSupport(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
 }

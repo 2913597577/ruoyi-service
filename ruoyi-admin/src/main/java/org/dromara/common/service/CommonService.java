@@ -326,8 +326,8 @@ public class CommonService {
         return json;
     }
 
-    public JSONArray getCustomerType() {
-        List<Map<String, Object>> list = informationMapper.selectCustomerCountByType();
+    public JSONArray getCustomerType(Long lawyerId, String city) {
+        List<Map<String, Object>> list = informationMapper.selectCustomerCountByType(lawyerId, city);
         return JSONArray.parseArray(JSONObject.toJSONString(list));
     }
 
@@ -575,7 +575,7 @@ public class CommonService {
         return json;
     }
 
-    public JSONObject getLegalSupportPerformance(Long userId, String city, Long deptId) {
+    public JSONObject getLegalSupportPerformance(Long userId, String city) {
 
         JSONObject result = new JSONObject();
 
@@ -584,31 +584,33 @@ public class CommonService {
         dcCustomerInformationBo.setLawyerId(userId);
         dcCustomerInformationBo.setCustomerCity(city);
         List<DcCustomerInformationVo> dcCustomerInformationVos = dcCustomerInformationService.queryList(dcCustomerInformationBo);
-        List<Long> deptIdList = getDeptIdsByCity(city);
+        //List<Long> deptIdList = getDeptIdsByCity(city);
 
-        // 近二十天未跟进
-        List<Map<String, Object>> outstandingCustomer = informationMapper.selectOutstandingCustomer(userId, deptIdList);
+        //System.out.println("changkai:"+deptIdList);
+        // 近15天未跟进
+        List<Map<String, Object>> outstandingCustomer = informationMapper.selectOutstandingCustomer(userId, city);
 
         // 意向客户
         DcCustomerIntentionBo dcCustomerIntentionBo = new DcCustomerIntentionBo();
         dcCustomerIntentionBo.setLegalSupportId(userId);
+        dcCustomerIntentionBo.setRemark1(city);
         List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryList(dcCustomerIntentionBo);
-        // 临期客户
-        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(userId, deptIdList);
+        // 临期（7天到期）客户
+        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(userId, city);
         // 尾款客户
-        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(userId, deptIdList);
+        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(userId, city);
         // 本月内勤数量
-        List<Map<String, Object>> monthlyTracking = trackingMapper.selectMonthlyTrackingByLegalSupport(userId);
+        List<Map<String, Object>> monthlyTracking = trackingMapper.selectMonthlyTrackingByLegalSupport(userId, city);
         // 出访数量
-        List<Map<String, Object>> monthlyOutVisit = customerOutVisitMapper.selectMonthlyOutVisit(userId);
+        List<Map<String, Object>> monthlyOutVisit = customerOutVisitMapper.selectMonthlyOutVisit(userId, city);
         // 保险数量
-        List<Map<String, Object>> monthlyInsurance = insuranceCaseMapper.selectMonthlyInsuranceCase(userId);
-        // 工单数量
-        List<Map<String, Object>> monthlyJobOrder = dcCustomerJobOrderMapper.selectMonthlyJobOrder(userId);
+        List<Map<String, Object>> monthlyInsurance = insuranceCaseMapper.selectMonthlyInsuranceCase(userId, city);
+        // 下工单数量
+        List<Map<String, Object>> monthlyJobOrder = dcCustomerJobOrderMapper.selectMonthlyJobOrder(userId, city);
         // 案件数量
-        List<Map<String, Object>> monthlyCase = dcDebtCaseMapper.selectMonthlyDebtCase(userId);
+        List<Map<String, Object>> monthlyCase = dcDebtCaseMapper.selectMonthlyDebtCase(userId, city);
         // 案件跟踪数量
-        List<Map<String, Object>> monthlyCaseTracking = dcCaseTrackingMapper.selectMonthlyCaseTracking(userId);
+        List<Map<String, Object>> monthlyCaseTracking = dcCaseTrackingMapper.selectMonthlyCaseTracking(userId, city);
 
         int customerTotal = dcCustomerInformationVos == null ? 0 : dcCustomerInformationVos.size();
         int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
@@ -639,17 +641,17 @@ public class CommonService {
         // 业绩统计
         JSONObject performanceCount = performanceCount(userId);
         // 套餐类型对比
-        List<Map<String, Object>> packageType = informationMapper.selectCustomerPackageType(userId);
+        List<Map<String, Object>> packageType = informationMapper.selectCustomerPackageType(userId, city);
 
         // 今日代办事项
         // 意向客户
-        List<Map<String, Object>> intentionTodayNeed = dcCustomerIntentionTrackingMapper.selectTodayFollowUpByLegalSupport(userId);
+        List<Map<String, Object>> intentionTodayNeed = dcCustomerIntentionTrackingMapper.selectTodayFollowUpByLegalSupport(userId, city);
         // 内勤记录
-        List<Map<String, Object>> trackingTodayNeed = trackingMapper.selectTodayFollowUpByLegalSupport(userId);
+        List<Map<String, Object>> trackingTodayNeed = trackingMapper.selectTodayFollowUpByLegalSupport(userId, city);
         // 出访记录
-        List<Map<String, Object>> outVisitTodayNeed = customerOutVisitMapper.selectTodayFollowUpByLegalSupport(userId);
+        List<Map<String, Object>> outVisitTodayNeed = customerOutVisitMapper.selectTodayFollowUpByLegalSupport(userId, city);
         // 案件跟踪记录
-        List<Map<String, Object>> caseTodayNeed = dcCaseTrackingMapper.selectTodayFollowUpByLegalSupport(userId);
+        List<Map<String, Object>> caseTodayNeed = dcCaseTrackingMapper.selectTodayFollowUpByLegalSupport(userId, city);
 
         JSONArray neededInfo = new JSONArray();
         for (Map<String, Object> map : intentionTodayNeed) {
@@ -665,7 +667,7 @@ public class CommonService {
             DcCustomerTransfer dcCustomerTransfer = transferMapper.selectById(customerId);
             todayNeed.put("customerId", map.get("customer_id"));
             todayNeed.put("customerName", dcCustomerTransfer == null ? "" : dcCustomerTransfer.getCompanyName());
-            todayNeed.put("remark", "内勤跟踪");
+            todayNeed.put("remark", "回访跟踪");
             neededInfo.add(todayNeed);
         }
         for (Map<String, Object> map : outVisitTodayNeed) {
@@ -808,13 +810,13 @@ public class CommonService {
         dcCustomerInformationBo.setCustomerCity(city);
 
         long customerTotal = dcCustomerInformationService.queryCount(dcCustomerInformationBo);
-        List<Map<String, Object>> OutstandingCustomer = informationMapper.selectOutstandingCustomer(null, deptIdList);
+        List<Map<String, Object>> OutstandingCustomer = informationMapper.selectOutstandingCustomer(null, city);
         DcCustomerIntentionBo dcCustomerIntentionBo = new DcCustomerIntentionBo();
         List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryList(dcCustomerIntentionBo);
         // 临期客户
-        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(null, deptIdList);
+        List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(null, city);
         // 尾款客户
-        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(null, deptIdList);
+        List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(null, city);
 
         int outStandingTotal = OutstandingCustomer == null ? 0 : OutstandingCustomer.size();
         int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
@@ -850,16 +852,16 @@ public class CommonService {
             count.put("cityName", sysDictDataVo.getDictLabel());
             count.put("cityCode", sysDictDataVo.getDictValue());
             List<DcCustomerInformationVo> dcCustomerInformationVos = dcCustomerInformationService.queryListByCreateDepts(deptIds);
-            List<Map<String, Object>> OutstandingCustomer = informationMapper.selectOutstandingCustomer(null, deptIds);
+            List<Map<String, Object>> OutstandingCustomer = informationMapper.selectOutstandingCustomer(null, "ZB");
             List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryListByCreateDepts(deptIds);
-            List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(null, deptIds);
-            List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(null, deptIds);
+            List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(null, "ZB");
+            List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(null, "ZB");
 
             long customerTotal = dcCustomerInformationVos == null ? 0 : dcCustomerInformationVos.size();
-            int outStandingTotal = OutstandingCustomer == null ? 0 : OutstandingCustomer.size();
-            int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
-            int expiringTotal = expiringCustomers == null ? 0 : expiringCustomers.size();
             int balanceTotal = customersWithBalance == null ? 0 : customersWithBalance.size();
+            int outStandingTotal = OutstandingCustomer == null ? 0 : OutstandingCustomer.size();
+                     int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
+            int expiringTotal = expiringCustomers == null ? 0 : expiringCustomers.size();
 
             String deptCategory = sysDictDataVo.getDictValue() + "_LegalSupport";
             SysDeptBo sysDeptBo = new SysDeptBo();
@@ -868,7 +870,7 @@ public class CommonService {
             if (CollectionUtils.isNotEmpty(sysDeptVos)) {
                 SysDeptVo deptVo = sysDeptVos.get(0);
                 JSONObject teamPerformance = getPerformanceByDept(deptVo.getDeptId());
-                count.put("teamPerformance", teamPerformance == null ? new JSONObject() : teamPerformance.get("teamPerformance"));
+               count.put("teamPerformance", teamPerformance == null ? new JSONObject() : teamPerformance.get("teamPerformance"));
                 count.put("teamPerformanceList", teamPerformance == null ? new JSONArray() : teamPerformance.get("teamPerformanceList"));
             }
 

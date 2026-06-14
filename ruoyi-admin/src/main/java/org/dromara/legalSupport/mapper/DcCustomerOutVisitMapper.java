@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public interface DcCustomerOutVisitMapper extends BaseMapperPlus<DcCustomerOutVisit, DcCustomerOutVisitVo> {
 
-    List<Map<String, Object>> selectMonthlyOutVisit(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectMonthlyOutVisit(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
-    List<Map<String, Object>> selectTodayFollowUpByLegalSupport(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectTodayFollowUpByLegalSupport(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
 }

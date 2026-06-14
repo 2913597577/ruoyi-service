@@ -19,8 +19,8 @@ public interface DcCustomerTrackingMapper extends BaseMapperPlus<DcCustomerTrack
     List<Map<String, Object>> selectByYearMonth(Integer year, Integer month, Integer day, Integer trackingType,
                                                 Integer customerStatus, Long userId, Integer isReturn, boolean isGroup);
 
-    List<Map<String, Object>> selectMonthlyTrackingByLegalSupport(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectMonthlyTrackingByLegalSupport(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
-    List<Map<String, Object>> selectTodayFollowUpByLegalSupport(@Param("legalSupportId") Long legalSupportId);
+    List<Map<String, Object>> selectTodayFollowUpByLegalSupport(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
 }
