@@ -2,6 +2,7 @@ package org.dromara.customer.domain.vo;
 
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import org.dromara.customer.domain.DcCustomerIntentionTracking;
@@ -39,14 +40,14 @@ public class DcCustomerIntentionTrackingVo implements Serializable {
     private Long intentionId;
 
     /**
-     * 意向客户id
+     * 介绍客户id
      */
     private Long customerId;
 
     /**
-     * 意向客户
+     * 介绍客户名称
      */
-    @ExcelProperty(value = "意向客户")
+    @ExcelProperty(value = "介绍客户名称")
     private String customerName;
 
     /**
@@ -67,5 +68,46 @@ public class DcCustomerIntentionTrackingVo implements Serializable {
     @ExcelProperty(value = "下次跟踪时间")
     private Date nextTrackingDate;
 
+    /**
+     * 备注3
+     */
+    @ExcelProperty(value = "备注3")
+    private String remark3;
+
+    /**
+     * 删除标志 0存在 1删除
+     */
+    @ExcelProperty(value = "删除标志")
+    private String delFlag;
+
+    /**
+     * 介绍客户名称
+     */
+    @ExcelProperty(value = "意向客户名称")
+    private String intentionName;
+
+    /**
+     * 意向客户所属城市
+     */
+    @ExcelProperty(value = "意向客户所属城市")
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    @ExcelProperty(value = "备注2")
+    private String remark2;
+
+    /**
+     * 法务支持id
+     */
+    @ExcelProperty(value = "法务支持id")
+    private Long legalSupportId;
+
+    /**
+     * 法务支持名称
+     */
+    @ExcelProperty(value = "法务支持名称")
+    private String legalSupportName;
 
 }

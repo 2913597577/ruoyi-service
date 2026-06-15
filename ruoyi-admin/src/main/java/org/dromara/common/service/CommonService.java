@@ -302,21 +302,41 @@ public class CommonService {
 
 
     public JSONArray getIntentionCustomerByUserId(long userId) {
-        boolean superAdmin = LoginHelper.isSuperAdmin(userId);
-        List<DcCustomerIntentionVo> list = new ArrayList<>();
-        if (superAdmin) {
-            list = intentionMapper.selectVoList();
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
         }
-        if (!superAdmin) {
+
+        boolean superAdmin = LoginHelper.isSuperAdmin(userId);
+        List<RoleDTO> roles = loginUser.getRoles();
+        String roleKey = (roles != null && !roles.isEmpty()) ? roles.get(0).getRoleKey() : null;
+
+        List<DcCustomerIntentionVo> list = new ArrayList<>();
+
+        if ("LegalSupport_Employee".equals(roleKey)) {
+            Map<String, Object> queryMap = new HashMap<>();
+            queryMap.put("legal_support_id", userId);
+            list = intentionMapper.selectVoByMap(queryMap);
+        } else if (superAdmin || "LegalSupport_Leader".equals(roleKey)) {
+            list = intentionMapper.selectVoList();
+        } else if ("LegalSupport_Manager".equals(roleKey)) {
+            String deptCategory = loginUser.getDeptCategory();
+            if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                Map<String, Object> queryMap = new HashMap<>();
+                queryMap.put("remark1", city);
+                list = intentionMapper.selectVoByMap(queryMap);
+            }
+        } else {
             Map<String, Object> queryMap = new HashMap<>();
             queryMap.put("legal_support_id", userId);
             list = intentionMapper.selectVoByMap(queryMap);
         }
 
         JSONArray json = new JSONArray();
-        JSONObject data = new JSONObject();
-        data.put("intended_customer", "请选择意向客户");
-        json.add(data);
+        //JSONObject data = new JSONObject();
+        //data.put("intended_customer", "请选择意向客户");
+        //json.add(data);
         for (DcCustomerIntentionVo customerIntentionVo : list) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("intention_id", customerIntentionVo.getId());
@@ -325,6 +345,7 @@ public class CommonService {
         }
         return json;
     }
+
 
     public JSONArray getCustomerType(Long lawyerId, String city) {
         List<Map<String, Object>> list = informationMapper.selectCustomerCountByType(lawyerId, city);
@@ -551,13 +572,34 @@ public class CommonService {
         return result;
     }
 
+
     public JSONArray getCaseDetail(long userId) {
-        boolean superAdmin = LoginHelper.isSuperAdmin(userId);
-        List<DcDebtCaseVo> list = new ArrayList<>();
-        if (superAdmin) {
-            list = debtCaseMapper.selectVoList();
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
         }
-        if (!superAdmin) {
+
+        boolean superAdmin = LoginHelper.isSuperAdmin(userId);
+        List<RoleDTO> roles = loginUser.getRoles();
+        String roleKey = (roles != null && !roles.isEmpty()) ? roles.get(0).getRoleKey() : null;
+
+        List<DcDebtCaseVo> list = new ArrayList<>();
+
+        if ("LegalSupport_Employee".equals(roleKey)) {
+            Map<String, Object> queryMap = new HashMap<>();
+            queryMap.put("legal_support_id", userId);
+            list = debtCaseMapper.selectVoByMap(queryMap);
+        } else if (superAdmin || "LegalSupport_Leader".equals(roleKey)) {
+            list = debtCaseMapper.selectVoList();
+        } else if ("LegalSupport_Manager".equals(roleKey)) {
+            String deptCategory = loginUser.getDeptCategory();
+            if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                Map<String, Object> queryMap = new HashMap<>();
+                queryMap.put("remark1", city);
+                list = debtCaseMapper.selectVoByMap(queryMap);
+            }
+        } else {
             Map<String, Object> queryMap = new HashMap<>();
             queryMap.put("legal_support_id", userId);
             list = debtCaseMapper.selectVoByMap(queryMap);
@@ -569,11 +611,12 @@ public class CommonService {
             String companyName = dcCustomerInformation == null ? "" : dcCustomerInformation.getCustomerName();
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("case_id", dcDebtCaseVo.getId());
-            jsonObject.put("case_detail", "客户【" + companyName + "】--债务人【" + dcDebtCaseVo.getDebtorName() + "】");
+            jsonObject.put("case_detail", "【" + companyName + "】-债务人【" + dcDebtCaseVo.getDebtorName() + "】");
             json.add(jsonObject);
         }
         return json;
     }
+
 
     public JSONObject getLegalSupportPerformance(Long userId, String city) {
 
@@ -656,8 +699,8 @@ public class CommonService {
         JSONArray neededInfo = new JSONArray();
         for (Map<String, Object> map : intentionTodayNeed) {
             JSONObject todayNeed = new JSONObject();
-            todayNeed.put("customerId", map.get("customer_id"));
-            todayNeed.put("customerName", map.get("customer_name"));
+            todayNeed.put("customerId", map.get("id"));
+            todayNeed.put("customerName", map.get("intended_customer"));
             todayNeed.put("remark", "意向客户跟踪");
             neededInfo.add(todayNeed);
         }

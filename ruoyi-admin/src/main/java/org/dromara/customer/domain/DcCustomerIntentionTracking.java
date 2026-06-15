@@ -36,12 +36,12 @@ public class DcCustomerIntentionTracking extends TenantEntity {
     private Long intentionId;
 
     /**
-     * 意向客户id
+     * 介绍客户id
      */
     private Long customerId;
 
     /**
-     * 意向客户
+     * 介绍客户名称
      */
     private String customerName;
 
@@ -71,5 +71,28 @@ public class DcCustomerIntentionTracking extends TenantEntity {
     @TableLogic
     private String delFlag;
 
+    /**
+     * 介绍客户名称
+     */
+    private String intentionName;
 
+    /**
+     * 意向客户所属城市
+     */
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    private String remark2;
+
+    /**
+     * 法务支持id
+     */
+    private Long legalSupportId;
+
+    /**
+     * 法务支持名称
+     */
+    private String legalSupportName;
 }

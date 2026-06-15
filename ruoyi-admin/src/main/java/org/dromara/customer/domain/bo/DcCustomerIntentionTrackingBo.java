@@ -1,5 +1,6 @@
 package org.dromara.customer.domain.bo;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,32 +36,65 @@ public class DcCustomerIntentionTrackingBo extends BaseEntity {
     private Long intentionId;
 
     /**
-     * 意向客户id
+     * 介绍客户id
      */
     private Long customerId;
 
     /**
-     * 意向客户
+     * 介绍客户名称
      */
-    @NotNull(message = "意向客户不能为空", groups = {AddGroup.class, EditGroup.class})
     private String customerName;
 
     /**
      * 备注
      */
-    @NotBlank(message = "备注不能为空", groups = {AddGroup.class, EditGroup.class})
     private String customerRemark;
 
     /**
      * 跟踪时间
      */
-    @NotNull(message = "跟踪时间不能为空", groups = {AddGroup.class, EditGroup.class})
     private Date trackingDate;
 
     /**
      * 下次跟踪时间
      */
     private Date nextTrackingDate;
+
+    /**
+     * 备注3
+     */
+    private String remark3;
+
+    /**
+     * 删除标志 0存在 1删除
+     */
+    @TableLogic
+    private String delFlag;
+
+    /**
+     * 介绍客户名称
+     */
+    private String intentionName;
+
+    /**
+     * 意向客户所属城市
+     */
+    private String remark1;
+
+    /**
+     * 备注2
+     */
+    private String remark2;
+
+    /**
+     * 法务支持id
+     */
+    private Long legalSupportId;
+
+    /**
+     * 法务支持名称
+     */
+    private String legalSupportName;
 
 
 }

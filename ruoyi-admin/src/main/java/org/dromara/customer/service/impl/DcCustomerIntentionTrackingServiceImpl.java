@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.customer.domain.DcCustomerIntentionTracking;
@@ -72,11 +73,14 @@ public class DcCustomerIntentionTrackingServiceImpl implements IDcCustomerIntent
     private LambdaQueryWrapper<DcCustomerIntentionTracking> buildQueryWrapper(DcCustomerIntentionTrackingBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcCustomerIntentionTracking> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcCustomerIntentionTracking::getId);
+        lqw.orderByDesc(DcCustomerIntentionTracking::getId);
         lqw.eq(bo.getIntentionId() != null, DcCustomerIntentionTracking::getIntentionId, bo.getIntentionId());
         lqw.eq(bo.getCustomerId() != null, DcCustomerIntentionTracking::getCustomerId, bo.getCustomerId());
         lqw.like(bo.getCustomerName() != null, DcCustomerIntentionTracking::getCustomerName, bo.getCustomerName());
         lqw.eq(bo.getCreateTime() != null, DcCustomerIntentionTracking::getCreateTime, bo.getCreateTime());
+        lqw.eq(bo.getLegalSupportId() != null, DcCustomerIntentionTracking::getLegalSupportId, bo.getLegalSupportId());
+        lqw.eq(StringUtils.isNotBlank(bo.getRemark1()), DcCustomerIntentionTracking::getRemark1, bo.getRemark1());
+
         return lqw;
     }
 

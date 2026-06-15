@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import org.dromara.common.core.domain.dto.RoleDTO;
+import org.dromara.common.core.utils.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
@@ -21,6 +23,9 @@ import org.dromara.customer.domain.vo.DcCustomerIntentionTrackingVo;
 import org.dromara.customer.domain.bo.DcCustomerIntentionTrackingBo;
 import org.dromara.customer.service.IDcCustomerIntentionTrackingService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.satoken.utils.LoginHelper;
+
 
 /**
  * 意向客户跟踪记录
@@ -42,6 +47,25 @@ public class DcCustomerIntentionTrackingController extends BaseController {
     @SaCheckPermission("customerIntentionTracking:customerIntentionTracking:list")
     @GetMapping("/list")
     public TableDataInfo<DcCustomerIntentionTrackingVo> list(DcCustomerIntentionTrackingBo bo, PageQuery pageQuery) {
+
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return null;
+        }
+
+        List<RoleDTO> roles = loginUser.getRoles();
+        String roleKey = (roles != null && !roles.isEmpty()) ? roles.get(0).getRoleKey() : null;
+
+        if ("LegalSupport_Employee".equals(roleKey)) {
+            bo.setLegalSupportId(loginUser.getUserId());
+        } else if ("LegalSupport_Manager".equals(roleKey)) {
+            String deptCategory = loginUser.getDeptCategory();
+            if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                String city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                bo.setRemark1(city);
+            }
+        }
+
         return dcCustomerIntentionTrackingService.queryPageList(bo, pageQuery);
     }
 
