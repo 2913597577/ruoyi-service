@@ -18,4 +18,6 @@ public interface DcCustomerJobOrderMapper extends BaseMapperPlus<DcCustomerJobOr
 
     List<Map<String, Object>> selectMonthlyJobOrder(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
 
+    List<Map<String, Object>> selectTodayFollowUpByLegalSupport(@Param("legalSupportId") Long legalSupportId, @Param("city") String city);
+
 }

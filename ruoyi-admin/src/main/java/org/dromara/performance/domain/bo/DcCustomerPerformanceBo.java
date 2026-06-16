@@ -75,5 +75,10 @@ public class DcCustomerPerformanceBo extends BaseEntity {
 
     private String remark3;
 
+    /**
+     * 更新月份(格式: yyyy-MM)
+     */
+    private String updateTimeMonth;
+
 
 }

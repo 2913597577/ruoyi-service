@@ -20,6 +20,9 @@
         dc_customer_performance
         WHERE
         del_flag = 0
+        <if test="city != null and city != ''">
+            AND city = #{city}
+        </if>
         <if test="year != null">
             AND YEAR(create_time) = #{year}
         </if>
@@ -105,6 +108,9 @@
                 #{name}
             </foreach>
         </if>
+        <if test="updateTimeMonth != null and updateTimeMonth != ''">
+            AND DATE_FORMAT(p.update_time, '%Y-%m') = #{updateTimeMonth}
+        </if>
         order by p.create_time desc
         <if test="page != null and pageSize != null">
             LIMIT #{page},#{pageSize}
@@ -170,6 +176,9 @@
             <foreach collection="companyName" item="name" open="(" separator="," close=")">
                 #{name}
             </foreach>
+        </if>
+        <if test="updateTimeMonth != null and updateTimeMonth != ''">
+            AND DATE_FORMAT(p.update_time, '%Y-%m') = #{updateTimeMonth}
         </if>
     </select>
 

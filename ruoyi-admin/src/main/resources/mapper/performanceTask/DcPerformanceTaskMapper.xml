@@ -17,6 +17,9 @@
         <if test="legalSupportId != null">
             AND legal_support_id = #{legalSupportId}
         </if>
+        <if test="city != null and city != ''">
+            AND remark1 = #{city}
+        </if>
         <if test="taskMonth != null">
             AND task_month = #{taskMonth}
         </if>

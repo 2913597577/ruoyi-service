@@ -64,7 +64,7 @@ public class DcPerformanceTask extends TenantEntity {
     private Long achievedVisitGoal;
 
     /**
-     * 备注1（可记录目标调整原因等）
+     * 备注1(归属城市)
      */
     private String remark1;
 

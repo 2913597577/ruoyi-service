@@ -18,4 +18,18 @@
         </if>
     </select>
 
+    <select id="selectTodayFollowUpByLegalSupport" resultType="map">
+        SELECT *
+        FROM dc_customer_job_order
+        WHERE del_flag = 0
+        AND delivery_time >= CURDATE()
+        AND delivery_time &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+        <if test="legalSupportId != null">
+            AND legal_support_id = #{legalSupportId}
+        </if>
+        <if test="city != null and city != ''">
+            AND remark2 = #{city}
+        </if>
+    </select>
+
 </mapper>

@@ -18,7 +18,7 @@ import java.util.Map;
 public interface DcCustomerPerformanceMapper extends BaseMapperPlus<DcCustomerPerformance, DcCustomerPerformanceVo> {
 
     List<Map<String, Object>> selectUserPerformanceRank(@Param("year") Integer year, @Param("month") Integer month,
-                                                        @Param("userId") Long userId);
+                                                        @Param("userId") Long userId,@Param("city") String city);
 
     /**
      * 分页查询客户业绩列表
@@ -33,8 +33,10 @@ public interface DcCustomerPerformanceMapper extends BaseMapperPlus<DcCustomerPe
                                                @Param("serviceStart") Date serviceStart,
                                                @Param("serviceEnd") Date serviceEnd,
                                                @Param("companyName") List<String> companyName,
+                                               @Param("updateTimeMonth") String updateTimeMonth,
                                                @Param("page") Integer page,
-                                               @Param("pageSize") Integer pageSize);
+                                               @Param("pageSize") Integer pageSize
+                                               );
 
     /**
      * 统计客户业绩数量
@@ -48,7 +50,8 @@ public interface DcCustomerPerformanceMapper extends BaseMapperPlus<DcCustomerPe
                               @Param("secondDevelopmentType") List<Integer> secondDevelopmentType,
                               @Param("serviceStart") Date serviceStart,
                               @Param("serviceEnd") Date serviceEnd,
-                              @Param("companyName") List<String> companyName);
+                              @Param("companyName") List<String> companyName,
+                              @Param("updateTimeMonth") String updateTimeMonth);
 
 
 }

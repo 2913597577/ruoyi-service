@@ -69,6 +69,9 @@ public class DcCustomerPerformanceController extends BaseController {
         List<Integer> serviceType = convertToList(params.get("serviceType"), Integer.class);
         List<Integer> secondDevelopmentType = convertToList(params.get("secondDevelopmentType"), Integer.class);
         List<String> companyName = convertToList(params.get("companyName"), String.class);
+        // 按月份筛选
+        String updateTimeMonth = params.get("updateTimeMonth") != null ? params.get("updateTimeMonth").toString() : null;
+
         Date serviceStart = parseDate(params.get("serviceStart"));
         Date serviceEnd = parseDate(params.get("serviceEnd"));
         Integer pageNum = params.get("pageNum") != null ? Integer.valueOf(params.get("pageNum").toString()) : 0;
@@ -90,19 +93,72 @@ public class DcCustomerPerformanceController extends BaseController {
 
         int count = dcCustomerPerformanceService.countListByPage(
             userId, transferId, city, serviceCity, inviterId, serviceType, secondDevelopmentType,
-            serviceStart, serviceEnd, companyName);
+            serviceStart, serviceEnd, companyName,updateTimeMonth);
         if (count == 0) {
             return R.ok();
         }
         List<Map<String, Object>> list = dcCustomerPerformanceService.selectListByPage(
             userId, transferId, city, serviceCity, inviterId, serviceType, secondDevelopmentType,
-            serviceStart, serviceEnd, companyName, pageNum, pageSize);
+            serviceStart, serviceEnd, companyName, updateTimeMonth, pageNum, pageSize);
         JSONObject data = new JSONObject();
         data.put("count", count);
         data.put("list", list);
         return R.ok(data);
     }
 
+  /* @PostMapping("/selectListByPage")
+   public R<JSONObject> list(@RequestBody DcCustomerPerformanceBo bo) {
+       LoginUser loginUser = LoginHelper.getLoginUser();
+       if (loginUser == null) {
+           return null;
+       }
+
+       List<Long> userId = convertToList(bo.getParams().get("userId"), Long.class);
+       List<Long> transferId = convertToList(bo.getParams().get("transferId"), Long.class);
+       List<String> city = convertToList(bo.getParams().get("city"), String.class);
+       List<String> serviceCity = convertToList(bo.getParams().get("serviceCity"), String.class);
+       List<Long> inviterId = convertToList(bo.getParams().get("inviterId"), Long.class);
+       List<Integer> serviceType = convertToList(bo.getParams().get("serviceType"), Integer.class);
+       List<Integer> secondDevelopmentType = convertToList(bo.getParams().get("secondDevelopmentType"), Integer.class);
+       List<String> companyName = convertToList(bo.getParams().get("companyName"), String.class);
+
+       Date serviceStart = parseDate(bo.getParams().get("serviceStart"));
+       Date serviceEnd = parseDate(bo.getParams().get("serviceEnd"));
+       Integer pageNum = bo.getParams().get("pageNum") != null ? Integer.valueOf(bo.getParams().get("pageNum").toString()) : 1;
+       Integer pageSize = bo.getParams().get("pageSize") != null ? Integer.valueOf(bo.getParams().get("pageSize").toString()) : 20;
+
+       String deptCategory = loginUser.getDeptCategory();
+       String cityCode = null;
+       if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
+           cityCode = deptCategory.substring(0, deptCategory.indexOf('_'));
+           if (serviceCity == null) {
+               serviceCity = new ArrayList<>();
+           }
+           serviceCity.add(cityCode);
+       }
+       List<RoleDTO> roles = loginUser.getRoles();
+       if (roles != null && !roles.isEmpty()) {
+           RoleDTO role = roles.get(0);
+           if (role.getRoleKey().contains("Employee")) {
+               userId.add(loginUser.getUserId());
+           }
+       }
+
+       int count = dcCustomerPerformanceService.countListByPage(
+           userId, transferId, city, serviceCity, inviterId, serviceType, secondDevelopmentType,
+           serviceStart, serviceEnd, companyName, bo.getUpdateTimeMonth());
+       if (count == 0) {
+           return R.ok();
+       }
+       List<Map<String, Object>> list = dcCustomerPerformanceService.selectListByPage(
+           userId, transferId, city, serviceCity, inviterId, serviceType, secondDevelopmentType,
+           serviceStart, serviceEnd, companyName, pageNum, pageSize,bo.getUpdateTimeMonth());
+       JSONObject data = new JSONObject();
+       data.put("count", count);
+       data.put("list", list);
+       return R.ok(data);
+   }
+*/
 
     /**
      * 导出业绩归属登记列表

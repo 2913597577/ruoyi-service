@@ -2,6 +2,7 @@ package org.dromara.performance.domain.vo;
 
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import org.dromara.common.excel.annotation.ExcelDictFormat;
@@ -76,5 +77,27 @@ public class DcPerformanceTaskVo implements Serializable {
     @ExcelProperty(value = "已完成的月度出访目标")
     private Long achievedVisitGoal;
 
+    /**
+     * 备注1(归属城市)
+     */
+    @ExcelProperty(value = "归属城市")
+    private String remark1;
+
+    /**
+     * 备注2（可记录完成情况说明等）
+     */
+    @ExcelProperty(value = "备注2（可记录完成情况说明等）")
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    @ExcelProperty(value = "备注3")
+    private String remark3;
+    /**
+     * 删除标志 0存在 1删除
+     */
+    @ExcelProperty(value = "删除标志 0存在 1删除")
+    private String delFlag;
 
 }

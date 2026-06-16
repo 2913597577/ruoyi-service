@@ -1,5 +1,6 @@
 package org.dromara.performance.domain.bo;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -67,6 +68,31 @@ public class DcPerformanceTaskBo extends BaseEntity {
      */
     private Long achievedVisitGoal;
 
+    /**
+     * 备注1(归属城市)
+     */
+    private String remark1;
+
+    /**
+     * 备注2（可记录完成情况说明等）
+     */
+    private String remark2;
+
+    /**
+     * 备注3
+     */
+    private String remark3;
+
+    /**
+     * 删除标志 0存在 1删除
+     */
+    @TableLogic
+    private String delFlag;
+
+
+    /**
+     * 法务支持id集合
+     */
     private List<Long> legalSupportIds;
 
 
