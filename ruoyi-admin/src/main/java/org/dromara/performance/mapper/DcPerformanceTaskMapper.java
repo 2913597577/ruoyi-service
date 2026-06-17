@@ -24,7 +24,8 @@ public interface DcPerformanceTaskMapper extends BaseMapperPlus<DcPerformanceTas
 
     List<Map<String, Object>> selectPerformanceTaskByLegalSupportAndYear(
         @Param("legalSupportId") Long legalSupportId,
-        @Param("taskYear") Integer taskYear
+        @Param("taskYear") Integer taskYear,
+        @Param("city") String city
     );
 
 }
