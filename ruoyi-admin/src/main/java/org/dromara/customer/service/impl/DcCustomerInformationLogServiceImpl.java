@@ -106,6 +106,9 @@ public class DcCustomerInformationLogServiceImpl implements IDcCustomerInformati
                 params.get("endExpireDate"));
         }
 
+        lqw.apply(StringUtils.isNotBlank(bo.getSignDateMonth()),
+            "DATE_FORMAT(sign_date, '%Y-%m') = {0}", bo.getSignDateMonth());
+
         return lqw;
     }
 

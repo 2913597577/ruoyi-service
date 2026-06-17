@@ -212,4 +212,9 @@ public class DcCustomerInformationBo extends BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
+    /**
+     * 签约月份(格式: yyyy-MM)
+     */
+    private String signDateMonth;
+
 }

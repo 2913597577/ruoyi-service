@@ -237,6 +237,9 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
                 params.get("endExpireDate"));
         }
 
+        lqw.apply(StringUtils.isNotBlank(bo.getSignDateMonth()),
+            "DATE_FORMAT(sign_date, '%Y-%m') = {0}", bo.getSignDateMonth());
+
         return lqw;
     }
 

@@ -341,6 +341,10 @@ public class DcCustomerTransferBo extends BaseEntity {
 
     private List<Long> deptIds;
 
+    /**
+     * 签约月份(格式: yyyy-MM)
+     */
+    private String signDateMonth;
 
     private List<DcCustomerPerformanceBo> performanceInfo;
 
