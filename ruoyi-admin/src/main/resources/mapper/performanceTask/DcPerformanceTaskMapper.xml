@@ -6,8 +6,9 @@
 
     <select id="selectPerformanceTaskByLegalSupportAndMonth" resultType="map">
         SELECT
-        /*legal_support_id,
-        legal_support_name,*/
+        legal_support_id,
+        legal_support_name,
+        remark1,
         SUM(performance_goal) as sum1,
         SUM(visit_goal) as sum2,
         SUM(achieved_performance_goal) as sum3,
@@ -26,14 +27,15 @@
         <if test="taskMonth == null">
             AND task_month = DATE_FORMAT(CURRENT_DATE(), '%Y%m')
         </if>
-        /*GROUP BY legal_support_id, legal_support_name*/
+        GROUP BY legal_support_id, legal_support_name, remark1
     </select>
 
 
     <select id="selectPerformanceTaskByLegalSupportAndYear" resultType="map">
         SELECT
-        /*legal_support_id,
-        legal_support_name,*/
+        legal_support_id,
+        legal_support_name,
+        remark1,
         SUM(performance_goal) as sum1,
         SUM(visit_goal) as sum2,
         SUM(achieved_performance_goal) as sum3,
@@ -47,12 +49,12 @@
             AND remark1 = #{city}
         </if>
         <if test="taskYear != null">
-            AND YEAR(STR_TO_DATE(task_month, '%Y%m')) = #{taskYear}
+            AND LEFT(task_month, 4) = #{taskYear}
         </if>
         <if test="taskYear == null">
-            AND YEAR(STR_TO_DATE(task_month, '%Y%m')) = YEAR(CURRENT_DATE())
+            AND LEFT(task_month, 4) = YEAR(CURRENT_DATE())
         </if>
-       /* GROUP BY legal_support_id, legal_support_name*/
+        GROUP BY legal_support_id, legal_support_name, remark1
     </select>
 
 </mapper>

@@ -763,39 +763,101 @@ public class CommonService {
         // 本月已完成业绩 userId, username,monthBalance,performanceRank
         List<Map<String, Object>> monthGoal = dcPerformanceTaskMapper.selectPerformanceTaskByLegalSupportAndMonth(userId, null, city);
         List<Map<String, Object>> monthAchievedPerformance = dcCustomerPerformanceMapper.selectUserPerformanceRank(null, null, userId, city);
+        // 年度目标累积业绩金额
+        List<Map<String, Object>> yearGoal = dcPerformanceTaskMapper.selectPerformanceTaskByLegalSupportAndYear(userId, null, city);
         // 年度累计业绩金额
-        List<Map<String, Object>> YearAchievedPerformance = dcCustomerPerformanceMapper.selectUserPerformanceRank(LocalDate.now().getYear(), null, userId, city);
+        List<Map<String, Object>> yearAchievedPerformance = dcCustomerPerformanceMapper.selectUserPerformanceRank(LocalDate.now().getYear(), null, userId, city);
 
         JSONObject performanceCount = new JSONObject();
-        Map<String, Object> map1 = monthAchievedPerformance != null && !monthAchievedPerformance.isEmpty() ? monthAchievedPerformance.get(0) : null;
-        Map<String, Object> map2 = YearAchievedPerformance != null && !YearAchievedPerformance.isEmpty() ? YearAchievedPerformance.get(0) : null;
-        Map<String, Object> map3 = monthGoal != null && !monthGoal.isEmpty() ? monthGoal.get(0) : null;
+        //Map<String, Object> map1 = monthAchievedPerformance != null && !monthAchievedPerformance.isEmpty() ? monthAchievedPerformance.get(0) : null;
+        //Map<String, Object> map2 = YearAchievedPerformance != null && !YearAchievedPerformance.isEmpty() ? YearAchievedPerformance.get(0) : null;
+        //Map<String, Object> map3 = monthGoal != null && !monthGoal.isEmpty() ? monthGoal.get(0) : null;
+
+        // 直接使用 List 而不是单个 Map
+       // List<Map<String, Object>> monthGoalData = monthGoal != null && !monthGoal.isEmpty() ? monthGoal : new ArrayList<>();
+
         String monthAchievedBalance = "0";
         String monthPerformanceRank = "";
         String yearAchievedBalance = "0";
         String yearPerformanceRank = "";
         String monthPerformanceGoal = "0";
         String monthVisitGoal = "0";
-        if (map1 != null && !map1.isEmpty()) {
+        /*if (map1 != null && !map1.isEmpty()) {
             monthAchievedBalance = map1.get("monthBalance") == null ? "0" : map1.get("monthBalance").toString();
             monthPerformanceRank = map1.get("performanceRank") == null ? "" : map1.get("performanceRank").toString();
-        }
-        if (map2 != null && !map2.isEmpty()) {
+        }*/
+        /*if (map2 != null && !map2.isEmpty()) {
             yearAchievedBalance = map2.get("monthBalance") == null ? "0" : map2.get("monthBalance").toString();
             yearPerformanceRank = map2.get("performanceRank") == null ? "" : map2.get("performanceRank").toString();
-        }
-        if (map3 != null && !map3.isEmpty()) {
+        }*/
+       /* if (map3 != null && !map3.isEmpty()) {
             monthPerformanceGoal = map3.get("sum1") == null ? "0" : map3.get("sum1").toString();
             monthVisitGoal = map3.get("sum2") == null ? "0" : map3.get("sum2").toString();
+        }*/
+
+       /* if (monthGoalData != null && !monthGoalData.isEmpty()) {
+            monthPerformanceGoal = monthGoalData.get("sum1") == null ? "0" : monthGoalData.get("sum1").toString();
+            monthVisitGoal = monthGoalData.get("sum2") == null ? "0" : monthGoalData.get("sum2").toString();
+        }*/
+        List<Map<String, Object>> processedMonthAchieved = new ArrayList<>();
+        if (monthAchievedPerformance != null && !monthAchievedPerformance.isEmpty()) {
+            for (Map<String, Object> item : monthAchievedPerformance) {
+                Map<String, Object> processedItem = new HashMap<>(item);
+                processedItem.put("monthBalance", item.get("monthBalance") == null ? "0" : item.get("monthBalance").toString());
+                processedItem.put("performanceRank", item.get("performanceRank") == null ? "" : item.get("performanceRank").toString());
+                processedMonthAchieved.add(processedItem);
+            }
         }
-        performanceCount.put("monthAchievedBalance", monthAchievedBalance);
-        performanceCount.put("monthPerformanceRank", monthPerformanceRank);
-        performanceCount.put("yearAchievedBalance", yearAchievedBalance);
-        performanceCount.put("yearPerformanceRank", yearPerformanceRank);
-        performanceCount.put("monthPerformanceGoal", monthPerformanceGoal);
-        performanceCount.put("monthVisitGoal", monthVisitGoal);
+        List<Map<String, Object>> processedYearAchieved = new ArrayList<>();
+        if (yearAchievedPerformance != null && !yearAchievedPerformance.isEmpty()) {
+            for (Map<String, Object> item : yearAchievedPerformance) {
+                Map<String, Object> processedItem = new HashMap<>(item);
+                processedItem.put("monthBalance", item.get("monthBalance") == null ? "0" : item.get("monthBalance").toString());
+                processedItem.put("performanceRank", item.get("performanceRank") == null ? "" : item.get("performanceRank").toString());
+                processedYearAchieved.add(processedItem);
+            }
+        }
+
+        List<Map<String, Object>> processedDataMonth = new ArrayList<>();
+        if (monthGoal != null && !monthGoal.isEmpty()) {
+            for (Map<String, Object> item : monthGoal) {
+                Map<String, Object> processedItem = new HashMap<>(item);
+                // 处理空值
+                processedItem.put("sum1", item.get("sum1") == null ? "0" : item.get("sum1").toString());
+                processedItem.put("sum2", item.get("sum2") == null ? "0" : item.get("sum2").toString());
+                processedItem.put("sum3", item.get("sum3") == null ? "0" : item.get("sum3").toString());
+                processedItem.put("sum4", item.get("sum4") == null ? "0" : item.get("sum4").toString());
+                processedDataMonth.add(processedItem);
+            }
+        }
+
+        List<Map<String, Object>> processedDataYear = new ArrayList<>();
+        if (yearGoal != null && !yearGoal.isEmpty()) {
+            for (Map<String, Object> item : yearGoal) {
+                Map<String, Object> processedItem = new HashMap<>(item);
+                // 处理空值
+                processedItem.put("sum1", item.get("sum1") == null ? "0" : item.get("sum1").toString());
+                processedItem.put("sum2", item.get("sum2") == null ? "0" : item.get("sum2").toString());
+                processedItem.put("sum3", item.get("sum3") == null ? "0" : item.get("sum3").toString());
+                processedItem.put("sum4", item.get("sum4") == null ? "0" : item.get("sum4").toString());
+                processedDataYear.add(processedItem);
+            }
+        }
+       // return processedData; // 返回完整列表
+
+        //performanceCount.put("monthAchievedBalance", monthAchievedBalance);
+        //performanceCount.put("monthPerformanceRank", monthPerformanceRank);
+        //performanceCount.put("yearAchievedBalance", yearAchievedBalance);
+        //performanceCount.put("yearPerformanceRank", yearPerformanceRank);
+        //performanceCount.put("monthPerformanceGoal", monthPerformanceGoal);
+        //performanceCount.put("monthVisitGoal", monthVisitGoal);
+        performanceCount.put("monthPerformanceGoal", JSONArray.parseArray(JSON.toJSONString(processedDataMonth)));
+        performanceCount.put("yearPerformanceGoal", JSONArray.parseArray(JSON.toJSONString(processedDataYear)));
+        performanceCount.put("monthPerformanceAchieved", JSONArray.parseArray(JSON.toJSONString(processedMonthAchieved)));
+        performanceCount.put("yearPerformanceAchieved", JSONArray.parseArray(JSON.toJSONString(processedYearAchieved)));
 
         return performanceCount;
+
     }
 
 

@@ -9,13 +9,15 @@
         userId,
         username,
         monthBalance,
-        performanceRank
+        performanceRank,
+        city
         FROM (
         SELECT
         user_id as userId,
         user_name as username,
         SUM(balance) as monthBalance,
-        RANK() OVER (ORDER BY SUM(balance) DESC) as performanceRank
+        RANK() OVER (ORDER BY SUM(balance) DESC) as performanceRank,
+        city as city
         FROM
         dc_customer_performance
         WHERE
@@ -24,17 +26,18 @@
             AND city = #{city}
         </if>
         <if test="year != null">
-            AND YEAR(create_time) = #{year}
+            AND YEAR(update_time) = #{year}
         </if>
         <if test="month != null">
-            AND MONTH(create_time) = #{month}
+            AND MONTH(update_time) = #{month}
         </if>
         <if test="year == null and month == null">
-            AND create_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
+            AND update_time BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
         </if>
         GROUP BY
         user_id,
-        user_name
+        user_name,
+        city
         ) ranked_data
         <if test="userId != null">
             WHERE userId = #{userId}
