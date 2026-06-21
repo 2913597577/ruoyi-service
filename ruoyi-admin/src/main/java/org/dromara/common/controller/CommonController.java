@@ -201,7 +201,69 @@ public class CommonController {
 
         return R.ok(commonService.getLegalSupportPerformance(legalSupportId, city));
     }
+    /**
+     * 法务支持绩效
+     * 按月筛选
+     * @return
+     */
+    @GetMapping("/getMonthlyPerformanceAmount")
+    public R<JSONObject> getMonthlyPerformanceAmount(@RequestParam(required = false) String month) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        Long legalSupportId = null;
+        String city = null;
 
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            String roleKey = role.getRoleKey();
+
+            if ("LegalSupport_Employee".equals(roleKey)) {
+                legalSupportId = loginUser.getUserId();
+            } else if ("LegalSupport_Manager".equals(roleKey)) {
+                String deptCategory = loginUser.getDeptCategory();
+                if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                    city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                }
+            }
+        }
+
+        return R.ok(commonService.getMonthlyPerformanceAmount(legalSupportId, city, month));
+    }
+
+    /**
+     * 法务支持绩效
+     * 按年筛选
+     * @return
+     */
+    @GetMapping("/getYearlyPerformanceAmount")
+    public R<JSONObject> getYearlyPerformanceAmount(@RequestParam(required = false) String year) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        Long legalSupportId = null;
+        String city = null;
+
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            String roleKey = role.getRoleKey();
+
+            if ("LegalSupport_Employee".equals(roleKey)) {
+                legalSupportId = loginUser.getUserId();
+            } else if ("LegalSupport_Manager".equals(roleKey)) {
+                String deptCategory = loginUser.getDeptCategory();
+                if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                    city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                }
+            }
+        }
+
+        return R.ok(commonService.getYearlyPerformanceAmount(legalSupportId, city, year));
+    }
 
 
     /**
@@ -230,14 +292,44 @@ public class CommonController {
     /**
      * 获取团队业绩统计
      */
-    @GetMapping("/getPerformance")
+   /* @GetMapping("/getPerformance")
     public R<JSONObject> getPerformance() {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return R.warn("用户未登录");
         }
         return R.ok(commonService.getPerformance(loginUser));
+    }*/
+    /**
+     * 获取团队业绩统计
+     */
+    @GetMapping("/getPerformance")
+    public R<JSONObject> getPerformance() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        Long legalSupportId = null;
+        String city = null;
+
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            String roleKey = role.getRoleKey();
+
+            if ("LegalSupport_Employee".equals(roleKey)) {
+                legalSupportId = loginUser.getUserId();
+            } else if ("LegalSupport_Manager".equals(roleKey)) {
+                String deptCategory = loginUser.getDeptCategory();
+                if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                    city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                }
+            }
+        }
+
+        return R.ok(commonService.getPerformance(legalSupportId, city));
     }
+
 
     @GetMapping("/getLeaderPerformance")
     public R<JSONObject> getLeaderPerformance() {
