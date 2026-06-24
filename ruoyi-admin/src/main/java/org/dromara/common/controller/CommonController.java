@@ -330,9 +330,98 @@ public class CommonController {
         return R.ok(commonService.getPerformance(legalSupportId, city));
     }
 
+    /**
+     * 获取团队业绩统计
+     * 按月筛选
+     */
+    @GetMapping("/getMonthlyTeamPerformance")
+    public R<JSONObject> getMonthlyTeamPerformance(@RequestParam(required = false) String month) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        Long legalSupportId = null;
+        String city = null;
 
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            String roleKey = role.getRoleKey();
+
+            if ("LegalSupport_Employee".equals(roleKey)) {
+                legalSupportId = loginUser.getUserId();
+            } else if ("LegalSupport_Manager".equals(roleKey)) {
+                String deptCategory = loginUser.getDeptCategory();
+                if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                    city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                }
+            }
+        }
+
+        return R.ok(commonService.getMonthlyTeamPerformance(legalSupportId, city, month));
+    }
+    /**
+     * 获取团队业绩统计
+     * 按年筛选
+     */
+    @GetMapping("/getYearlyTeamPerformance")
+    public R<JSONObject> getYearlyTeamPerformance(@RequestParam(required = false) String year) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        List<RoleDTO> roles = loginUser.getRoles();
+        Long legalSupportId = null;
+        String city = null;
+
+        if (roles != null && !roles.isEmpty()) {
+            RoleDTO role = roles.get(0);
+            String roleKey = role.getRoleKey();
+
+            if ("LegalSupport_Employee".equals(roleKey)) {
+                legalSupportId = loginUser.getUserId();
+            } else if ("LegalSupport_Manager".equals(roleKey)) {
+                String deptCategory = loginUser.getDeptCategory();
+                if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                    city = deptCategory.substring(0, deptCategory.indexOf('_'));
+                }
+            }
+        }
+
+        return R.ok(commonService.getYearlyTeamPerformance(legalSupportId, city, year));
+    }
+
+    /**
+     * 获取业绩管理
+     */
     @GetMapping("/getLeaderPerformance")
     public R<JSONObject> getLeaderPerformance() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getLeaderPerformance());
+    }
+
+    /**
+     * 获取业绩管理
+     * 按月筛选
+     */
+    @GetMapping("/getMonthlyLeaderPerformance")
+    public R<JSONObject> getMonthlyLeaderPerformance() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getLeaderPerformance());
+    }
+
+    /**
+     * 获取业绩管理
+     * 按年筛选
+     */
+    @GetMapping("/getYearlyLeaderPerformance")
+    public R<JSONObject> getYearlyLeaderPerformance() {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return R.warn("用户未登录");

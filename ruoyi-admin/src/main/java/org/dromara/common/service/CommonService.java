@@ -948,7 +948,7 @@ public class CommonService {
 
     }
 
-
+    // 业务统计模块
     public JSONObject getPerformance(Long userId, String city) {
 
         JSONObject result = new JSONObject();
@@ -1107,6 +1107,168 @@ public class CommonService {
         SysDept dept = deptMapper.selectOne(queryWrapper);
         return dept != null ? dept.getDeptId() : null;
     }
+
+
+    //业务统计团队成员筛选月度
+    public JSONObject getMonthlyTeamPerformance(Long userId, String city, String month) {
+        double teamMonthAchievedBalance = 0.0;
+        //double teamYearAchievedBalance = 0.0;
+        double teamMonthPerformanceGoal = 0.0;
+        //double teamYearPerformanceGoal = 0.0;
+        double teamMonthVisitGoal = 0.0;
+        //double teamYearVisitGoal = 0.0;
+
+        JSONArray teamPerformanceList = new JSONArray();
+
+        //获取所在城市法务支持部门的部门Id
+        Long legalSupportDeptId = selectLegalSupportDeptIdByCity(city);
+        if (legalSupportDeptId == null) {
+            return new JSONObject(); // 无对应部门
+        }
+        List<SysUserVo> sysUserVos = userService.selectUserListByDept(legalSupportDeptId);
+       /* for (SysUserVo sysUserVo : sysUserVos) {
+            JSONObject performanceCount = performanceCount(sysUserVo.getUserId(), city);
+            performanceCount.put("userName", sysUserVo.getNickName());
+            teamPerformanceList.add(performanceCount);
+            teamMonthAchievedBalance += parseDouble(performanceCount.getString("monthPerformanceAchieved"));
+            teamYearAchievedBalance += parseDouble(performanceCount.getString("yearPerformanceAchieved"));
+            teamMonthPerformanceGoal += parseDouble(performanceCount.getString("monthPerformanceGoal"));
+            teamMonthVisitGoal += parseDouble(performanceCount.getString("monthVisitGoal"));
+        }*/
+        for (SysUserVo sysUserVo : sysUserVos) {
+            // 注意这里是法务支持员工查询，所以city可以取值为null，结果包含该员工在所有city的业绩，若取值不为null,则业绩会匹配到具体city
+            JSONObject performanceCount = getMonthlyPerformanceAmount(sysUserVo.getUserId(), city, month);
+            performanceCount.put("userName", sysUserVo.getNickName());
+            teamPerformanceList.add(performanceCount);
+
+            // 修正：从JSONArray中提取数值进行累加
+            JSONArray monthAchievedArray = performanceCount.getJSONArray("monthPerformanceAchieved");
+            if (monthAchievedArray != null && !monthAchievedArray.isEmpty()) {
+                for (Object obj : monthAchievedArray) {
+                    if (obj instanceof JSONObject) {
+                        JSONObject item = (JSONObject) obj;
+                        String monthBalance = item.getString("monthBalance");
+                        if (monthBalance != null && !monthBalance.isEmpty()) {
+                            teamMonthAchievedBalance += parseDouble(monthBalance);
+                        }
+                    }
+                }
+            }
+
+
+            JSONArray monthGoalArray = performanceCount.getJSONArray("monthPerformanceGoal");
+            if (monthGoalArray != null && !monthGoalArray.isEmpty()) {
+                for (Object obj : monthGoalArray) {
+                    if (obj instanceof JSONObject) {
+                        JSONObject item = (JSONObject) obj;
+                        String sum1 = item.getString("sum1");
+                        String sum2 = item.getString("sum2");
+                        if (sum1 != null && !sum1.isEmpty()) {
+                            teamMonthPerformanceGoal += parseDouble(sum1);
+                        }
+                        if (sum2 != null && !sum2.isEmpty()) {
+                            teamMonthVisitGoal += parseDouble(sum2);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        JSONObject result = new JSONObject();
+        JSONObject teamPerformance = new JSONObject();
+        teamPerformance.put("teamMonthAchievedBalance", teamMonthAchievedBalance);
+        //teamPerformance.put("teamYearAchievedBalance", teamYearAchievedBalance);
+        teamPerformance.put("teamMonthPerformanceGoal", teamMonthPerformanceGoal);
+        //teamPerformance.put("teamYearPerformanceGoal", teamYearPerformanceGoal);
+        teamPerformance.put("teamMonthVisitGoal", teamMonthVisitGoal);
+        //teamPerformance.put("teamYearVisitGoal", teamYearVisitGoal);
+        result.put("teamPerformance", teamPerformance);
+        result.put("teamPerformanceList", teamPerformanceList);
+        return result;
+    }
+
+
+    //业务统计团队成员筛选年度
+    public JSONObject getYearlyTeamPerformance(Long userId, String city, String year) {
+        //double teamMonthAchievedBalance = 0.0;
+        double teamYearAchievedBalance = 0.0;
+        //double teamMonthPerformanceGoal = 0.0;
+        double teamYearPerformanceGoal = 0.0;
+        //double teamMonthVisitGoal = 0.0;
+        double teamYearVisitGoal = 0.0;
+
+        JSONArray teamPerformanceList = new JSONArray();
+
+        //获取所在城市法务支持部门的部门Id
+        Long legalSupportDeptId = selectLegalSupportDeptIdByCity(city);
+        if (legalSupportDeptId == null) {
+            return new JSONObject(); // 无对应部门
+        }
+        List<SysUserVo> sysUserVos = userService.selectUserListByDept(legalSupportDeptId);
+       /* for (SysUserVo sysUserVo : sysUserVos) {
+            JSONObject performanceCount = performanceCount(sysUserVo.getUserId(), city);
+            performanceCount.put("userName", sysUserVo.getNickName());
+            teamPerformanceList.add(performanceCount);
+            teamMonthAchievedBalance += parseDouble(performanceCount.getString("monthPerformanceAchieved"));
+            teamYearAchievedBalance += parseDouble(performanceCount.getString("yearPerformanceAchieved"));
+            teamMonthPerformanceGoal += parseDouble(performanceCount.getString("monthPerformanceGoal"));
+            teamMonthVisitGoal += parseDouble(performanceCount.getString("monthVisitGoal"));
+        }*/
+        for (SysUserVo sysUserVo : sysUserVos) {
+            // 注意这里是法务支持员工查询，所以city可以取值为null，结果包含该员工在所有city的业绩，若取值不为null,则业绩会匹配到具体city
+            JSONObject performanceCount = getYearlyPerformanceAmount(sysUserVo.getUserId(), city, year);
+            performanceCount.put("userName", sysUserVo.getNickName());
+            teamPerformanceList.add(performanceCount);
+
+            // 修正：从JSONArray中提取数值进行累加
+            JSONArray yearAchievedArray = performanceCount.getJSONArray("yearPerformanceAchieved");
+            if (yearAchievedArray != null && !yearAchievedArray.isEmpty()) {
+                for (Object obj : yearAchievedArray) {
+                    if (obj instanceof JSONObject) {
+                        JSONObject item = (JSONObject) obj;
+                        String monthBalance = item.getString("monthBalance");
+                        if (monthBalance != null && !monthBalance.isEmpty()) {
+                            teamYearAchievedBalance += parseDouble(monthBalance);
+                        }
+                    }
+                }
+            }
+
+            JSONArray yearGoalArray = performanceCount.getJSONArray("yearPerformanceGoal");
+            if (yearGoalArray != null && !yearGoalArray.isEmpty()) {
+                for (Object obj : yearGoalArray) {
+                    if (obj instanceof JSONObject) {
+                        JSONObject item = (JSONObject) obj;
+                        String sum1 = item.getString("sum1");
+                        String sum2 = item.getString("sum2");
+                        if (sum1 != null && !sum1.isEmpty()) {
+                            teamYearPerformanceGoal += parseDouble(sum1);
+                        }
+                        if (sum2 != null && !sum2.isEmpty()) {
+                            teamYearVisitGoal += parseDouble(sum2);
+                        }
+                    }
+                }
+            }
+
+        }
+
+
+        JSONObject result = new JSONObject();
+        JSONObject teamPerformance = new JSONObject();
+        //teamPerformance.put("teamMonthAchievedBalance", teamMonthAchievedBalance);
+        teamPerformance.put("teamYearAchievedBalance", teamYearAchievedBalance);
+        //teamPerformance.put("teamMonthPerformanceGoal", teamMonthPerformanceGoal);
+        teamPerformance.put("teamYearPerformanceGoal", teamYearPerformanceGoal);
+        //teamPerformance.put("teamMonthVisitGoal", teamMonthVisitGoal);
+        teamPerformance.put("teamYearVisitGoal", teamYearVisitGoal);
+        result.put("teamPerformance", teamPerformance);
+        result.put("teamPerformanceList", teamPerformanceList);
+        return result;
+    }
+
+
     // 获取流转单数据
     public JSONArray getTransferList() {
         DcCustomerTransferBo bo = new DcCustomerTransferBo();
