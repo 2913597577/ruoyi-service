@@ -1107,7 +1107,16 @@ public class CommonService {
         SysDept dept = deptMapper.selectOne(queryWrapper);
         return dept != null ? dept.getDeptId() : null;
     }
-
+    // 根据城市编码如ZB,DY,TA获取城市销售部门Id
+    public Long selectSalesCenterDeptIdByCity(String city) {
+        if (city == null || city.isEmpty()) {
+            return null;
+        }
+        LambdaQueryWrapper<SysDept> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysDept::getDeptCategory, city + "_SalesCenter");
+        SysDept dept = deptMapper.selectOne(queryWrapper);
+        return dept != null ? dept.getDeptId() : null;
+    }
 
     //业务统计团队成员筛选月度
     public JSONObject getMonthlyTeamPerformance(Long userId, String city, String month) {
@@ -1376,7 +1385,7 @@ public class CommonService {
     }
 
 
-    public JSONObject getLeaderPerformance() {
+    /*public JSONObject getLeaderPerformance() {
         JSONObject result = new JSONObject();
         SysDictDataBo sysDictDataBo = new SysDictDataBo();
         sysDictDataBo.setDictType("dc_sercive_city");
@@ -1390,16 +1399,22 @@ public class CommonService {
 
             count.put("cityName", sysDictDataVo.getDictLabel());
             count.put("cityCode", sysDictDataVo.getDictValue());
+            //客户总数量
             List<DcCustomerInformationVo> dcCustomerInformationVos = dcCustomerInformationService.queryListByCreateDepts(deptIds);
+            //近20天未跟进客户
             List<Map<String, Object>> OutstandingCustomer = informationMapper.selectOutstandingCustomer(null, "ZB");
+            // 意向客户
             List<DcCustomerIntentionVo> dcCustomerIntentionVos = dcCustomerIntentionService.queryListByCreateDepts(deptIds);
+            // 临期客户数量
             List<Map<String, Object>> expiringCustomers = informationMapper.selectExpiringCustomers(null, "ZB");
+            // 尾款客户数量
             List<Map<String, Object>> customersWithBalance = informationMapper.selectCustomersWithBalance(null, "ZB");
+
 
             long customerTotal = dcCustomerInformationVos == null ? 0 : dcCustomerInformationVos.size();
             int balanceTotal = customersWithBalance == null ? 0 : customersWithBalance.size();
             int outStandingTotal = OutstandingCustomer == null ? 0 : OutstandingCustomer.size();
-                     int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
+            int intentionTotal = dcCustomerIntentionVos == null ? 0 : dcCustomerIntentionVos.size();
             int expiringTotal = expiringCustomers == null ? 0 : expiringCustomers.size();
 
             String deptCategory = sysDictDataVo.getDictValue() + "_LegalSupport";
@@ -1423,8 +1438,53 @@ public class CommonService {
         }
         return result;
     }
+*/
+    // 业绩管理模块
+    public JSONObject getLeaderPerformance() {
+        JSONObject result = new JSONObject();
+        SysDictDataBo sysDictDataBo = new SysDictDataBo();
+        sysDictDataBo.setDictType("dc_sercive_city");
+        List<SysDictDataVo> sysDictDataVos = dictDataService.selectDictDataList(sysDictDataBo);
+        for (SysDictDataVo sysDictDataVo : sysDictDataVos) {
+            String city = sysDictDataVo.getDictValue();
 
+            JSONObject performance = getPerformance(null, city);
 
+            result.put(city, performance);
+        }
+        return result;
+    }
+    // 业绩管理模块，按月筛选
+    public JSONObject getMonthlyLeaderPerformance(String month) {
+        JSONObject result = new JSONObject();
+        SysDictDataBo sysDictDataBo = new SysDictDataBo();
+        sysDictDataBo.setDictType("dc_sercive_city");
+        List<SysDictDataVo> sysDictDataVos = dictDataService.selectDictDataList(sysDictDataBo);
+        for (SysDictDataVo sysDictDataVo : sysDictDataVos) {
+            String city = sysDictDataVo.getDictValue();
+
+            JSONObject performance = getMonthlyTeamPerformance(null, city, month);
+
+            result.put(city, performance);
+        }
+        return result;
+    }
+
+    // 业绩管理模块，按年筛选
+    public JSONObject getYearlyLeaderPerformance(String year) {
+        JSONObject result = new JSONObject();
+        SysDictDataBo sysDictDataBo = new SysDictDataBo();
+        sysDictDataBo.setDictType("dc_sercive_city");
+        List<SysDictDataVo> sysDictDataVos = dictDataService.selectDictDataList(sysDictDataBo);
+        for (SysDictDataVo sysDictDataVo : sysDictDataVos) {
+            String city = sysDictDataVo.getDictValue();
+
+            JSONObject performance = getYearlyTeamPerformance(null, city, year);
+
+            result.put(city, performance);
+        }
+        return result;
+    }
 
     private double parseDouble(String value) {
         if (value == null || value.isEmpty()) {
@@ -1457,7 +1517,49 @@ public class CommonService {
             .toList();
     }
 
+    //获取法务支持部门的Ids
+    public List<Long> getAllLegalSupportDeptIds() {
+        SysDictDataBo sysDictDataBo = new SysDictDataBo();
+        sysDictDataBo.setDictType("dc_sercive_city");
+        List<SysDictDataVo> sysDictDataVos = dictDataService.selectDictDataList(sysDictDataBo);
 
+        if (CollectionUtils.isEmpty(sysDictDataVos)) {
+            return new ArrayList<>();
+        }
+
+        List<Long> deptIds = new ArrayList<>();
+        for (SysDictDataVo sysDictDataVo : sysDictDataVos) {
+            String city = sysDictDataVo.getDictValue();
+            Long legalSupportDeptId = selectLegalSupportDeptIdByCity(city);
+            if (legalSupportDeptId != null) {
+                deptIds.add(legalSupportDeptId);
+            }
+        }
+
+        return deptIds;
+    }
+
+    //获取销售中心部门的Ids
+    public List<Long> getAllSalesCenterDeptIds() {
+        SysDictDataBo sysDictDataBo = new SysDictDataBo();
+        sysDictDataBo.setDictType("dc_sercive_city");
+        List<SysDictDataVo> sysDictDataVos = dictDataService.selectDictDataList(sysDictDataBo);
+
+        if (CollectionUtils.isEmpty(sysDictDataVos)) {
+            return new ArrayList<>();
+        }
+
+        List<Long> deptIds = new ArrayList<>();
+        for (SysDictDataVo sysDictDataVo : sysDictDataVos) {
+            String city = sysDictDataVo.getDictValue();
+            Long salesCenterDeptId = selectSalesCenterDeptIdByCity(city);
+            if (salesCenterDeptId != null) {
+                deptIds.add(salesCenterDeptId);
+            }
+        }
+
+        return deptIds;
+    }
 
     public List<Long> getCustomerIdsByCity(String city) {
         DcCustomerInformationBo customerInfo = new DcCustomerInformationBo();

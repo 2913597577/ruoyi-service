@@ -408,12 +408,12 @@ public class CommonController {
      * 按月筛选
      */
     @GetMapping("/getMonthlyLeaderPerformance")
-    public R<JSONObject> getMonthlyLeaderPerformance() {
+    public R<JSONObject> getMonthlyLeaderPerformance(@RequestParam(required = false) String month) {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return R.warn("用户未登录");
         }
-        return R.ok(commonService.getLeaderPerformance());
+        return R.ok(commonService.getMonthlyLeaderPerformance(month));
     }
 
     /**
@@ -421,12 +421,12 @@ public class CommonController {
      * 按年筛选
      */
     @GetMapping("/getYearlyLeaderPerformance")
-    public R<JSONObject> getYearlyLeaderPerformance() {
+    public R<JSONObject> getYearlyLeaderPerformance(@RequestParam(required = false) String year) {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return R.warn("用户未登录");
         }
-        return R.ok(commonService.getLeaderPerformance());
+        return R.ok(commonService.getYearlyLeaderPerformance(year));
     }
 
 }
