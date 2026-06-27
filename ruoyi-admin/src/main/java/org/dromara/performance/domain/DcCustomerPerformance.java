@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 业绩归属登记对象 dc_customer_performance
@@ -82,5 +84,10 @@ public class DcCustomerPerformance extends TenantEntity {
     private String remark2;
 
     private String remark3;
+
+    /**
+     * 签单日期
+     */
+    private Date signDate;
 
 }

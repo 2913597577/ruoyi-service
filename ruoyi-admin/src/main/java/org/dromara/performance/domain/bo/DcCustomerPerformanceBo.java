@@ -9,8 +9,10 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.performance.domain.DcCustomerPerformance;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 业绩归属登记业务对象 dc_customer_performance
@@ -74,6 +76,11 @@ public class DcCustomerPerformanceBo extends BaseEntity {
     private String remark2;
 
     private String remark3;
+
+    /**
+     * 签单日期
+     */
+    private Date signDate;
 
     /**
      * 更新月份(格式: yyyy-MM)

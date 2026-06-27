@@ -9,6 +9,7 @@ import org.dromara.performance.domain.DcCustomerPerformance;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 /**
@@ -82,5 +83,11 @@ public class DcCustomerPerformanceVo implements Serializable {
 
     @ExcelProperty(value = "备注3")
     private String remark3;
+
+    /**
+     * 签单日期
+     */
+    @ExcelProperty(value = "签单日期")
+    private Date signDate;
 
 }

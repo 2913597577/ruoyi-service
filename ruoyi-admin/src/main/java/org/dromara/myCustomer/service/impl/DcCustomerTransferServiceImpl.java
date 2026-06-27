@@ -261,15 +261,17 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
                     continue;
                 }
                 dcCustomerPerformanceBo.setTransferId(add.getId());
-                dcCustomerPerformanceBo.setUserId(dcCustomerPerformanceBo.getUserId());
-                dcCustomerPerformanceBo.setUserName(dcCustomerPerformanceBo.getUserName());
-                dcCustomerPerformanceBo.setBalance(dcCustomerPerformanceBo.getBalance());
-                dcCustomerPerformanceBo.setCity(dcCustomerPerformanceBo.getCity());
+                //下面这几行没有意义，注释掉
+                //dcCustomerPerformanceBo.setUserId(dcCustomerPerformanceBo.getUserId());
+                //dcCustomerPerformanceBo.setUserName(dcCustomerPerformanceBo.getUserName());
+                //dcCustomerPerformanceBo.setBalance(dcCustomerPerformanceBo.getBalance());
+                //dcCustomerPerformanceBo.setCity(dcCustomerPerformanceBo.getCity());
                 dcCustomerPerformanceBo.setCreateBy(LoginHelper.getUserId());
                 dcCustomerPerformanceBo.setCreaterId(LoginHelper.getUserId());
                 dcCustomerPerformanceBo.setCreaterName(LoginHelper.getLoginUser() == null ? LoginHelper.getUsername() : LoginHelper.getLoginUser().getNickname());
                 dcCustomerPerformanceBo.setTransferServiceType(bo.getServiceType());
                 dcCustomerPerformanceBo.setSecondServiceType(bo.getSecondDevelopmentType());
+                dcCustomerPerformanceBo.setSignDate(bo.getSignDate());
                 dcCustomerPerformanceService.insertByBo(dcCustomerPerformanceBo);
             }
         }
@@ -293,16 +295,18 @@ public class DcCustomerTransferServiceImpl implements IDcCustomerTransferService
                 continue;
             }
             dcCustomerPerformanceBo.setTransferId(update.getId());
-            dcCustomerPerformanceBo.setUserId(dcCustomerPerformanceBo.getUserId());
-            dcCustomerPerformanceBo.setUserName(dcCustomerPerformanceBo.getUserName());
-            dcCustomerPerformanceBo.setBalance(dcCustomerPerformanceBo.getBalance());
-            dcCustomerPerformanceBo.setCity(dcCustomerPerformanceBo.getCity());
-            dcCustomerPerformanceBo.setCreateBy(dcCustomerPerformanceBo.getCreateBy());
-            dcCustomerPerformanceBo.setCreaterId(dcCustomerPerformanceBo.getCreaterId());
+            //下面这几行没有意义，注释掉
+            //dcCustomerPerformanceBo.setUserId(dcCustomerPerformanceBo.getUserId());
+            //dcCustomerPerformanceBo.setUserName(dcCustomerPerformanceBo.getUserName());
+            //dcCustomerPerformanceBo.setBalance(dcCustomerPerformanceBo.getBalance());
+            //dcCustomerPerformanceBo.setCity(dcCustomerPerformanceBo.getCity());
+            //dcCustomerPerformanceBo.setCreateBy(dcCustomerPerformanceBo.getCreateBy());
+            //dcCustomerPerformanceBo.setCreaterId(dcCustomerPerformanceBo.getCreaterId());
             dcCustomerPerformanceBo.setUpdateBy(LoginHelper.getUserId());
             dcCustomerPerformanceBo.setCreaterName(LoginHelper.getLoginUser() == null ? LoginHelper.getUsername() : LoginHelper.getLoginUser().getNickname());
             dcCustomerPerformanceBo.setTransferServiceType(bo.getServiceType());
             dcCustomerPerformanceBo.setSecondServiceType(bo.getSecondDevelopmentType());
+            dcCustomerPerformanceBo.setSignDate(bo.getSignDate());
             if (dcCustomerPerformanceBo.getId() == null) {
                 dcCustomerPerformanceService.insertByBo(dcCustomerPerformanceBo);
                 continue;
