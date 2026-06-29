@@ -2,12 +2,12 @@ package org.dromara.performance.domain.vo;
 
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 import cn.idev.excel.annotation.ExcelProperty;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import org.dromara.common.excel.annotation.ExcelDictFormat;
 import org.dromara.common.excel.convert.ExcelDictConvert;
 import org.dromara.performance.domain.DcPerformanceTask;
+import org.dromara.performance.domain.DcSalescenterPerformanceTask;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,8 +22,8 @@ import java.math.BigDecimal;
  */
 @Data
 @ExcelIgnoreUnannotated
-@AutoMapper(target = DcPerformanceTask.class)
-public class DcPerformanceTaskVo implements Serializable {
+@AutoMapper(target = DcSalescenterPerformanceTask.class)
+public class DcSalescenterPerformanceTaskVo implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -37,19 +37,19 @@ public class DcPerformanceTaskVo implements Serializable {
     /**
      * 法务支持id
      */
-    @ExcelProperty(value = "法务支持id")
-    private Long legalSupportId;
+    @ExcelProperty(value = "销售中心id")
+    private Long salesCenterId;
 
     /**
-     * 法务支持姓名
+     * 销售中心姓名
      */
-    @ExcelProperty(value = "法务支持姓名")
-    private String legalSupportName;
+    @ExcelProperty(value = "销售中心姓名")
+    private String salesCenterName;
 
     /**
      * 任务月份（格式：YYYYMM，如202310）
      */
-   /* @ExcelProperty(value = "任务月份", converter = ExcelDictConvert.class)
+    /*@ExcelProperty(value = "任务月份", converter = ExcelDictConvert.class)
     @ExcelDictFormat(readConverterExp = "格=式：YYYYMM，如202310")*/
     @ExcelProperty(value = "任务月份")
     private String taskMonth;

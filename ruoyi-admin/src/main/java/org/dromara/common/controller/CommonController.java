@@ -290,7 +290,7 @@ public class CommonController {
     }
 
     /**
-     * 获取团队业绩统计
+     * 获取法务支持团队业绩统计
      */
    /* @GetMapping("/getPerformance")
     public R<JSONObject> getPerformance() {
@@ -301,7 +301,7 @@ public class CommonController {
         return R.ok(commonService.getPerformance(loginUser));
     }*/
     /**
-     * 获取团队业绩统计
+     * 获取法务支持团队业绩统计
      */
     @GetMapping("/getPerformance")
     public R<JSONObject> getPerformance() {
@@ -331,7 +331,7 @@ public class CommonController {
     }
 
     /**
-     * 获取团队业绩统计
+     * 获取法务支持团队业绩统计
      * 按月筛选
      */
     @GetMapping("/getMonthlyTeamPerformance")
@@ -361,7 +361,7 @@ public class CommonController {
         return R.ok(commonService.getMonthlyTeamPerformance(legalSupportId, city, month));
     }
     /**
-     * 获取团队业绩统计
+     * 获取法务支持团队业绩统计
      * 按年筛选
      */
     @GetMapping("/getYearlyTeamPerformance")
@@ -392,7 +392,7 @@ public class CommonController {
     }
 
     /**
-     * 获取业绩管理
+     * 获取法务支持业绩管理
      */
     @GetMapping("/getLeaderPerformance")
     public R<JSONObject> getLeaderPerformance() {
@@ -404,7 +404,7 @@ public class CommonController {
     }
 
     /**
-     * 获取业绩管理
+     * 获取法务支持业绩管理
      * 按月筛选
      */
     @GetMapping("/getMonthlyLeaderPerformance")
@@ -417,7 +417,7 @@ public class CommonController {
     }
 
     /**
-     * 获取业绩管理
+     * 获取法务支持业绩管理
      * 按年筛选
      */
     @GetMapping("/getYearlyLeaderPerformance")
@@ -427,6 +427,44 @@ public class CommonController {
             return R.warn("用户未登录");
         }
         return R.ok(commonService.getYearlyLeaderPerformance(year));
+    }
+
+    /**
+     * 获取销售中心业绩管理
+     */
+    @GetMapping("/getSalescenterLeaderPerformance")
+    public R<JSONObject> getSalescenterLeaderPerformance() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getSalescenterLeaderPerformance());
+    }
+
+    /**
+     * 获取销售中心业绩管理
+     * 按月筛选
+     */
+    @GetMapping("/getMonthlySalescenterLeaderPerformance")
+    public R<JSONObject> getMonthlySalescenterLeaderPerformance(@RequestParam(required = false) String month) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getMonthlySalescenterLeaderPerformance(month));
+    }
+
+    /**
+     * 获取销售中心业绩管理
+     * 按年筛选
+     */
+    @GetMapping("/getYearlySalescenterLeaderPerformance")
+    public R<JSONObject> getYearlySalescenterLeaderPerformance(@RequestParam(required = false) String year) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (loginUser == null) {
+            return R.warn("用户未登录");
+        }
+        return R.ok(commonService.getYearlySalescenterLeaderPerformance(year));
     }
 
 }
