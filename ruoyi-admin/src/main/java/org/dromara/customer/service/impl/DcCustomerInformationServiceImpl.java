@@ -12,8 +12,10 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.customer.domain.DcCustomerInformation;
+import org.dromara.customer.domain.DcCustomerInformationLog;
 import org.dromara.customer.domain.bo.DcCustomerInformationBo;
 import org.dromara.customer.domain.vo.DcCustomerInformationVo;
+import org.dromara.customer.mapper.DcCustomerInformationLogMapper;
 import org.dromara.customer.mapper.DcCustomerInformationMapper;
 import org.dromara.customer.service.IDcCustomerInformationService;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 客户总表Service业务层处理
@@ -34,6 +37,7 @@ import java.util.Map;
 public class DcCustomerInformationServiceImpl implements IDcCustomerInformationService {
 
     private final DcCustomerInformationMapper baseMapper;
+    private final DcCustomerInformationLogMapper logMapper;
 
     /**
      * 查询客户总表
@@ -57,6 +61,12 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
     public TableDataInfo<DcCustomerInformationVo> queryPageList(DcCustomerInformationBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<DcCustomerInformation> lqw = buildQueryWrapper(bo);
         Page<DcCustomerInformationVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        //在分页查询时填充客户在二次收费表中数量，这里存在1 + N 次查询，后期需优化
+        result.getRecords().forEach(vo -> {
+            Long count = countLogsByCustomerId(vo.getId());
+            vo.setLogCount(count);
+        });
+
         return TableDataInfo.build(result);
     }
 
@@ -117,6 +127,11 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
             lqw.le(params.get("endExpireDate") != null,
                 DcCustomerInformation::getExpireDate,
                 params.get("endExpireDate"));
+
+        }
+
+        if (bo.getLogCount() != null) {
+            lqw.apply("(SELECT COUNT(*) FROM dc_customer_information_log WHERE customer_info_id = dc_customer_information.id AND del_flag = '0') >= {0}", bo.getLogCount());
         }
 
         lqw.apply(StringUtils.isNotBlank(bo.getSignDateMonth()),
@@ -202,5 +217,14 @@ public class DcCustomerInformationServiceImpl implements IDcCustomerInformationS
         lqw.orderByDesc(DcCustomerInformation::getCreateTime);
 
         return baseMapper.selectVoList(lqw);
+    }
+
+    @Override
+    public Long countLogsByCustomerId(Long customerInfoId) {
+        if (customerInfoId == null) {
+            return 0L;
+        }
+        return logMapper.selectCount(new LambdaQueryWrapper<DcCustomerInformationLog>()
+            .eq(DcCustomerInformationLog::getCustomerInfoId, customerInfoId));
     }
 }

@@ -159,4 +159,31 @@
         WHERE customer_city = #{city} AND del_flag = 0
     </select>
 
+    <select id="selectVoPageWithLogCount" resultType="org.dromara.customer.domain.vo.DcCustomerInformationVo">
+        SELECT
+        ci.*,
+        COALESCE(log_count_tbl.log_count, 0) as logCount
+        FROM dc_customer_information ci
+        LEFT JOIN (
+        SELECT customer_info_id, COUNT(*) as log_count
+        FROM dc_customer_information_log
+        WHERE del_flag = '0'
+        GROUP BY customer_info_id
+        ) log_count_tbl ON ci.id = log_count_tbl.customer_info_id
+        WHERE ci.del_flag = '0'
+        <if test="ew != null and ew.sqlSegment != null and ew.sqlSegment != ''">
+            AND ${ew.sqlSegment}
+        </if>
+        <if test="minLogCount != null">
+            AND COALESCE(log_count_tbl.log_count, 0) &gt;= #{minLogCount}
+        </if>
+        <if test="maxLogCount != null">
+            AND COALESCE(log_count_tbl.log_count, 0) &lt;= #{maxLogCount}
+        </if>
+        <if test="logCount != null">
+            AND COALESCE(log_count_tbl.log_count, 0) = #{logCount}
+        </if>
+        ORDER BY ci.create_time DESC
+    </select>
+
 </mapper>

@@ -435,7 +435,8 @@ public class CommonService {
         return json;
     }
 
-    public JSONObject getAllTrackingRecords(String customerId, String city, String legalSupportId, Integer trackingType, String trackingTime,
+    // 接口查询效率太慢,返回数据时间过长,重写了这个接口
+   /* public JSONObject getAllTrackingRecords(String customerId, String city, String legalSupportId, Integer trackingType, String trackingTime,
                                             String nextTrackingTime, int pageNum, int pageSize) {
         JSONArray json = new JSONArray();
         DcCustomerTrackingBo trackingBo = new DcCustomerTrackingBo();
@@ -487,8 +488,8 @@ public class CommonService {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("id", trackingVo.getId());
                 jsonObject.put("customerId", trackingVo.getCustomerId());
-                DcCustomerTransferVo transferVo = transferMapper.selectVoById(trackingVo.getCustomerId());
-                jsonObject.put("customerName", transferVo == null ? "" : transferVo.getCompanyName());
+                //DcCustomerTransferVo transferVo = transferMapper.selectVoById(trackingVo.getCustomerId());
+                //jsonObject.put("customerName", transferVo == null ? "" : transferVo.getCompanyName());
                 jsonObject.put("legalSupportId", trackingVo.getLegalSupportId());
                 jsonObject.put("legalSupportName", trackingVo.getLegalSupportName());
                 jsonObject.put("trackingTime", trackingVo.getTrackingTime());
@@ -522,12 +523,12 @@ public class CommonService {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("id", insuranceCaseVo.getId());
                 jsonObject.put("customerId", insuranceCaseVo.getCustomerId());
-                DcCustomerTransferVo transferVo = transferMapper.selectVoById(insuranceCaseVo.getCustomerId());
-                jsonObject.put("customerName", transferVo == null ? "" : transferVo.getCompanyName());
+                //DcCustomerTransferVo transferVo = transferMapper.selectVoById(insuranceCaseVo.getCustomerId());
+                //jsonObject.put("customerName", transferVo == null ? "" : transferVo.getCompanyName());
                 jsonObject.put("legalSupportId", insuranceCaseVo.getLegalSupportId());
                 jsonObject.put("legalSupportName", insuranceCaseVo.getLegalSupportName());
-                jsonObject.put("trackingTime", "");
-                jsonObject.put("nextTrackingTime", insuranceCaseVo.getOrderDate());
+                jsonObject.put("trackingTime", insuranceCaseVo.getOrderDate());
+                jsonObject.put("nextTrackingTime", "");
                 jsonObject.put("trackingType", 3);
                 jsonObject.put("remark", "买保险记录");
                 json.add(jsonObject);
@@ -541,7 +542,7 @@ public class CommonService {
                 jsonObject.put("id", jobOrderVo.getId());
                 jsonObject.put("customerId", jobOrderVo.getCustomerId());
                 jsonObject.put("customerName", jobOrderVo.getCustomerName());
-                jsonObject.put("legalSupportId", jobOrderVo.getContractHandler());
+                jsonObject.put("legalSupportId", jobOrderVo.getLegalSupportId());
                 jsonObject.put("legalSupportName", jobOrderVo.getLegalSupport());
                 jsonObject.put("trackingTime", "");
                 jsonObject.put("nextTrackingTime", jobOrderVo.getDeliveryTime());
@@ -573,6 +574,197 @@ public class CommonService {
         result.put("total", json.size());
         result.put("data", data);
         return result;
+    }
+
+    public List<Long> getCustomerIdsByCity(String city) {
+        DcCustomerInformationBo customerInfo = new DcCustomerInformationBo();
+        customerInfo.setCustomerCity(city);
+        List<DcCustomerInformationVo> informationVoList = dcCustomerInformationService.queryList(customerInfo);
+        return informationVoList.stream().map(DcCustomerInformationVo::getId).collect(Collectors.toList());
+    }
+*/
+    // 重写上面这个接口,查询效率提高
+    public JSONObject getAllTrackingRecords(String customerId, String city, String legalSupportId, Integer trackingType, String trackingTime,
+                                            String nextTrackingTime, int pageNum, int pageSize) {
+        JSONArray json = new JSONArray();
+
+        List<Long> customerIds = null;
+        if (StringUtils.isNotBlank(city)) {
+            customerIds = getCustomerIdsByCityOptimized(city);
+        }
+
+        Long customerIdLong = StringUtils.isNotBlank(customerId) ? Long.valueOf(customerId) : null;
+        Long legalSupportIdLong = StringUtils.isNotBlank(legalSupportId) ? Long.valueOf(legalSupportId) : null;
+        java.util.Date trackingTimeDate = StringUtils.isNotBlank(trackingTime) ? DateUtil.parse(trackingTime) : null;
+        java.util.Date nextTrackingTimeDate = StringUtils.isNotBlank(nextTrackingTime) ? DateUtil.parse(nextTrackingTime) : null;
+
+        if (trackingType == null || trackingType == 1) {
+            List<DcCustomerTrackingVo> dcCustomerTrackingVos = queryTrackingList(customerIds, customerIdLong, legalSupportIdLong, trackingTimeDate, nextTrackingTimeDate, city);
+            for (DcCustomerTrackingVo trackingVo : dcCustomerTrackingVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", trackingVo.getId());
+                jsonObject.put("customerId", trackingVo.getCustomerId());
+                jsonObject.put("legalSupportId", trackingVo.getLegalSupportId());
+                jsonObject.put("legalSupportName", trackingVo.getLegalSupportName());
+                jsonObject.put("trackingTime", trackingVo.getTrackingTime());
+                jsonObject.put("nextTrackingTime", trackingVo.getNextTime());
+                jsonObject.put("trackingType", 1);
+                jsonObject.put("remark", trackingVo.getCustomerRemark());
+                jsonObject.put("city", trackingVo.getRemark2());
+                json.add(jsonObject);
+            }
+        }
+        if (trackingType == null || trackingType == 2) {
+            List<DcCustomerOutVisitVo> dcCustomerOutVisitVos = queryOutVisitList(customerIds, customerIdLong, legalSupportIdLong, trackingTimeDate, nextTrackingTimeDate, city);
+            for (DcCustomerOutVisitVo outVisitVo : dcCustomerOutVisitVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", outVisitVo.getId());
+                jsonObject.put("customerId", outVisitVo.getCustomerId());
+                jsonObject.put("customerName", outVisitVo.getCustomerName());
+                jsonObject.put("legalSupportId", outVisitVo.getLegalSupportId());
+                jsonObject.put("legalSupportName", outVisitVo.getLegalSupportName());
+                jsonObject.put("trackingTime", outVisitVo.getVisitTime());
+                jsonObject.put("nextTrackingTime", outVisitVo.getNextVisitTime());
+                jsonObject.put("trackingType", 2);
+                jsonObject.put("remark", outVisitVo.getVisitPurpose());
+                jsonObject.put("city", outVisitVo.getRemark1());
+                json.add(jsonObject);
+            }
+        }
+        if (trackingType == null || trackingType == 3) {
+            List<DcInsuranceCaseVo> dcInsuranceCaseVos = queryInsuranceCaseList(customerIds, customerIdLong, legalSupportIdLong, trackingTimeDate, nextTrackingTimeDate, city);
+            for (DcInsuranceCaseVo insuranceCaseVo : dcInsuranceCaseVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", insuranceCaseVo.getId());
+                jsonObject.put("customerId", insuranceCaseVo.getCustomerId());
+                jsonObject.put("legalSupportId", insuranceCaseVo.getLegalSupportId());
+                jsonObject.put("legalSupportName", insuranceCaseVo.getLegalSupportName());
+                jsonObject.put("trackingTime", insuranceCaseVo.getOrderDate());
+                jsonObject.put("nextTrackingTime", "");
+                jsonObject.put("trackingType", 3);
+                jsonObject.put("remark", "买保险记录");
+                jsonObject.put("city", insuranceCaseVo.getRemark1());
+                json.add(jsonObject);
+            }
+        }
+        if (trackingType == null || trackingType == 4) {
+            List<DcCustomerJobOrderVo> dcCustomerJobOrderVos = queryJobOrderList(customerIds, customerIdLong, legalSupportIdLong, trackingTimeDate, nextTrackingTimeDate, city);
+            for (DcCustomerJobOrderVo jobOrderVo : dcCustomerJobOrderVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", jobOrderVo.getId());
+                jsonObject.put("customerId", jobOrderVo.getCustomerId());
+                jsonObject.put("customerName", jobOrderVo.getCustomerName());
+                jsonObject.put("legalSupportId", jobOrderVo.getLegalSupportId());
+                jsonObject.put("legalSupportName", jobOrderVo.getLegalSupport());
+                jsonObject.put("trackingTime", jobOrderVo.getCreateTime());
+                jsonObject.put("nextTrackingTime", jobOrderVo.getDeliveryTime());
+                jsonObject.put("trackingType", 4);
+                jsonObject.put("remark", "下工单记录");
+                jsonObject.put("city", jobOrderVo.getRemark2());
+                json.add(jsonObject);
+            }
+        }
+        if (trackingType == null || trackingType == 5) {
+            List<DcCaseTrackingVo> dcCaseTrackingVos = queryCaseTrackingList(customerIds, customerIdLong, legalSupportIdLong, trackingTimeDate, nextTrackingTimeDate, city);
+            for (DcCaseTrackingVo caseTrackingVo : dcCaseTrackingVos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", caseTrackingVo.getId());
+                jsonObject.put("customerId", caseTrackingVo.getCustomerId());
+                jsonObject.put("customerName", caseTrackingVo.getCustomerName());
+                jsonObject.put("legalSupportId", caseTrackingVo.getLegalSupportId());
+                jsonObject.put("legalSupportName", caseTrackingVo.getLegalSupportName());
+                jsonObject.put("trackingTime", caseTrackingVo.getTrackingTime());
+                jsonObject.put("nextTrackingTime", caseTrackingVo.getNextTrackingTime());
+                jsonObject.put("trackingType", 5);
+                jsonObject.put("remark", caseTrackingVo.getCaseProgress());
+                jsonObject.put("city", caseTrackingVo.getRemark1());
+                json.add(jsonObject);
+            }
+        }
+        JSONObject result = new JSONObject();
+        JSONArray data = new JSONArray();
+        data.addAll(ListUtil.page(pageNum - 1, pageSize, json));
+        result.put("total", json.size());
+        result.put("data", data);
+        return result;
+    }
+
+    private List<Long> getCustomerIdsByCityOptimized(String city) {
+        return informationMapper.selectObjs(
+            new LambdaQueryWrapper<DcCustomerInformation>()
+                .select(DcCustomerInformation::getId)
+                .eq(DcCustomerInformation::getCustomerCity, city)
+        ).stream().map(obj -> (Long) obj).collect(Collectors.toList());
+    }
+
+    private List<DcCustomerTrackingVo> queryTrackingList(List<Long> customerIds, Long customerId, Long legalSupportId,
+                                                         java.util.Date trackingTime, java.util.Date nextTime, String city) {
+        DcCustomerTrackingBo bo = new DcCustomerTrackingBo();
+        bo.setCustomerIds(customerIds);
+        bo.setCustomerId(customerId);
+        bo.setLegalSupportId(legalSupportId);
+        bo.setTrackingTime(trackingTime);
+        bo.setNextTime(nextTime);
+        if (StringUtils.isNotBlank(city)) {
+            bo.setRemark2(city);
+        }
+        return dcCustomerTrackingService.queryList(bo);
+    }
+
+    private List<DcCustomerOutVisitVo> queryOutVisitList(List<Long> customerIds, Long customerId, Long legalSupportId,
+                                                         java.util.Date visitTime, java.util.Date nextVisitTime, String city) {
+        DcCustomerOutVisitBo bo = new DcCustomerOutVisitBo();
+        bo.setCustomerIds(customerIds);
+        bo.setCustomerId(customerId);
+        bo.setLegalSupportId(legalSupportId);
+        bo.setVisitTime(visitTime);
+        bo.setNextVisitTime(nextVisitTime);
+        if (StringUtils.isNotBlank(city)) {
+            bo.setRemark1(city);
+        }
+        return dcCustomerOutVisitService.queryList(bo);
+    }
+
+    private List<DcInsuranceCaseVo> queryInsuranceCaseList(List<Long> customerIds, Long customerId, Long legalSupportId,
+                                                           java.util.Date createTime, java.util.Date orderDate, String city) {
+        DcInsuranceCaseBo bo = new DcInsuranceCaseBo();
+        bo.setCustomerIds(customerIds);
+        bo.setCustomerId(customerId);
+        bo.setLegalSupportId(legalSupportId);
+        bo.setCreateTime(createTime);
+        bo.setOrderDate(orderDate);
+        if (StringUtils.isNotBlank(city)) {
+            bo.setRemark1(city);
+        }
+        return dcInsuranceCaseService.queryList(bo);
+    }
+
+    private List<DcCustomerJobOrderVo> queryJobOrderList(List<Long> customerIds, Long customerId, Long legalSupportId,
+                                                         java.util.Date createTime, java.util.Date deliveryTime, String city) {
+        DcCustomerJobOrderBo bo = new DcCustomerJobOrderBo();
+        bo.setCustomerIds(customerIds);
+        bo.setCustomerId(customerId);
+        bo.setLegalSupportId(legalSupportId);
+        bo.setCreateTime(createTime);
+        bo.setDeliveryTime(deliveryTime);
+        if (StringUtils.isNotBlank(city)) {
+            bo.setRemark2(city);
+        }
+        return dcCustomerJobOrderService.queryList(bo);
+    }
+
+    private List<DcCaseTrackingVo> queryCaseTrackingList(List<Long> customerIds, Long customerId, Long legalSupportId,
+                                                         java.util.Date trackingTime, java.util.Date nextTrackingTime, String city) {
+        DcCaseTrackingBo bo = new DcCaseTrackingBo();
+        bo.setCustomerIds(customerIds);
+        bo.setCustomerId(customerId);
+        bo.setLegalSupportId(legalSupportId);
+        bo.setTrackingTime(trackingTime);
+        bo.setNextTrackingTime(nextTrackingTime);
+        if (StringUtils.isNotBlank(city)) {
+            bo.setRemark1(city);
+        }
+        return dcCaseTrackingService.queryList(bo);
     }
 
 
@@ -2117,11 +2309,5 @@ public class CommonService {
         return deptIds;
     }
 
-    public List<Long> getCustomerIdsByCity(String city) {
-        DcCustomerInformationBo customerInfo = new DcCustomerInformationBo();
-        customerInfo.setCustomerCity(city);
-        List<DcCustomerInformationVo> informationVoList = dcCustomerInformationService.queryList(customerInfo);
-        return informationVoList.stream().map(DcCustomerInformationVo::getId).collect(Collectors.toList());
-    }
 
 }

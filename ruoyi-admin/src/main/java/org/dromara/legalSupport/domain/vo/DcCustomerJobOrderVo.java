@@ -137,4 +137,10 @@ public class DcCustomerJobOrderVo implements Serializable {
     @ExcelProperty(value = "客户姓名")
     private String customerName;
 
+    /**
+     * 创建时间
+     */
+    @ExcelProperty(value = "创建时间")
+    private Date createTime;
+
 }

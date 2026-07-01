@@ -132,30 +132,38 @@ public class CommonController {
 
     @GetMapping("getAllTrackingRecords")
     public R<JSONObject> getAllTrackingRecords(@RequestParam(required = false) String customerId,
+                                               @RequestParam(required = false) String city,
                                                @RequestParam(required = false) String legalSupportId,
                                                @RequestParam(required = false) Integer trackingType,
                                                @RequestParam(required = false) String trackingTime,
                                                @RequestParam(required = false) String nextTrackingTime,
                                                @RequestParam(defaultValue = "0") int pageNum,
-                                               @RequestParam(defaultValue = "10") int pageSize) {
+                                               @RequestParam(defaultValue = "20") int pageSize) {
         LoginUser loginUser = LoginHelper.getLoginUser();
         if (loginUser == null) {
             return R.warn("用户未登录");
         }
+
+        String finalCity = city;
+        String finalLegalSupportId = legalSupportId;
         String deptCategory = loginUser.getDeptCategory();
-        String city = null;
-        if (StringUtils.isNotBlank(deptCategory) && !("ADMIN").equals(deptCategory)) {
-            city = deptCategory.substring(0, deptCategory.indexOf('_'));
-        }
         List<RoleDTO> roles = loginUser.getRoles();
-        if (roles != null && !roles.isEmpty()) {
-            RoleDTO role = roles.get(0);
-            if (role.getRoleKey().equals("LegalSupport_Employee")) {
-                legalSupportId = loginUser.getUserId() + "";
+
+        String roleKey = (roles != null && !roles.isEmpty()) ? roles.get(0).getRoleKey() : null;
+
+        if ("LegalSupport_Employee".equals(roleKey)) {
+            finalLegalSupportId = loginUser.getUserId() + "";
+            finalCity = null;
+        } else if ("LegalSupport_Manager".equals(roleKey)) {
+            if (StringUtils.isNotBlank(deptCategory) && !"ADMIN".equals(deptCategory)) {
+                finalCity = deptCategory.substring(0, deptCategory.indexOf('_'));
             }
         }
-        return R.ok(commonService.getAllTrackingRecords(customerId, city, legalSupportId, trackingType, trackingTime, nextTrackingTime, pageNum, pageSize));
+
+        return R.ok(commonService.getAllTrackingRecords(customerId, finalCity, finalLegalSupportId, trackingType, trackingTime, nextTrackingTime, pageNum, pageSize));
     }
+
+
 
     /**
      * 根据登录用户获取案件信息

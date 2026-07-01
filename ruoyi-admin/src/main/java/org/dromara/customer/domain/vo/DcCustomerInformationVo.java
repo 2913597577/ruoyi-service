@@ -229,4 +229,10 @@ public class DcCustomerInformationVo implements Serializable {
     @ExcelProperty(value = "服务开始时间")
     private Date startDate;
 
+    /**
+     * 客户二次收费信息数量
+     */
+    @ExcelProperty(value = "二次收费表客户记录")
+    private Long logCount;
+
 }

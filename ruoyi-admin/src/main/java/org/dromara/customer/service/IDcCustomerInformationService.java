@@ -89,4 +89,14 @@ public interface IDcCustomerInformationService {
      */
     List<DcCustomerInformationVo> queryListByCreateDepts(List<Long> createDepts);
 
+
+    /**
+     * 统计客户在二次收费表的数量
+     * @param customerInfoId 客户信息ID
+     * @return 二次收费数量
+     */
+    Long countLogsByCustomerId(Long customerInfoId);
+
 }
+
+

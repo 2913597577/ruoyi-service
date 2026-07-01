@@ -217,4 +217,19 @@ public class DcCustomerInformationBo extends BaseEntity {
      */
     private String signDateMonth;
 
+    /**
+     * 客户二次收费表的数量（用于筛选）
+     */
+    private Long logCount;
+
+    /**
+     * 客户二次收费表数量最小值（用于范围筛选）
+     */
+    private Long minLogCount;
+
+    /**
+     * 客户二次收费表数量最大值（用于范围筛选）
+     */
+    private Long maxLogCount;
+
 }

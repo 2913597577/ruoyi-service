@@ -1,5 +1,7 @@
 package org.dromara.customer.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.customer.domain.DcCustomerInformation;
@@ -34,5 +36,13 @@ public interface DcCustomerInformationMapper extends BaseMapperPlus<DcCustomerIn
     List<DcCustomerInformationVo> selectAllCustomerBasicInfo();
 
     List<DcCustomerInformationVo> selectCustomerByCity(@Param("city") String city);
+
+    Page<DcCustomerInformationVo> selectVoPageWithLogCount(
+        Page<DcCustomerInformationVo> page,
+        @Param("ew") LambdaQueryWrapper<DcCustomerInformation> wrapper,
+        @Param("minLogCount") Long minLogCount,
+        @Param("maxLogCount") Long maxLogCount,
+        @Param("logCount") Long logCount
+    );
 
 }
