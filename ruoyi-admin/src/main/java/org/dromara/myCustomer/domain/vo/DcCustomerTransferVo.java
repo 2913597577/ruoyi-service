@@ -415,4 +415,10 @@ public class DcCustomerTransferVo implements Serializable {
     @ExcelProperty(value = "签单时间")
     private Date signDate;
 
+    /**
+     * 二次收费录入表数量
+     */
+    @ExcelProperty(value = "二次收费录入表数量")
+    private Long logCount;
+
 }

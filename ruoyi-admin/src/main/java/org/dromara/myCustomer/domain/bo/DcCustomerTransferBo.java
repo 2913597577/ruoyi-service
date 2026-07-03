@@ -346,6 +346,11 @@ public class DcCustomerTransferBo extends BaseEntity {
      */
     private String signDateMonth;
 
+    /**
+     * 二次收费录入表中数量（用于筛选）
+     */
+    private Long logCount;
+
     private List<DcCustomerPerformanceBo> performanceInfo;
 
 

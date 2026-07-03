@@ -161,5 +161,10 @@ public class DcDebtCaseVo implements Serializable {
     @ExcelProperty(value = "备注3")
     private String remark3;
 
+    /**
+     * 创建时间
+     */
+    @ExcelProperty(value = "创建日期")
+    private Date createTime;
 
 }
