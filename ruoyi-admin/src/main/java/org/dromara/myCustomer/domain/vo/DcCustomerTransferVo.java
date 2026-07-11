@@ -124,7 +124,7 @@ public class DcCustomerTransferVo implements Serializable {
      * 实付金额
      */
     @ExcelProperty(value = "实付金额")
-    private Long actualPayment;
+    private BigDecimal actualPayment;
 
     /**
      * 尾款情况

@@ -332,7 +332,10 @@ public class DcCustomerTransferController extends BaseController {
             updateSuccess = DataPermissionHelper.ignore(() -> dcCustomerTransferService.updatePicture(id, oss.getOssId()));
             DcFinancialStatisticsBo dcFinancialStatisticsBo = new DcFinancialStatisticsBo();
             dcFinancialStatisticsBo.setContractNo(dcCustomerTransferVo.getContractCode());
-            dcFinancialStatisticsBo.setBalance(new BigDecimal(dcCustomerTransferVo.getActualPayment()));
+            //dcFinancialStatisticsBo.setBalance(new BigDecimal(dcCustomerTransferVo.getActualPayment()));
+            dcFinancialStatisticsBo.setBalance(dcCustomerTransferVo.getActualPayment() != null
+                ? dcCustomerTransferVo.getActualPayment()
+                : BigDecimal.ZERO);
             dcFinancialStatisticsBo.setFlowTime(dcCustomerTransferVo.getCreateTime());
             dcFinancialStatisticsBo.setSourceType("actual_receipt");
             dcFinancialStatisticsBo.setCity(dcCustomerTransferVo.getCustomerCity());
@@ -343,6 +346,8 @@ public class DcCustomerTransferController extends BaseController {
             dcFinancialStatisticsBo.setCreateDept(LoginHelper.getDeptId());
             dcFinancialStatisticsBo.setCreateTime(new Date());
             dcFinancialStatisticsBo.setUpdateTime(new Date());
+            dcFinancialStatisticsBo.setOperatorId(dcCustomerTransferVo.getInviterId());
+            dcFinancialStatisticsBo.setCompanyName(dcCustomerTransferVo.getCompanyName());
             dcFinancialStatisticsService.insertByBo(dcFinancialStatisticsBo);
         }
 

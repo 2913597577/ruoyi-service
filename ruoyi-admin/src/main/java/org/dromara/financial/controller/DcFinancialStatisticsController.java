@@ -81,7 +81,7 @@ public class DcFinancialStatisticsController extends BaseController {
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody DcFinancialStatisticsBo bo) {
         bo.setCreaterName(LoginHelper.getUsername());
-        bo.setSourceType("hand_record");
+        //bo.setSourceType("hand_record");
         return toAjax(dcFinancialStatisticsService.insertByBo(bo));
     }
 

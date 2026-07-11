@@ -51,4 +51,15 @@ public class FinancialStatisticsQuery {
      */
     private Map<String, Object> params;
 
+    /**
+     * 项目名称
+     */
+    private String companyName;
+
+
+    /**
+     * 录入人id
+     */
+    private Long operatorId;
+
 }

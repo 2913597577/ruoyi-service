@@ -9,6 +9,7 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.financial.domain.DcFinancialStatistics;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -87,7 +88,19 @@ public class DcFinancialStatisticsBo extends BaseEntity {
      * 流水时间（财务进账/支出具体时间）
      */
     @NotNull(message = "流水时间（财务进账/支出具体时间）不能为空", groups = {AddGroup.class, EditGroup.class})
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date flowTime;
+
+    /**
+     * 项目名称
+     */
+    private String companyName;
+
+
+    /**
+     * 录入人id
+     */
+    private Long operatorId;
 
 
 }

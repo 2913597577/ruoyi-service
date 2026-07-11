@@ -75,7 +75,7 @@ public class DcFinancialStatisticsServiceImpl implements IDcFinancialStatisticsS
     private LambdaQueryWrapper<DcFinancialStatistics> buildQueryWrapper(DcFinancialStatisticsBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DcFinancialStatistics> lqw = Wrappers.lambdaQuery();
-        lqw.orderByAsc(DcFinancialStatistics::getId);
+        lqw.orderByDesc(DcFinancialStatistics::getId);
         lqw.eq(bo.getBalance() != null, DcFinancialStatistics::getBalance, bo.getBalance());
         lqw.eq(bo.getFinancialType() != null, DcFinancialStatistics::getFinancialType, bo.getFinancialType());
         lqw.eq(StringUtils.isNotBlank(bo.getSourceType()), DcFinancialStatistics::getSourceType, bo.getSourceType());
@@ -86,6 +86,7 @@ public class DcFinancialStatisticsServiceImpl implements IDcFinancialStatisticsS
         lqw.eq(StringUtils.isNotBlank(bo.getRemark2()), DcFinancialStatistics::getRemark2, bo.getRemark2());
         lqw.eq(StringUtils.isNotBlank(bo.getRemark3()), DcFinancialStatistics::getRemark3, bo.getRemark3());
         lqw.eq(bo.getFlowTime() != null, DcFinancialStatistics::getFlowTime, bo.getFlowTime());
+        lqw.eq(StringUtils.isNotBlank(bo.getCompanyName()), DcFinancialStatistics::getCompanyName, bo.getCompanyName());
         return lqw;
     }
 

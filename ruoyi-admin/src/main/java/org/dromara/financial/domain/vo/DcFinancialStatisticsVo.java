@@ -112,4 +112,16 @@ public class DcFinancialStatisticsVo implements Serializable {
     private Date flowTime;
 
 
+    /**
+     * 录入人id
+     */
+    @ExcelProperty(value = "录入人id")
+    private Long operatorId;
+
+    /**
+     * 项目名称
+     */
+    @ExcelProperty(value = "项目名称")
+    private String companyName;
+
 }
